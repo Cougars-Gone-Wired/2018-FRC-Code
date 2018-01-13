@@ -7,7 +7,13 @@
 
 package org.usfirst.frc.team2996.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -24,6 +30,37 @@ public class Robot extends IterativeRobot {
 	private String m_autoSelected;
 	private SendableChooser<String> m_chooser = new SendableChooser<>();
 
+	static int MOBILITY_STICK_PORT;
+	static int DRIVE_FORWARD_AXIS;
+	static int DRIVE_TURN_AXIS;
+	static int HIGH_GEAR_BUTTON;
+	static int LOW_GEAR_BUTTON;
+
+	static int LEFT_DRIVE_SOLENOID_ID;
+	static int RIGHT_DRIVE_SOLENOID_ID;
+
+	static int FRONT_LEFT_MOTOR_ID;
+	static int REAR_LEFT_MOTOR_ID;
+	static int FRONT_RIGHT_MOTOR_ID;
+	static int REAR_RIGHT_MOTOR_ID;
+
+	Joystick mobilityStick;
+
+	Solenoid leftDriveSolenoid;
+	Solenoid rightDriveSolenoid;
+
+	WPI_TalonSRX frontLeftMotor;
+	WPI_TalonSRX rearLeftMotor;
+	SpeedControllerGroup leftMotors;
+
+	WPI_TalonSRX frontRightMotor;
+	WPI_TalonSRX rearRightMotor;
+	SpeedControllerGroup rightMotors;
+
+	DifferentialDrive robotDrive;
+
+	Drive drive;
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -33,6 +70,23 @@ public class Robot extends IterativeRobot {
 		m_chooser.addDefault("Default Auto", kDefaultAuto);
 		m_chooser.addObject("My Auto", kCustomAuto);
 		SmartDashboard.putData("Auto choices", m_chooser);
+		
+		mobilityStick = new Joystick(MOBILITY_STICK_PORT);
+
+		leftDriveSolenoid = new Solenoid(LEFT_DRIVE_SOLENOID_ID);
+		rightDriveSolenoid = new Solenoid(RIGHT_DRIVE_SOLENOID_ID);
+
+		frontLeftMotor = new WPI_TalonSRX(FRONT_LEFT_MOTOR_ID);
+		rearLeftMotor = new WPI_TalonSRX(REAR_LEFT_MOTOR_ID);
+		leftMotors = new SpeedControllerGroup(frontLeftMotor, rearRightMotor);
+
+		frontRightMotor = new WPI_TalonSRX(FRONT_RIGHT_MOTOR_ID);
+		rearRightMotor = new WPI_TalonSRX(REAR_RIGHT_MOTOR_ID);
+		rightMotors = new SpeedControllerGroup(frontRightMotor, rearRightMotor);
+
+		robotDrive = new DifferentialDrive(leftMotors, rightMotors);
+
+		drive = new Drive(this);
 	}
 
 	/**
@@ -75,6 +129,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		drive.arcadeDrive();
+		drive.changeGear();
 	}
 
 	/**
@@ -82,5 +138,21 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+	}
+	
+	public Joystick getMobilityStick() {
+		return mobilityStick;
+	}
+
+	public DifferentialDrive getRobotDrive() {
+		return robotDrive;
+	}
+
+	public Solenoid getLeftDriveSolenoid() {
+		return leftDriveSolenoid;
+	}
+
+	public Solenoid getRightDriveSolenoid() {
+		return rightDriveSolenoid;
 	}
 }
