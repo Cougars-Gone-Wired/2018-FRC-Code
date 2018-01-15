@@ -45,7 +45,9 @@ public class Robot extends IterativeRobot {
 	static int REAR_RIGHT_MOTOR_ID;
 
 	Joystick mobilityStick;
-
+	double driveForwardAxis;
+	double driveTurnAxis;
+	
 	Solenoid leftDriveSolenoid;
 	Solenoid rightDriveSolenoid;
 
@@ -87,6 +89,10 @@ public class Robot extends IterativeRobot {
 		robotDrive = new DifferentialDrive(leftMotors, rightMotors);
 
 		drive = new Drive(this);
+		
+		drive.setSolenoids(false);
+		
+		setInverts();
 	}
 
 	/**
@@ -140,8 +146,30 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 	}
 	
+	public void displaySettings() {
+		SmartDashboard.putNumber("Drive Speed", 1.0);
+	}
+	
+	public void setInverts() {
+		driveForwardAxis *= 1;
+		driveTurnAxis *= 1;
+		
+		frontLeftMotor.setInverted(false);
+		rearLeftMotor.setInverted(false);
+		frontRightMotor.setInverted(false);
+		rearRightMotor.setInverted(false);
+	}
+	
 	public Joystick getMobilityStick() {
 		return mobilityStick;
+	}
+
+	public double getDriveForwardAxis() {
+		return driveForwardAxis;
+	}
+
+	public double getDriveTurnAxis() {
+		return driveTurnAxis;
 	}
 
 	public DifferentialDrive getRobotDrive() {
