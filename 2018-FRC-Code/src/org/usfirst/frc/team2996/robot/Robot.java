@@ -30,27 +30,40 @@ public class Robot extends IterativeRobot {
 	private String m_autoSelected;
 	private SendableChooser<String> m_chooser = new SendableChooser<>();
 
+	static int MANIPULATOR_STICK_PORT;
+	static int ELEVATOR_UP_BUTTON;
+	static int ELEVATOR_DOWN_BUTTON;
+	
 	static int MOBILITY_STICK_PORT;
 	static int DRIVE_FORWARD_AXIS;
 	static int DRIVE_TURN_AXIS;
 	static int HIGH_GEAR_BUTTON;
 	static int LOW_GEAR_BUTTON;
-
+	
 	static int LEFT_DRIVE_SOLENOID_ID;
 	static int RIGHT_DRIVE_SOLENOID_ID;
 
+	static int ELEVATOR_MOTOR_1_ID;
+	static int ELEVATOR_MOTOR_2_ID;
 	static int FRONT_LEFT_MOTOR_ID;
 	static int REAR_LEFT_MOTOR_ID;
 	static int FRONT_RIGHT_MOTOR_ID;
 	static int REAR_RIGHT_MOTOR_ID;
 
+
+	Joystick manipulatorStick;
+	
 	Joystick mobilityStick;
 	double driveForwardAxis;
 	double driveTurnAxis;
-	
+
 	Solenoid leftDriveSolenoid;
 	Solenoid rightDriveSolenoid;
 
+	WPI_TalonSRX elevatorMotor1;
+	WPI_TalonSRX elevatorMotor2;
+	SpeedControllerGroup elevatorMotors;
+	
 	WPI_TalonSRX frontLeftMotor;
 	WPI_TalonSRX rearLeftMotor;
 	SpeedControllerGroup leftMotors;
@@ -61,6 +74,7 @@ public class Robot extends IterativeRobot {
 
 	DifferentialDrive robotDrive;
 
+	Elevator elevator;
 	Drive drive;
 	
 	/**
@@ -73,11 +87,16 @@ public class Robot extends IterativeRobot {
 		m_chooser.addObject("My Auto", kCustomAuto);
 		SmartDashboard.putData("Auto choices", m_chooser);
 		
+		manipulatorStick = new Joystick(MANIPULATOR_STICK_PORT);
 		mobilityStick = new Joystick(MOBILITY_STICK_PORT);
-
+		
 		leftDriveSolenoid = new Solenoid(LEFT_DRIVE_SOLENOID_ID);
 		rightDriveSolenoid = new Solenoid(RIGHT_DRIVE_SOLENOID_ID);
 
+		elevatorMotor1 = new WPI_TalonSRX(ELEVATOR_MOTOR_1_ID);
+		elevatorMotor2 = new WPI_TalonSRX(ELEVATOR_MOTOR_2_ID);
+		elevatorMotors = new SpeedControllerGroup(elevatorMotor1, elevatorMotor2);
+		
 		frontLeftMotor = new WPI_TalonSRX(FRONT_LEFT_MOTOR_ID);
 		rearLeftMotor = new WPI_TalonSRX(REAR_LEFT_MOTOR_ID);
 		leftMotors = new SpeedControllerGroup(frontLeftMotor, rearRightMotor);
@@ -88,9 +107,8 @@ public class Robot extends IterativeRobot {
 
 		robotDrive = new DifferentialDrive(leftMotors, rightMotors);
 
+		elevator = new Elevator(this);
 		drive = new Drive(this);
-		
-		drive.setSolenoids(false);
 		
 		setInverts();
 	}
@@ -130,11 +148,17 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	@Override
+	public void teleopInit() {
+		drive.setSolenoids(false);
+	}
+	
 	/**
 	 * This function is called periodically during operator control.
 	 */
 	@Override
 	public void teleopPeriodic() {
+		elevator.elevatorFunctions();
 		drive.arcadeDrive();
 		drive.changeGear();
 	}
@@ -151,15 +175,18 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void setInverts() {
-		driveForwardAxis *= 1;
-		driveTurnAxis *= 1;
-		
+		elevatorMotor1.setInverted(false);
+		elevatorMotor2.setInverted(false);
 		frontLeftMotor.setInverted(false);
 		rearLeftMotor.setInverted(false);
 		frontRightMotor.setInverted(false);
 		rearRightMotor.setInverted(false);
 	}
 	
+	public Joystick getManipulatorStick() {
+		return manipulatorStick;
+	}
+
 	public Joystick getMobilityStick() {
 		return mobilityStick;
 	}
@@ -170,6 +197,10 @@ public class Robot extends IterativeRobot {
 
 	public double getDriveTurnAxis() {
 		return driveTurnAxis;
+	}
+
+	public SpeedControllerGroup getElevatorMotors() {
+		return elevatorMotors;
 	}
 
 	public DifferentialDrive getRobotDrive() {

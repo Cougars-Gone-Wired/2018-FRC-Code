@@ -41,8 +41,8 @@ public class Drive {
 	}
 
 	public void setDriveSpeed() {
-		driveForwardAxis = mobilityStick.getRawAxis(Robot.DRIVE_FORWARD_AXIS) * SmartDashboard.getNumber("Drive Speed", 1.0);
-		driveTurnAxis = mobilityStick.getRawAxis(Robot.DRIVE_TURN_AXIS) * SmartDashboard.getNumber("Drive Speed", 1.0);
+		driveForwardAxis = Utility.deadZone(mobilityStick.getRawAxis(Robot.DRIVE_FORWARD_AXIS) * SmartDashboard.getNumber("Drive Speed", 1.0));
+		driveTurnAxis = Utility.deadZone(mobilityStick.getRawAxis(Robot.DRIVE_TURN_AXIS) * SmartDashboard.getNumber("Drive Speed", 1.0));
 	}
 	
 	public void setSolenoids(boolean state) {
