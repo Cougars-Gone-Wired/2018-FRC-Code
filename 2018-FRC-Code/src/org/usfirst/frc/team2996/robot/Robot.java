@@ -9,6 +9,7 @@ package org.usfirst.frc.team2996.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -40,6 +41,9 @@ public class Robot extends IterativeRobot {
 	static int HIGH_GEAR_BUTTON;
 	static int LOW_GEAR_BUTTON;
 	
+	static int TOP_ELEVATOR_LIMIT_SWITCH_CHANNEL;
+	static int BOTTOM_ELEVATOR_LIMIT_SWITCH_CHANNEL;
+	
 	static int LEFT_DRIVE_SOLENOID_ID;
 	static int RIGHT_DRIVE_SOLENOID_ID;
 
@@ -50,13 +54,15 @@ public class Robot extends IterativeRobot {
 	static int FRONT_RIGHT_MOTOR_ID;
 	static int REAR_RIGHT_MOTOR_ID;
 
-
 	Joystick manipulatorStick;
 	
 	Joystick mobilityStick;
 	double driveForwardAxis;
 	double driveTurnAxis;
 
+	DigitalInput topElevatorLimitSwitch;
+	DigitalInput bottomElevatorLimitSwitch;
+	
 	Solenoid leftDriveSolenoid;
 	Solenoid rightDriveSolenoid;
 
@@ -89,6 +95,9 @@ public class Robot extends IterativeRobot {
 		
 		manipulatorStick = new Joystick(MANIPULATOR_STICK_PORT);
 		mobilityStick = new Joystick(MOBILITY_STICK_PORT);
+		
+		topElevatorLimitSwitch = new DigitalInput(TOP_ELEVATOR_LIMIT_SWITCH_CHANNEL);
+		bottomElevatorLimitSwitch = new DigitalInput(BOTTOM_ELEVATOR_LIMIT_SWITCH_CHANNEL);
 		
 		leftDriveSolenoid = new Solenoid(LEFT_DRIVE_SOLENOID_ID);
 		rightDriveSolenoid = new Solenoid(RIGHT_DRIVE_SOLENOID_ID);
@@ -198,13 +207,13 @@ public class Robot extends IterativeRobot {
 	public double getDriveTurnAxis() {
 		return driveTurnAxis;
 	}
-
-	public SpeedControllerGroup getElevatorMotors() {
-		return elevatorMotors;
+	
+	public DigitalInput getTopElevatorLimitSwitch() {
+		return topElevatorLimitSwitch;
 	}
 
-	public DifferentialDrive getRobotDrive() {
-		return robotDrive;
+	public DigitalInput getBottomElevatorLimitSwitch() {
+		return bottomElevatorLimitSwitch;
 	}
 
 	public Solenoid getLeftDriveSolenoid() {
@@ -213,5 +222,13 @@ public class Robot extends IterativeRobot {
 
 	public Solenoid getRightDriveSolenoid() {
 		return rightDriveSolenoid;
+	}
+	
+	public SpeedControllerGroup getElevatorMotors() {
+		return elevatorMotors;
+	}
+
+	public DifferentialDrive getRobotDrive() {
+		return robotDrive;
 	}
 }

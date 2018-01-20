@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2996.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -10,16 +11,17 @@ public class Elevator {
 	boolean elevatorUpButton;
 	boolean elevatorDownButton;
 	private SpeedControllerGroup elevatorMotors;
-	private DigitalOutput topLimitSwitch;
-	private DigitalOutput bottomLimitSwitch;
+	private DigitalInput topElevatorLimitSwitch;
+	private DigitalInput bottomElevatorLimitSwitch;
 
 	public enum liftStates {NOT_MOVING, GOING_UP, GOING_DOWN, AT_TOP, AT_BOTTOM};
-
 	liftStates liftState = liftStates.NOT_MOVING;
 
 	public Elevator(Robot robot) {
 		this.manipulatorStick = robot.getManipulatorStick();
 		this.elevatorMotors = robot.getElevatorMotors();
+		this.topElevatorLimitSwitch = robot.getTopElevatorLimitSwitch();
+		this.bottomElevatorLimitSwitch = robot.getBottomElevatorLimitSwitch();
 	}
 
 	public void elevatorFunctions() {
@@ -36,7 +38,7 @@ public class Elevator {
 			}
 			break;
 		case GOING_UP:
-			if (topLimitSwitch.get()) {
+			if (topElevatorLimitSwitch.get()) {
 				elevatorMotors.set(0);
 				liftState = liftStates.AT_TOP;
 			} else if (!elevatorUpButton && !elevatorDownButton) {
@@ -45,7 +47,7 @@ public class Elevator {
 			}
 			break;
 		case GOING_DOWN:
-			if (bottomLimitSwitch.get()) {
+			if (bottomElevatorLimitSwitch.get()) {
 				elevatorMotors.set(0);
 				liftState = liftStates.AT_BOTTOM;
 			} else if (!elevatorUpButton && !elevatorDownButton) {
