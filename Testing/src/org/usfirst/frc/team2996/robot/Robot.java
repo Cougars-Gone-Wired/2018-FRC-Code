@@ -74,7 +74,7 @@ public class Robot extends IterativeRobot {
 		pressureSensor = new AnalogInput(0);
 
 		navX = new AHRS(SPI.Port.kMXP);
-		navX.zeroYaw();
+		navX.reset();
 
 		// CameraServer camera = CameraServer.getInstance();
 		// UsbCamera usbCam1 = new UsbCamera("usb1", 0);
