@@ -16,15 +16,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 
 	Joystick manipulatorStick;
-	Toggle armSolenoidButton;
+	Toggle armButton;
+	
 	Joystick mobilityStick;
 
 	DoubleSolenoid armSolenoid;
-	Solenoid leftDriveSolenoid;
-	Solenoid rightDriveSolenoid;
+	Solenoid changeGearSolenoid;
 
-	WPI_TalonSRX intakeMotorLeft;
-	WPI_TalonSRX intakeMotorRight;
+	WPI_TalonSRX leftIntakeMotor;
+	WPI_TalonSRX rightIntakeMotor;
 
 	WPI_TalonSRX elevatorMotor1;
 	WPI_TalonSRX elevatorMotor2;
@@ -51,15 +51,14 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putString("Gson File Name", "defaultName");
 
 		manipulatorStick = new Joystick(0);
-		armSolenoidButton = new Toggle(manipulatorStick, 2);
+		armButton = new Toggle(manipulatorStick, 2);
 		mobilityStick = new Joystick(1);
 
 		armSolenoid = new DoubleSolenoid(0, 1);
-		leftDriveSolenoid = new Solenoid(2);
-		rightDriveSolenoid = new Solenoid(3);
+		changeGearSolenoid = new Solenoid(2);
 
-		intakeMotorLeft = new WPI_TalonSRX(0);
-		intakeMotorRight = new WPI_TalonSRX(1);
+		leftIntakeMotor = new WPI_TalonSRX(0);
+		rightIntakeMotor = new WPI_TalonSRX(1);
 
 		elevatorMotor1 = new WPI_TalonSRX(2);
 		elevatorMotor2 = new WPI_TalonSRX(3);
@@ -117,14 +116,14 @@ public class Robot extends IterativeRobot {
 
 		// for intake
 		if (manipulatorStick.getRawButton(6) && !manipulatorStick.getRawButton(5)) {
-			intakeMotorLeft.set(SmartDashboard.getNumber("Speed Set", 0.25));
-			intakeMotorRight.set(-SmartDashboard.getNumber("Speed Set", 0.25));
+			leftIntakeMotor.set(SmartDashboard.getNumber("Speed Set", 0.25));
+			rightIntakeMotor.set(-SmartDashboard.getNumber("Speed Set", 0.25));
 		} else if (manipulatorStick.getRawButton(5) && !manipulatorStick.getRawButton(6)) {
-			intakeMotorLeft.set(-SmartDashboard.getNumber("Speed Set", 0.25));
-			intakeMotorRight.set(SmartDashboard.getNumber("Speed Set", 0.25));
+			leftIntakeMotor.set(-SmartDashboard.getNumber("Speed Set", 0.25));
+			rightIntakeMotor.set(SmartDashboard.getNumber("Speed Set", 0.25));
 		} else {
-			intakeMotorLeft.stopMotor();
-			intakeMotorRight.stopMotor();
+			leftIntakeMotor.stopMotor();
+			rightIntakeMotor.stopMotor();
 		}
 
 		// for lift
@@ -141,11 +140,9 @@ public class Robot extends IterativeRobot {
 
 		// for changing gears
 		if (mobilityStick.getRawButton(2) && !mobilityStick.getRawButton(1)) {
-			leftDriveSolenoid.set(true);
-			rightDriveSolenoid.set(true);
+			changeGearSolenoid.set(true);
 		} else if (mobilityStick.getRawButton(1) && !mobilityStick.getRawButton(2)) {
-			leftDriveSolenoid.set(false);
-			rightDriveSolenoid.set(false);
+			changeGearSolenoid.set(false);
 		}
 
 		recorder.record();
@@ -177,20 +174,16 @@ public class Robot extends IterativeRobot {
 		return armSolenoid;
 	}
 
-	public Solenoid getLeftDriveSolenoid() {
-		return leftDriveSolenoid;
+	public Solenoid getChangeGearSolenoid() {
+		return changeGearSolenoid;
 	}
 
-	public Solenoid getRightDriveSolenoid() {
-		return rightDriveSolenoid;
+	public WPI_TalonSRX getLeftIntakeMotor() {
+		return leftIntakeMotor;
 	}
 
-	public WPI_TalonSRX getIntakeMotorLeft() {
-		return intakeMotorLeft;
-	}
-
-	public WPI_TalonSRX getIntakeMotorRight() {
-		return intakeMotorRight;
+	public WPI_TalonSRX getRightIntakeMotor() {
+		return rightIntakeMotor;
 	}
 
 	public WPI_TalonSRX getElevatorMotor1() {

@@ -10,11 +10,10 @@ import edu.wpi.first.wpilibj.Solenoid;
 public class StateRunner {
 
 	DoubleSolenoid armSolenoid;
-	Solenoid leftDriveSolenoid;
-	Solenoid rightDriveSolenoid;
+	Solenoid changeGearSolenoid;
 
-	WPI_TalonSRX intakeMotorLeft;
-	WPI_TalonSRX intakeMotorRight;
+	WPI_TalonSRX leftIntakeMotor;
+	WPI_TalonSRX rightIntakeMotor;
 
 	WPI_TalonSRX elevatorMotor1;
 	WPI_TalonSRX elevatorMotor2;
@@ -31,10 +30,9 @@ public class StateRunner {
 	
 	public StateRunner(Robot robot) {
 		this.armSolenoid = robot.getArmSolenoid();
-		this.leftDriveSolenoid = robot.getLeftDriveSolenoid();
-		this.rightDriveSolenoid = robot.getRightDriveSolenoid();
-		this.intakeMotorLeft = robot.getIntakeMotorLeft();
-		this.intakeMotorRight = robot.getIntakeMotorRight();
+		this.changeGearSolenoid = robot.getChangeGearSolenoid();
+		this.leftIntakeMotor = robot.getLeftIntakeMotor();
+		this.rightIntakeMotor = robot.getRightIntakeMotor();
 		this.elevatorMotor1 = robot.getElevatorMotor1();
 		this.elevatorMotor2 = robot.getElevatorMotor2();
 		this.frontLeftMotor = robot.getFrontLeftMotor();
@@ -52,10 +50,9 @@ public class StateRunner {
 			State s = states.get(counter);
 			
 			armSolenoid.set(s.getArmSolenoidState());
-			leftDriveSolenoid.set(s.getLeftDriveSolenoidState());
-			rightDriveSolenoid.set(s.getRightDriveSolenoidState());
-			intakeMotorLeft.set(s.getIntakeMotorLeftState());
-			intakeMotorRight.set(s.getIntakeMotorRightState());
+			changeGearSolenoid.set(s.getChangeGearSolenoidState());
+			leftIntakeMotor.set(s.getLeftIntakeMotorState());
+			rightIntakeMotor.set(s.getRightIntakeMotorState());
 			elevatorMotor1.set(s.getElevatorMotor1State());
 			elevatorMotor2.set(s.getElevatorMotor2State());
 			frontLeftMotor.set(s.getFrontLeftMotorState());

@@ -5,11 +5,10 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 public class State {
 
 	private DoubleSolenoid.Value armSolenoidState;
-	private boolean leftDriveSolenoidState;
-	private boolean rightDriveSolenoidState;
+	private boolean changeGearSolenoidState;
 
-	private double intakeMotorLeftState;
-	private double intakeMotorRightState;
+	private double leftIntakeMotorState;
+	private double rightIntakeMotorState;
 
 	private double elevatorMotor1State;
 	private double elevatorMotor2State;
@@ -27,29 +26,23 @@ public class State {
 	public void setArmSolenoidState(DoubleSolenoid.Value armSolenoidState) {
 		this.armSolenoidState = armSolenoidState;
 	}
-	public boolean getLeftDriveSolenoidState() {
-		return leftDriveSolenoidState;
+	public boolean getChangeGearSolenoidState() {
+		return changeGearSolenoidState;
 	}
-	public void setLeftDriveSolenoidState(boolean leftDriveSolenoidState) {
-		this.leftDriveSolenoidState = leftDriveSolenoidState;
+	public void setChangeGearState(boolean changeGearSolenoidState) {
+		this.changeGearSolenoidState = changeGearSolenoidState;
 	}
-	public boolean getRightDriveSolenoidState() {
-		return rightDriveSolenoidState;
+	public double getLeftIntakeMotorState() {
+		return leftIntakeMotorState;
 	}
-	public void setRightDriveSolenoidState(boolean rightDriveSolenoidState) {
-		this.rightDriveSolenoidState = rightDriveSolenoidState;
+	public void setLeftIntakeMotorState(double leftIntakeMotorState) {
+		this.leftIntakeMotorState = leftIntakeMotorState;
 	}
-	public double getIntakeMotorLeftState() {
-		return intakeMotorLeftState;
+	public double getRightIntakeMotorState() {
+		return rightIntakeMotorState;
 	}
-	public void setIntakeMotorLeftState(double intakeMotorLeftState) {
-		this.intakeMotorLeftState = intakeMotorLeftState;
-	}
-	public double getIntakeMotorRightState() {
-		return intakeMotorRightState;
-	}
-	public void setIntakeMotorRightState(double intakeMotorRightState) {
-		this.intakeMotorRightState = intakeMotorRightState;
+	public void setRightIntakeMotorState(double rightIntakeMotorState) {
+		this.rightIntakeMotorState = rightIntakeMotorState;
 	}
 	public double getElevatorMotor1State() {
 		return elevatorMotor1State;
