@@ -8,21 +8,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Drive {
 
 	private Joystick mobilityStick;
-	private double driveForwardAxis;
-	private double driveTurnAxis;
+	double driveForwardAxis;
+	double driveTurnAxis;
+	boolean highGearButton;
+	boolean lowGearButton;
 	
 	private DifferentialDrive robotDrive;
 
-	private Solenoid leftDriveSolenoid;
-	private Solenoid rightDriveSolenoid;
+	private Solenoid changeGearSolenoid;
 
+	public enum GearStates {
+		LOW_GEAR, HIGH_GEAR
+	}
+	GearStates gearCurrentState = GearStates.LOW_GEAR;
+	
 	public Drive(Robot robot) {
 		this.mobilityStick = robot.getMobilityStick();
-		this.driveForwardAxis = robot.getDriveForwardAxis();
-		this.driveTurnAxis = robot.getDriveTurnAxis();
 		this.robotDrive = robot.getRobotDrive();
-		this.leftDriveSolenoid = robot.getLeftDriveSolenoid();
-		this.rightDriveSolenoid = robot.getRightDriveSolenoid();
+		this.changeGearSolenoid = robot.getChangeGearSolenoid();
 	}
 
 	public void arcadeDrive() {
@@ -31,22 +34,26 @@ public class Drive {
 	}
 
 	public void changeGear() {
-		if (mobilityStick.getRawButton(Robot.HIGH_GEAR_BUTTON) 
-				&& !mobilityStick.getRawButton(Robot.LOW_GEAR_BUTTON)) {
-			setSolenoids(true);
-		} else if (mobilityStick.getRawButton(Robot.LOW_GEAR_BUTTON)
-				&& !mobilityStick.getRawButton(Robot.HIGH_GEAR_BUTTON)) {
-			setSolenoids(false);
+		highGearButton = mobilityStick.getRawButton(Robot.HIGH_GEAR_BUTTON);
+		lowGearButton = mobilityStick.getRawButton(Robot.LOW_GEAR_BUTTON);
+		switch (gearCurrentState) {
+		case LOW_GEAR:
+			if (highGearButton && !lowGearButton) {
+				changeGearSolenoid.set(true);
+				gearCurrentState = GearStates.HIGH_GEAR;
+			}
+			break;
+		case HIGH_GEAR:
+			if (!highGearButton && lowGearButton) {
+				changeGearSolenoid.set(false);
+				gearCurrentState = GearStates.LOW_GEAR;
+			}
+			break;
 		}
 	}
 
 	public void setDriveSpeed() {
 		driveForwardAxis = Utility.deadZone(mobilityStick.getRawAxis(Robot.DRIVE_FORWARD_AXIS) * SmartDashboard.getNumber("Drive Speed", 1.0));
 		driveTurnAxis = Utility.deadZone(mobilityStick.getRawAxis(Robot.DRIVE_TURN_AXIS) * SmartDashboard.getNumber("Drive Speed", 1.0));
-	}
-	
-	public void setSolenoids(boolean state) {
-		leftDriveSolenoid.set(state);
-		rightDriveSolenoid.set(state);
 	}
 }

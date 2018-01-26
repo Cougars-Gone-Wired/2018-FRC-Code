@@ -7,8 +7,10 @@
 
 package org.usfirst.frc.team2996.robot;
 
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -30,19 +32,24 @@ public class Robot extends IterativeRobot {
 	private String m_autoSelected;
 	private SendableChooser<String> m_chooser = new SendableChooser<>();
 
-	static int MANIPULATOR_STICK_PORT;
-	static int ELEVATOR_UP_BUTTON;
-	static int ELEVATOR_DOWN_BUTTON;
+	static int MANIPULATOR_STICK_PORT = 0;
+	static int INTAKE_BUTTON;
+	static int OUTTAKE_BUTTON;
+	static int ARM_BUTTON;
+	static int ELEVATOR_AXIS = 1;
 	
-	static int MOBILITY_STICK_PORT;
-	static int DRIVE_FORWARD_AXIS;
-	static int DRIVE_TURN_AXIS;
+	static int MOBILITY_STICK_PORT = 1;
+	static int DRIVE_FORWARD_AXIS = 1;
+	static int DRIVE_TURN_AXIS = 4;
 	static int HIGH_GEAR_BUTTON;
 	static int LOW_GEAR_BUTTON;
 	
-	static int LEFT_DRIVE_SOLENOID_ID;
-	static int RIGHT_DRIVE_SOLENOID_ID;
+	static int ARM_SOLENOID_PORT1;
+	static int ARM_SOLENOID_PORT2;
+	static int CHANGE_GEAR_SOLENOID_PORT;
 
+	static int LEFT_INTAKE_MOTOR;
+	static int RIGHT_INTAKE_MOTOR;
 	static int ELEVATOR_MOTOR_1_ID;
 	static int ELEVATOR_MOTOR_2_ID;
 	static int FRONT_LEFT_MOTOR_ID;
@@ -51,16 +58,20 @@ public class Robot extends IterativeRobot {
 	static int REAR_RIGHT_MOTOR_ID;
 
 	Joystick manipulatorStick;
+	Toggle armButton;
 	
 	Joystick mobilityStick;
-	double driveForwardAxis;
-	double driveTurnAxis;
 	
-	Solenoid leftDriveSolenoid;
-	Solenoid rightDriveSolenoid;
+	DoubleSolenoid armSolenoid;
+	Solenoid changeGearSolenoid;
 
+	WPI_TalonSRX leftIntakeMotor;
+	WPI_TalonSRX rightIntakeMotor;
+	
 	WPI_TalonSRX elevatorMotor1;
 	WPI_TalonSRX elevatorMotor2;
+	SensorCollection elevatorMotor1Sensors;
+	SensorCollection elevatorMotor2Sensors;
 	SpeedControllerGroup elevatorMotors;
 	
 	WPI_TalonSRX frontLeftMotor;
@@ -73,6 +84,8 @@ public class Robot extends IterativeRobot {
 
 	DifferentialDrive robotDrive;
 
+	Intake intake;
+	Arm arm;
 	Elevator elevator;
 	Drive drive;
 	
@@ -87,13 +100,20 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto choices", m_chooser);
 		
 		manipulatorStick = new Joystick(MANIPULATOR_STICK_PORT);
-		mobilityStick = new Joystick(MOBILITY_STICK_PORT);
+		armButton = new Toggle(manipulatorStick, ARM_BUTTON);
 		
-		leftDriveSolenoid = new Solenoid(LEFT_DRIVE_SOLENOID_ID);
-		rightDriveSolenoid = new Solenoid(RIGHT_DRIVE_SOLENOID_ID);
+		mobilityStick = new Joystick(MOBILITY_STICK_PORT);
+	
+		armSolenoid = new DoubleSolenoid(ARM_SOLENOID_PORT1, ARM_SOLENOID_PORT2);
+		changeGearSolenoid = new Solenoid(CHANGE_GEAR_SOLENOID_PORT);
 
+		leftIntakeMotor = new WPI_TalonSRX(LEFT_INTAKE_MOTOR);
+		rightIntakeMotor = new WPI_TalonSRX(RIGHT_INTAKE_MOTOR);
+		
 		elevatorMotor1 = new WPI_TalonSRX(ELEVATOR_MOTOR_1_ID);
 		elevatorMotor2 = new WPI_TalonSRX(ELEVATOR_MOTOR_2_ID);
+		elevatorMotor1Sensors = new SensorCollection(elevatorMotor1);
+		elevatorMotor2Sensors = new SensorCollection(elevatorMotor2);
 		elevatorMotors = new SpeedControllerGroup(elevatorMotor1, elevatorMotor2);
 		
 		frontLeftMotor = new WPI_TalonSRX(FRONT_LEFT_MOTOR_ID);
@@ -106,6 +126,8 @@ public class Robot extends IterativeRobot {
 
 		robotDrive = new DifferentialDrive(leftMotors, rightMotors);
 
+		intake = new Intake(this);
+		arm = new Arm(this);
 		elevator = new Elevator(this);
 		drive = new Drive(this);
 		
@@ -149,7 +171,6 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		drive.setSolenoids(false);
 	}
 	
 	/**
@@ -157,6 +178,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		intake.intakeFunctions();
+		arm.arm();
 		elevator.elevatorFunctions();
 		drive.arcadeDrive();
 		drive.changeGear();
@@ -174,6 +197,8 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void setInverts() {
+		leftIntakeMotor.setInverted(false);
+		rightIntakeMotor.setInverted(false);
 		elevatorMotor1.setInverted(false);
 		elevatorMotor2.setInverted(false);
 		frontLeftMotor.setInverted(false);
@@ -186,28 +211,56 @@ public class Robot extends IterativeRobot {
 		return manipulatorStick;
 	}
 
+	public Toggle getArmButton() {
+		return armButton;
+	}
+
 	public Joystick getMobilityStick() {
 		return mobilityStick;
 	}
 
-	public double getDriveForwardAxis() {
-		return driveForwardAxis;
+	public DoubleSolenoid getArmSolenoid() {
+		return armSolenoid;
 	}
 
-	public double getDriveTurnAxis() {
-		return driveTurnAxis;
+	public Solenoid getChangeGearSolenoid() {
+		return changeGearSolenoid;
 	}
 
-	public Solenoid getLeftDriveSolenoid() {
-		return leftDriveSolenoid;
+	public WPI_TalonSRX getLeftIntakeMotor() {
+		return leftIntakeMotor;
 	}
 
-	public Solenoid getRightDriveSolenoid() {
-		return rightDriveSolenoid;
+	public WPI_TalonSRX getRightIntakeMotor() {
+		return rightIntakeMotor;
 	}
-	
+
+	public SensorCollection getElevatorMotor1Sensors() {
+		return elevatorMotor1Sensors;
+	}
+
+	public SensorCollection getElevatorMotor2Sensors() {
+		return elevatorMotor2Sensors;
+	}
+
 	public SpeedControllerGroup getElevatorMotors() {
 		return elevatorMotors;
+	}
+
+	public WPI_TalonSRX getFrontLeftMotor() {
+		return frontLeftMotor;
+	}
+
+	public WPI_TalonSRX getRearLeftMotor() {
+		return rearLeftMotor;
+	}
+
+	public WPI_TalonSRX getFrontRightMotor() {
+		return frontRightMotor;
+	}
+
+	public WPI_TalonSRX getRearRightMotor() {
+		return rearRightMotor;
 	}
 
 	public DifferentialDrive getRobotDrive() {
