@@ -24,89 +24,90 @@ public class Robot extends IterativeRobot {
 	public static final String testLift = "Test Lift";
 	public static final String testIntake = "Test Intake";
 	public static final String testArm = "Test Arm";
+	public static final String other = "Other";
 	String testSelected;
 	SendableChooser<String> testChooser = new SendableChooser<>();
-	
+
 	Joystick stick;
 	WPI_TalonSRX talon1;
 	WPI_TalonSRX talon2;
 	SpeedControllerGroup talons;
-	
-	//Toggle armToggle;
-	
+
+	// Toggle armToggle;
+
 	SensorCollection talon1Sensors;
 	SensorCollection talon2Sensors;
-	
-	//Solenoid solenoid;
+
+	// Solenoid solenoid;
 	DoubleSolenoid solenoid;
-	
+
 	AnalogInput pressureSensor;
-	
+
 	AHRS navX;
-	
+
 	@Override
 	public void robotInit() {
 		System.out.println("In robotInit");
-		
+
 		testChooser.addObject("Test Lift", testLift);
 		testChooser.addObject("Test Intake", testIntake);
 		testChooser.addObject("Test Arm", testArm);
+		testChooser.addObject("Other", other);
 		SmartDashboard.putData("Test Mode", testChooser);
-		
+
 		SmartDashboard.putNumber("Speed Set", 0.5);
-		
+
 		stick = new Joystick(0);
-		
+
 		talon1 = new WPI_TalonSRX(3);
 		talon2 = new WPI_TalonSRX(2);
 		talons = new SpeedControllerGroup(talon1, talon2);
-		
-		//armToggle = new Toggle(stick, 1);
-		
+
+		// armToggle = new Toggle(stick, 1);
+
 		talon1Sensors = new SensorCollection(talon1);
 		talon2Sensors = new SensorCollection(talon2);
 		talon1.setSelectedSensorPosition(0, 0, 0);
-		
-		//solenoid = new Solenoid(0);
+
 		solenoid = new DoubleSolenoid(1, 0);
-		
+
 		pressureSensor = new AnalogInput(0);
-		
+
 		navX = new AHRS(SPI.Port.kMXP);
 		navX.zeroYaw();
-		
-//		CameraServer camera = CameraServer.getInstance();
-//		UsbCamera usbCam1 = new UsbCamera("usb1", 0);
-//		//usbCam1.setPixelFormat(PixelFormat.kGray);
-//		//VideoMode mode = usbCam1.getVideoMode();
-//		//SmartDashboard.putString("mode", mode.pixelFormat.toString());
-//		usbCam1.setResolution(600, 480);
-//		camera.addCamera(usbCam1);
-//		camera.startAutomaticCapture();
-//		UsbCamera usbCam2 = camera.startAutomaticCapture("usb2", 1);
-//		usbCam2.setResolution(120, 80);
-//		VideoMode mode2 = usbCam2.getVideoMode();
-//		SmartDashboard.putString("mode2", mode2.pixelFormat.toString());
-		
+
+		// CameraServer camera = CameraServer.getInstance();
+		// UsbCamera usbCam1 = new UsbCamera("usb1", 0);
+		// //usbCam1.setPixelFormat(PixelFormat.kGray);
+		// //VideoMode mode = usbCam1.getVideoMode();
+		// //SmartDashboard.putString("mode", mode.pixelFormat.toString());
+		// usbCam1.setResolution(600, 480);
+		// camera.addCamera(usbCam1);
+		// camera.startAutomaticCapture();
+		// UsbCamera usbCam2 = camera.startAutomaticCapture("usb2", 1);
+		// usbCam2.setResolution(120, 80);
+		// VideoMode mode2 = usbCam2.getVideoMode();
+		// SmartDashboard.putString("mode2", mode2.pixelFormat.toString());
+
 	}
-	
+
 	@Override
 	public void autonomousInit() {
-		
+
 	}
-	
+
 	@Override
 	public void autonomousPeriodic() {
 	}
-	
-	@Override 
+
+	@Override
 	public void teleopInit() {
 		testSelected = testChooser.getSelected();
 	}
-	
+
 	@Override
 	public void teleopPeriodic() {
-		switch(testSelected) {
+		switch (testSelected) {
 		case testLift:
 			// for lift
 			if (stick.getRawAxis(1) > 0.15) {
@@ -119,10 +120,10 @@ public class Robot extends IterativeRobot {
 			break;
 		case testIntake:
 			// for intake
-			if(stick.getRawButton(1)){
+			if (stick.getRawButton(1)) {
 				talon1.set(SmartDashboard.getNumber("Speed Set", 0.5));
 				talon2.set(-SmartDashboard.getNumber("Speed Set", 0.5));
-			} else if (stick.getRawButton(2)){
+			} else if (stick.getRawButton(2)) {
 				talon1.set(-SmartDashboard.getNumber("Speed Set", 0.5));
 				talon2.set(SmartDashboard.getNumber("Speed Set", 0.5));
 			} else {
@@ -131,7 +132,7 @@ public class Robot extends IterativeRobot {
 			break;
 		case testArm:
 			// for arm
-			if(stick.getRawButton(1)) {
+			if (stick.getRawButton(1)) {
 				solenoid.set(DoubleSolenoid.Value.kReverse);
 			} else if (stick.getRawButton(2)) {
 				solenoid.set(DoubleSolenoid.Value.kForward);
@@ -139,47 +140,48 @@ public class Robot extends IterativeRobot {
 				solenoid.set(DoubleSolenoid.Value.kOff);
 			}
 			break;
+		case other:
+			// other
+			if (stick.getRawButton(1)) {
+				talon1.set(SmartDashboard.getNumber("Speed Set", 0.25));
+			} else if (stick.getRawButton(2)) {
+				talon1.set(-SmartDashboard.getNumber("Speed Set", 0.25));
+			} else {
+				talon1.set(0);
+			}
+
+			if (stick.getRawButton(3)) {
+				talon2.set(SmartDashboard.getNumber("Speed Set", 0.25));
+			} else {
+				talon2.set(0);
+			}
+
+			SmartDashboard.putNumber("Voltage", talon1.getMotorOutputVoltage());
+			SmartDashboard.putNumber("Current", talon1.getOutputCurrent());
+			SmartDashboard.putNumber("Encoder Position", talon1.getSelectedSensorPosition(0));
+			SmartDashboard.putNumber("Pressure Sensor", pressureSensor.getValue());
+			SmartDashboard.putNumber("Gyro Yaw", navX.getYaw());
+			SmartDashboard.putBoolean("FwdLimitSwitch", talon1Sensors.isFwdLimitSwitchClosed());
+			SmartDashboard.putBoolean("RevLimitSwitch", talon1Sensors.isRevLimitSwitchClosed());
 		}
-		
-		//other
-//		if(stick.getRawButton(1)){
-//			talon1.set(SmartDashboard.getNumber("Speed Set", 0.25));
-//		} else if (stick.getRawButton(2)){
-//			talon1.set(-SmartDashboard.getNumber("Speed Set", 0.25));
-//		} else {
-//			talon1.set(0);
-//		}
-//	
-//		if (stick.getRawButton(3)) {
-//			talon2.set(SmartDashboard.getNumber("Speed Set", 0.25));
-//		} else {
-//			talon2.set(0);
-//		}
-		
-//		SmartDashboard.putNumber("Voltage", talon1.getMotorOutputVoltage());
-//		SmartDashboard.putNumber("Current", talon1.getOutputCurrent());
-//		SmartDashboard.putNumber("Encoder Position", talon1.getSelectedSensorPosition(0));
-//		SmartDashboard.putNumber("Pressure Sensor", pressureSensor.getValue());
-//		SmartDashboard.putNumber("Gyro Yaw", navX.getYaw());
-//		SmartDashboard.putBoolean("FwdLimitSwitch", talon1Sensors.isFwdLimitSwitchClosed());
-//		SmartDashboard.putBoolean("RevLimitSwitch", talon1Sensors.isRevLimitSwitchClosed());
+
 	}
-	
-	@Override 
+
+	@Override
 	public void testInit() {
-		
+
 	}
-	
+
 	@Override
 	public void testPeriodic() {
-		
+
 	}
-	
+
 	@Override
 	public void disabledInit() {
 
 	}
-	
+
 	@Override
 	public void disabledPeriodic() {
 
