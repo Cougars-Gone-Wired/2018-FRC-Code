@@ -10,11 +10,11 @@ import edu.wpi.cscore.VideoMode;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,13 +32,16 @@ public class Robot extends IterativeRobot {
 	WPI_TalonSRX talon1;
 	WPI_TalonSRX talon2;
 	SpeedControllerGroup talons;
+	
+	DigitalInput reedSwitch;
+	DigitalInput lineBreak;
+	AnalogInput ultrasonic;
 
 	// Toggle armToggle;
 
 	SensorCollection talon1Sensors;
 	SensorCollection talon2Sensors;
 
-	// Solenoid solenoid;
 	DoubleSolenoid solenoid;
 
 	AnalogInput pressureSensor;
@@ -62,6 +65,11 @@ public class Robot extends IterativeRobot {
 		talon1 = new WPI_TalonSRX(3);
 		talon2 = new WPI_TalonSRX(2);
 		talons = new SpeedControllerGroup(talon1, talon2);
+		
+		reedSwitch = new DigitalInput(0);
+		lineBreak = new DigitalInput(1);
+		
+		ultrasonic = new AnalogInput(0);
 
 		// armToggle = new Toggle(stick, 1);
 
@@ -71,7 +79,7 @@ public class Robot extends IterativeRobot {
 
 		solenoid = new DoubleSolenoid(1, 0);
 
-		pressureSensor = new AnalogInput(0);
+//		pressureSensor = new AnalogInput(0);
 
 		navX = new AHRS(SPI.Port.kMXP);
 		navX.reset();
@@ -159,10 +167,14 @@ public class Robot extends IterativeRobot {
 			SmartDashboard.putNumber("Voltage", talon1.getMotorOutputVoltage());
 			SmartDashboard.putNumber("Current", talon1.getOutputCurrent());
 			SmartDashboard.putNumber("Encoder Position", talon1.getSelectedSensorPosition(0));
-			SmartDashboard.putNumber("Pressure Sensor", pressureSensor.getValue());
+//			SmartDashboard.putNumber("Pressure Sensor", pressureSensor.getValue());
 			SmartDashboard.putNumber("Gyro Yaw", navX.getYaw());
 			SmartDashboard.putBoolean("FwdLimitSwitch", talon1Sensors.isFwdLimitSwitchClosed());
 			SmartDashboard.putBoolean("RevLimitSwitch", talon1Sensors.isRevLimitSwitchClosed());
+			SmartDashboard.putBoolean("Reed Switch", reedSwitch.get());
+			SmartDashboard.putBoolean("Line Break", lineBreak.get());
+			SmartDashboard.putNumber("Ultrasonic", ultrasonic.getVoltage() * 108.7);
+			break;
 		}
 
 	}
