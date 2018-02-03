@@ -8,6 +8,7 @@ public class SmartDashboardSettings {
 	static double autoDriveSpeed;
 	static double autoTurnSpeed;
 	static String autoStartSide;
+	static double autoDelay;
 	
 	static double driveForwardCrossLineDistance;
 	static double driveForwardDropCubeorNahForwardDistance;
@@ -29,6 +30,7 @@ public class SmartDashboardSettings {
 		SmartDashboard.putNumber("Auto Drive Speed", 1.0);
 		SmartDashboard.putNumber("Auto Turn Speed", 0.25);
 		SmartDashboard.putString("Auto Start Side", "");
+		SmartDashboard.putNumber("Auto Delay", 0); // in seconds
 
 		SmartDashboard.putNumber("Drive Forward Cross Line Distance", 120); // in inches
 		SmartDashboard.putNumber("Drive Forward Drop Cube or Nah Forward Distance", 132); // in inches
@@ -46,6 +48,7 @@ public class SmartDashboardSettings {
 		autoDriveSpeed = SmartDashboard.getNumber("Auto Drive Speed", 1.0);
 		autoTurnSpeed = SmartDashboard.getNumber("Auto Turn Speed", 0.25);
 		autoStartSide = SmartDashboard.getString("Auto Start Side", "");
+		autoDelay = SmartDashboard.getNumber("Auto Delay", 0);
 		
 		driveForwardCrossLineDistance = SmartDashboard.getNumber("Drive Forward Cross Line Distance", 0);
 		driveForwardDropCubeorNahForwardDistance = SmartDashboard.getNumber("Drive Forward Drop Cube or Nah Forward Distance", 0);

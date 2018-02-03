@@ -6,6 +6,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,15 +24,22 @@ public class AutoMethods {
 	static final int ENCODER_TICKS_PER_REV = 360 * 4;
 	static final double DISTNACE_PER_ENCODER_TICK = ((WHEEL_DIAMETER * Math.PI) / ENCODER_TICKS_PER_REV); // in inches
 
+	public enum DriveForwardCrossLineStates {
+		DELAY, DRIVING_FORWARD
+	}
+	DriveForwardCrossLineStates currentDriveForwardCrossLineState = DriveForwardCrossLineStates.DELAY;
+	
 	public enum DriveForwardDropCubeOrNahStates {
-		DRIVING_FORWARD, DROP_CUBE_OR_NAH
+		DELAY, DRIVING_FORWARD, DROP_CUBE_OR_NAH
 	}
-	DriveForwardDropCubeOrNahStates currentDriveForwardDropCubeOrNahStates = DriveForwardDropCubeOrNahStates.DRIVING_FORWARD;
+	DriveForwardDropCubeOrNahStates currentDriveForwardDropCubeOrNahState = DriveForwardDropCubeOrNahStates.DELAY;
 
-	public enum DriveForwardTurnDropCubeOrNah {
-		DRIVING_FORWARD, TURNING, DRIVING_FORWARD_AGAIN, DROP_CUBE_OR_NAH
+	public enum DriveForwardTurnDropCubeOrNahStates {
+		DELAY, DRIVING_FORWARD, TURNING, DRIVING_FORWARD_AGAIN, DROP_CUBE_OR_NAH
 	}
-	DriveForwardTurnDropCubeOrNah currentDriveForwardTurnDropCubeOrNah = DriveForwardTurnDropCubeOrNah.DRIVING_FORWARD;
+	DriveForwardTurnDropCubeOrNahStates currentDriveForwardTurnDropCubeOrNahState = DriveForwardTurnDropCubeOrNahStates.DELAY;
+	
+	private Timer delayTimer;
 	
 	private DifferentialDrive robotDrive;
 
@@ -50,6 +58,8 @@ public class AutoMethods {
 	int encoderAverage;
 	
 	public AutoMethods(Robot robot) {
+		delayTimer = new Timer();
+		
 		robotDrive = robot.getDrive().getRobotDrive();
 		
 		frontLeftSensors = robot.getDrive().getFrontLeftSensors();
@@ -65,21 +75,35 @@ public class AutoMethods {
 	
 	public void driveForwardCrossLine() {
 		encoderSet();
-		if (encoderAverage <= SmartDashboardSettings.driveForwardCrossLineDistance) {
-			robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
-		} else {
-			robotDrive.curvatureDrive(0, 0, false);
+		switch (currentDriveForwardCrossLineState) {
+		case DELAY:
+			if (delayTimer.get() >= SmartDashboardSettings.autoDelay) {
+				currentDriveForwardDropCubeOrNahState = DriveForwardDropCubeOrNahStates.DRIVING_FORWARD;
+			}
+			break;
+		case DRIVING_FORWARD:
+			if (encoderAverage <= SmartDashboardSettings.driveForwardCrossLineDistance) {
+				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
+			} else {
+				robotDrive.curvatureDrive(0, 0, false);
+			}
+			break;
 		}
 	}
 
 	public void driveForwardDropCubeOrNah() {
 		encoderSet();
-		switch (currentDriveForwardDropCubeOrNahStates) {
+		switch (currentDriveForwardDropCubeOrNahState) {
+		case DELAY:
+			if (delayTimer.get() >= SmartDashboardSettings.autoDelay) {
+				currentDriveForwardDropCubeOrNahState = DriveForwardDropCubeOrNahStates.DRIVING_FORWARD;
+			}
+			break;
 		case DRIVING_FORWARD:
 			if (encoderAverage <= SmartDashboardSettings.driveForwardDropCubeorNahForwardDistance) {
 				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
 			} else {
-				currentDriveForwardDropCubeOrNahStates = DriveForwardDropCubeOrNahStates.DROP_CUBE_OR_NAH;
+				currentDriveForwardDropCubeOrNahState = DriveForwardDropCubeOrNahStates.DROP_CUBE_OR_NAH;
 			}
 			break;
 		case DROP_CUBE_OR_NAH:
@@ -94,12 +118,17 @@ public class AutoMethods {
 
 	public void driveForwardTurnDropCubeOrNah() {
 		encoderSet();
-		switch (currentDriveForwardTurnDropCubeOrNah) {
+		switch (currentDriveForwardTurnDropCubeOrNahState) {
+		case DELAY:
+			if (delayTimer.get() >= SmartDashboardSettings.autoDelay) {
+				currentDriveForwardDropCubeOrNahState = DriveForwardDropCubeOrNahStates.DRIVING_FORWARD;
+			}
+			break;
 		case DRIVING_FORWARD:
 			if (encoderAverage <= SmartDashboardSettings.driveForwardTurnDropCubeorNahForwardDistance1) {
 				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
 			} else {
-				currentDriveForwardTurnDropCubeOrNah = DriveForwardTurnDropCubeOrNah.TURNING;
+				currentDriveForwardTurnDropCubeOrNahState = DriveForwardTurnDropCubeOrNahStates.TURNING;
 			}
 			break;
 		case TURNING:
@@ -107,13 +136,13 @@ public class AutoMethods {
 				if (navX.getAngle() <= 90) {
 					robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, SmartDashboardSettings.autoTurnSpeed, true);
 				} else {
-					currentDriveForwardTurnDropCubeOrNah = DriveForwardTurnDropCubeOrNah.DRIVING_FORWARD_AGAIN;
+					currentDriveForwardTurnDropCubeOrNahState = DriveForwardTurnDropCubeOrNahStates.DRIVING_FORWARD_AGAIN;
 				}
 			} else if (SmartDashboardSettings.autoStartSide.toLowerCase() == "right") {
 				if (navX.getAngle() <= -90) {
 					robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, SmartDashboardSettings.autoTurnSpeed, true);
 				} else {
-					currentDriveForwardTurnDropCubeOrNah = DriveForwardTurnDropCubeOrNah.DRIVING_FORWARD_AGAIN;
+					currentDriveForwardTurnDropCubeOrNahState = DriveForwardTurnDropCubeOrNahStates.DRIVING_FORWARD_AGAIN;
 				}
 			}
 			break;
@@ -121,7 +150,7 @@ public class AutoMethods {
 			if (encoderAverage <= SmartDashboardSettings.driveForwardTurnDropCubeorNahForwardDistance2) {
 				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
 			} else {
-				currentDriveForwardTurnDropCubeOrNah = DriveForwardTurnDropCubeOrNah.DROP_CUBE_OR_NAH;
+				currentDriveForwardTurnDropCubeOrNahState = DriveForwardTurnDropCubeOrNahStates.DROP_CUBE_OR_NAH;
 			}
 			break;
 		case DROP_CUBE_OR_NAH:
@@ -141,6 +170,7 @@ public class AutoMethods {
 	}
 
 	public void autoReset() {
+		delayTimer.reset();
 		frontLeftSensors.setQuadraturePosition(0, 10);
 		frontRightSensors.setQuadraturePosition(0, 10);
 		navX.reset();
@@ -169,6 +199,10 @@ public class AutoMethods {
 				shouldDropCube = true;
 			}
 		}
+	}
+	
+	public void startDelayTimer() {
+		delayTimer.start();
 	}
 
 	public void pickAuto() {

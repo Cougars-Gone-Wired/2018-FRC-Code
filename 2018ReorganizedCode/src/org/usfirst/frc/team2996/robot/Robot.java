@@ -81,6 +81,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		autoMethods.getInfo();
+		autoMethods.startDelayTimer();
 		
 		recorder.counterInitialize();
 		try {
