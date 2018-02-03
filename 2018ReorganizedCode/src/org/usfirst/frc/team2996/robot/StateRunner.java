@@ -9,27 +9,32 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class StateRunner {
 
-	DoubleSolenoid armSolenoid;
-	Solenoid changeDriveGearSolenoid;
-	Solenoid changeElevatorGearSolenoid;
+	// declarations for all the solenoids and motors to get the states of
+	private DoubleSolenoid armSolenoid;
+	private Solenoid changeDriveGearSolenoid;
+	private Solenoid changeElevatorGearSolenoid;
 
-	WPI_TalonSRX leftIntakeMotor;
-	WPI_TalonSRX rightIntakeMotor;
+	private WPI_TalonSRX leftIntakeMotor;
+	private WPI_TalonSRX rightIntakeMotor;
 
-	WPI_TalonSRX elevatorMasterMotor;
-	WPI_TalonSRX elevatorSlaveMotor;
+	private WPI_TalonSRX elevatorMasterMotor;
+	private WPI_TalonSRX elevatorSlaveMotor;
 
-	WPI_TalonSRX frontLeftMotor;
-	WPI_TalonSRX rearLeftMotor;
+	private WPI_TalonSRX frontLeftMotor;
+	private WPI_TalonSRX rearLeftMotor;
 
-	WPI_TalonSRX frontRightMotor;
-	WPI_TalonSRX rearRightMotor;
-	
+	private WPI_TalonSRX frontRightMotor;
+	private WPI_TalonSRX rearRightMotor;
+
+	// list for all the states of the solenoids and motors to be listed in
 	List<State> states;
-	
+
+	// variable to act as if it were an i in a for loop for the run method
 	int counter = 0;
-	
+
 	public StateRunner(Robot robot) {
+		// assigns all the previously declared objects to objects instantiated in other
+		// classes
 		this.armSolenoid = robot.getArm().getArmSolenoid();
 		this.changeDriveGearSolenoid = robot.getDrive().getChangeDriveGearSolenoid();
 		this.changeElevatorGearSolenoid = robot.getElevator().getChangeElevatorGearSolenoid();
@@ -41,15 +46,22 @@ public class StateRunner {
 		this.frontRightMotor = robot.getDrive().getFrontRightMotor();
 		this.rearRightMotor = robot.getDrive().getRearRightMotor();
 	}
-	
+
+	public void counterInitialize() { // method to set the counter to 0
+		counter = 0;
+	}
+
+	// method to set the list declared in this class to a list of states passed in
 	public void setStates(List<State> states) {
 		this.states = states;
 	}
-	
+
+	// method to set the states of the solenoids and motors to the states listed in
+	// the list every 20 milliseconds
 	public void run() {
 		if (counter < states.size()) {
 			State s = states.get(counter);
-			
+
 			armSolenoid.set(s.getArmSolenoidState());
 			changeDriveGearSolenoid.set(s.isChangeDriveGearSolenoidState());
 			changeElevatorGearSolenoid.set(s.isChangeElevatorGearSolenoidState());
@@ -61,7 +73,7 @@ public class StateRunner {
 			rearLeftMotor.set(s.getRearLeftMotorState());
 			frontRightMotor.set(s.getFrontRightMotorState());
 			rearRightMotor.set(s.getRearRightMotorState());
-			
+
 			counter++;
 		}
 	}

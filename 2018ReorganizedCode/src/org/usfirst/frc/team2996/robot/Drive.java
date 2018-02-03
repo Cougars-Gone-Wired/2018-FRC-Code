@@ -9,21 +9,23 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class Drive {
 
+	// declarations for all objects associated with the drive train
 	private WPI_TalonSRX frontLeftMotor;
 	private WPI_TalonSRX rearLeftMotor;
 	private SpeedControllerGroup leftMotors;
-	private SensorCollection frontLeftSensors;
+	private SensorCollection frontLeftSensors; // for encoders (not used in this class)
 	
 	private WPI_TalonSRX frontRightMotor;
 	private WPI_TalonSRX rearRightMotor;
 	private SpeedControllerGroup rightMotors;
-	private SensorCollection frontRightSensors;
+	private SensorCollection frontRightSensors; // for encoders (not used in this class)
 
 	private DifferentialDrive robotDrive;
 	
 	private Solenoid changeDriveGearSolenoid;
 
 	public Drive() {
+		// instantiations of all previously declared objects
 		frontLeftMotor = new WPI_TalonSRX(Constants.FRONT_LEFT_MOTOR_ID);
 		rearLeftMotor = new WPI_TalonSRX(Constants.REAR_LEFT_MOTOR_ID);
 		leftMotors = new SpeedControllerGroup(frontLeftMotor, rearLeftMotor);
@@ -39,16 +41,18 @@ public class Drive {
 		changeDriveGearSolenoid = new Solenoid(Constants.CHANGE_DRIVE_GEAR_SOLENOID_PORT);
 	}
 
-	public void arcadeDrive(double driveForwardAxis, double driveTurnAxis) {
+	public void arcadeDrive(double driveForwardAxis, double driveTurnAxis) { // method for driving in arcade configuration 
 		setDriveSpeed(driveForwardAxis, driveForwardAxis);
 		robotDrive.arcadeDrive(driveForwardAxis, driveTurnAxis);
 	}
 
-	public void setDriveSpeed(double driveForwardAxis, double driveTurnAxis) {
+	public void setDriveSpeed(double driveForwardAxis, double driveTurnAxis) { // method for changing the drive speed if specified on the SmartDashboard
 		driveForwardAxis = Utility.deadZone(driveForwardAxis * SmartDashboardSettings.driveSpeed);
 		driveTurnAxis = Utility.deadZone(driveTurnAxis * SmartDashboardSettings.driveSpeed);
 	}
 
+	
+	// getters for all the objects declared in this class
 	public WPI_TalonSRX getFrontLeftMotor() {
 		return frontLeftMotor;
 	}

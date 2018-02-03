@@ -21,23 +21,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 
+	// declarations of objects for each class with methods that need to be called in
+	// this class
+
 	private Joysticks joysticks;
-	
+
 	private Elevator elevator;
 	private Intake intake;
 	private Arm arm;
-	
+
 	private Drive drive;
-	
+
 	private ChangeGear elevatorChangeGear;
 	private ChangeGear driveChangeGear;
-	
+
 	private AutoMethods autoMethods;
-	
+
 	private StateRecorder recorder;
 	private StateRunner runner;
-	
-	//Constants constants;
+
+	// Constants constants;
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -45,25 +48,29 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		
+		// instantiations of all previously declared objects
+
 		elevator = new Elevator();
 		intake = new Intake();
 		arm = new Arm();
-		
+
 		drive = new Drive();
-		
+
 		elevatorChangeGear = new ChangeGear(Constants.ELEVATOR_GEAR_DEFAULT);
 		driveChangeGear = new ChangeGear(Constants.DRIVE_GEAR_DEFAULT);
-		
+
+		// objects that need to be instantiated at the end of robotInit because they use
+		// other objects in this class
 		autoMethods = new AutoMethods(this);
-		
+
 		recorder = new StateRecorder(this);
 		runner = new StateRunner(this);
-		
-		//constants = new Constants();
-		
-		SmartDashboardSettings.initialize();
-		Inverts.setInverts(this);
+
+		// constants = new Constants();
+
+		// static methods that need to be called in robotInit
+		SmartDashboardSettings.initialize(); // put things on the SmartDashboard
+		Inverts.setInverts(this); // invert any motors if necessary
 	}
 
 	/**
@@ -80,15 +87,18 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autoMethods.getInfo();
-		autoMethods.startDelayTimer();
-		
-		recorder.counterInitialize();
-		try {
-			List<State> states = StateReader.read(StateLister.gsonChooser.getSelected());
-			runner.setStates(states);
-		} catch (Exception e) {
-			e.printStackTrace();
+		autoMethods.getInfo(); // get the field color configuration
+		autoMethods.startDelayTimer(); // start timer to possibly be used to delay auto
+
+		if (SmartDashboardSettings.useRecorderAuto) {
+			runner.counterInitialize(); // set counter to 0
+			try {
+				// read the gson file for the selected gson auto
+				List<State> states = StateReader.read(StateLister.gsonChooser.getSelected());
+				runner.setStates(states); // get all the states from the gson file to be used in auto
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -98,54 +108,59 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		if (SmartDashboardSettings.useDeadReckoningAuto) {
-			autoMethods.pickAuto();
+			autoMethods.pickAuto(); // run selected dead reckoning auto
 		} else if (SmartDashboardSettings.useRecorderAuto) {
-			runner.run();
+			runner.run(); // run selected gson auto
 		}
 	}
 
 	@Override
 	public void teleopInit() {
-		recorder.initialize();
-		recorder.counterInitialize();
+		recorder.initialize(); // create new array list
+		runner.counterInitialize(); // set counter to 0
 	}
-	
+
 	/**
 	 * This function is called periodically during operator control.
 	 */
 	@Override
 	public void teleopPeriodic() {
-		joysticks.setJoystickInputValues();
-		
-		elevator.elevatorFunctions(joysticks.getElevatorAxis());
-		intake.intakeFunctions(joysticks.getIntakeTrigger(), joysticks.getOuttakeTrigger());
-		arm.armFunctions(joysticks.isArmButtonOutput());
-		
-		drive.arcadeDrive(joysticks.getDriveForwardAxis(), joysticks.getDriveTurnAxis());
-		
-		elevatorChangeGear.changeGear(joysticks.isElevatorHighGearButton(), joysticks.isElevatorLowGearButton(), elevator.getChangeElevatorGearSolenoid());
-		driveChangeGear.changeGear(joysticks.isDriveHighGearButton(), joysticks.isDriveLowGearButton(), drive.getChangeDriveGearSolenoid());
-		
+		joysticks.setJoystickInputValues(); // checks all values being inputted into the controllers
+
+		elevator.elevatorFunctions(joysticks.getElevatorAxis()); // run the elevator
+		intake.intakeFunctions(joysticks.getIntakeTrigger(), joysticks.getOuttakeTrigger()); // run the intake
+		arm.armFunctions(joysticks.isArmButtonOutput()); // run the arm
+
+		drive.arcadeDrive(joysticks.getDriveForwardAxis(), joysticks.getDriveTurnAxis()); // run the drive train
+
+		elevatorChangeGear.changeGear(joysticks.isElevatorHighGearButton(), joysticks.isElevatorLowGearButton(),
+				elevator.getChangeElevatorGearSolenoid()); // method for changing gears on the elevator
+		driveChangeGear.changeGear(joysticks.isDriveHighGearButton(), joysticks.isDriveLowGearButton(),
+				drive.getChangeDriveGearSolenoid()); // method for changing gears on the drive train
+
 		if (SmartDashboardSettings.shouldRecord) {
-			recorder.record();
+			recorder.record(); // record the states of the motors and solenoids every 20 milliseconds
 		}
 	}
 
 	@Override
 	public void disabledInit() {
-		List<State> states = recorder.getStates();
 
 		if (SmartDashboardSettings.shouldRecord) {
+			List<State> states = recorder.getStates(); // get the states recorded in teleop
 			try {
-				StatesWriter.writeStates(states, SmartDashboard.getString("Gson File Name", "notGood"));
+				StatesWriter.writeStates(states, SmartDashboard.getString("Gson File Name", "notGood")); // write the
+																											// states to
+																											// a gson
+																											// file
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
-		StateLister.getStateNames();
+		StateLister.getStateNames(); // list all available gson files on the smartDahsboard
 	}
-	
+
 	/**
 	 * This function is called periodically during test mode.
 	 */
@@ -153,6 +168,7 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 	}
 
+	// getters for all the objects declared in this class
 	public Joysticks getJoysticks() {
 		return joysticks;
 	}

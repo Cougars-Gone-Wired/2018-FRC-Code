@@ -4,19 +4,23 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class Intake {
 
-	public enum IntakeStates{
+	public enum IntakeStates { // all the states the intake can be in
 		NOT_MOVING, INTAKING, OUTTAKING
 	}
-	IntakeStates currentIntakeState = IntakeStates.NOT_MOVING;
-	
+
+	IntakeStates currentIntakeState = IntakeStates.NOT_MOVING; // the state for the intake to start in
+
+	// declarations for all objects associated with the intake
 	private WPI_TalonSRX leftIntakeMotor;
 	private WPI_TalonSRX rightIntakeMotor;
-	
+
 	public Intake() {
+		// instantiations of all previously declared objects
 		leftIntakeMotor = new WPI_TalonSRX(Constants.LEFT_INTAKE_MOTOR_ID);
 		rightIntakeMotor = new WPI_TalonSRX(Constants.RIGHT_INTAKE_MOTOR_ID);
 	}
-	
+
+	// method to check if the intake needs to change states
 	public void intakeFunctions(double intakeTrigger, double outtakeTrigger) {
 		switch (currentIntakeState) {
 		case NOT_MOVING:
@@ -41,6 +45,7 @@ public class Intake {
 		}
 	}
 
+	// getters for all the objects declared in this class
 	public WPI_TalonSRX getLeftIntakeMotor() {
 		return leftIntakeMotor;
 	}

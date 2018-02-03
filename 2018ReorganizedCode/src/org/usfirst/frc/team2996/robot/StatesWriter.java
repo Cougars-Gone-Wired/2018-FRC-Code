@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class StatesWriter {
 
+	// method to save the list of states created by the recorder as a gson file on the roborio
 	public static void writeStates(List<State> states, String fileName) throws Exception {
 		Type type = new TypeToken<List<State>>() {}.getType();
 		

@@ -10,27 +10,29 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class StateRecorder {
 
-	DoubleSolenoid armSolenoid;
-	Solenoid changeDriveGearSolenoid;
-	Solenoid changeElevatorGearSolenoid;
+	// declarations for all the solenoids and motors to get the states of
+	private DoubleSolenoid armSolenoid;
+	private Solenoid changeDriveGearSolenoid;
+	private Solenoid changeElevatorGearSolenoid;
 
-	WPI_TalonSRX leftIntakeMotor;
-	WPI_TalonSRX rightIntakeMotor;
+	private WPI_TalonSRX leftIntakeMotor;
+	private WPI_TalonSRX rightIntakeMotor;
 
-	WPI_TalonSRX elevatorMasterMotor;
-	WPI_TalonSRX elevatorSlaveMotor;
+	private WPI_TalonSRX elevatorMasterMotor;
+	private WPI_TalonSRX elevatorSlaveMotor;
 
-	WPI_TalonSRX frontLeftMotor;
-	WPI_TalonSRX rearLeftMotor;
+	private WPI_TalonSRX frontLeftMotor;
+	private WPI_TalonSRX rearLeftMotor;
 
-	WPI_TalonSRX frontRightMotor;
-	WPI_TalonSRX rearRightMotor;
-	
+	private WPI_TalonSRX frontRightMotor;
+	private WPI_TalonSRX rearRightMotor;
+
+	// list for all the states of the solenoids and motors to be listed in
 	List<State> states;
-	
-	int counter = 0;
-	
+
 	public StateRecorder(Robot robot) {
+		// assigns all the previously declared objects to objects instantiated in other
+		// classes
 		this.armSolenoid = robot.getArm().getArmSolenoid();
 		this.changeDriveGearSolenoid = robot.getDrive().getChangeDriveGearSolenoid();
 		this.changeElevatorGearSolenoid = robot.getElevator().getChangeElevatorGearSolenoid();
@@ -43,18 +45,16 @@ public class StateRecorder {
 		this.frontRightMotor = robot.getDrive().getFrontRightMotor();
 		this.rearRightMotor = robot.getDrive().getRearRightMotor();
 	}
-	
-	public void initialize() {
+
+	public void initialize() { // method that instantiates the list previously declared
 		states = new ArrayList<>();
 	}
-	
-	public void counterInitialize() {
-		counter = 0;
-	}
-	
+
+	// method to save the states of all the solenoids and motors every 20
+	// milliseconds and compile them into a list
 	public void record() {
 		State s = new State();
-		
+
 		s.setArmSolenoidState(armSolenoid.get());
 		s.setChangeDriveGearSolenoidState(changeDriveGearSolenoid.get());
 		s.setChangeElevatorGearSolenoidState(changeElevatorGearSolenoid.get());
@@ -66,10 +66,11 @@ public class StateRecorder {
 		s.setRearLeftMotorState(rearLeftMotor.get());
 		s.setFrontRightMotorState(frontRightMotor.get());
 		s.setRearRightMotorState(rearRightMotor.get());
-		
+
 		states.add(s);
 	}
-	
+
+	// getter for the list filled in the record method
 	public List<State> getStates() {
 		return states;
 	}
