@@ -33,6 +33,9 @@ public class Robot extends IterativeRobot {
 	WPI_TalonSRX talon2;
 	SpeedControllerGroup talons;
 	
+	WPI_TalonSRX masterTalon;
+	WPI_TalonSRX slaveTalon;
+	
 	DigitalInput reedSwitch;
 	DigitalInput lineBreak;
 	AnalogInput ultrasonic;
@@ -65,6 +68,10 @@ public class Robot extends IterativeRobot {
 		talon1 = new WPI_TalonSRX(3);
 		talon2 = new WPI_TalonSRX(2);
 		talons = new SpeedControllerGroup(talon1, talon2);
+		
+		masterTalon = new WPI_TalonSRX(3);
+		slaveTalon = new WPI_TalonSRX(2);
+		slaveTalon.follow(masterTalon);
 		
 		reedSwitch = new DigitalInput(0);
 		lineBreak = new DigitalInput(1);
@@ -150,19 +157,20 @@ public class Robot extends IterativeRobot {
 			break;
 		case other:
 			// other
-			if (stick.getRawButton(1)) {
-				talon1.set(SmartDashboard.getNumber("Speed Set", 0.25));
-			} else if (stick.getRawButton(2)) {
-				talon1.set(-SmartDashboard.getNumber("Speed Set", 0.25));
-			} else {
-				talon1.set(0);
-			}
+//			if (stick.getRawButton(1)) {
+//				masterTalon.set(SmartDashboard.getNumber("Speed Set", 0.25));
+//			} else if (stick.getRawButton(2)) {
+//				masterTalon.set(-SmartDashboard.getNumber("Speed Set", 0.25));
+//			} else {
+//				masterTalon.set(0);
+//			}
 
-			if (stick.getRawButton(3)) {
-				talon2.set(SmartDashboard.getNumber("Speed Set", 0.25));
-			} else {
-				talon2.set(0);
-			}
+//			if (stick.getRawButton(3)) {
+//				slaveTalon.set(SmartDashboard.getNumber("Speed Set", 0.25));
+//			} else {
+//				slaveTalon.set(0);
+//			}
+			masterTalon.set(SmartDashboard.getNumber("Speed Set", 0.25));
 
 			SmartDashboard.putNumber("Voltage", talon1.getMotorOutputVoltage());
 			SmartDashboard.putNumber("Current", talon1.getOutputCurrent());

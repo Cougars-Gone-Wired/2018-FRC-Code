@@ -124,7 +124,7 @@ public class Robot extends IterativeRobot {
 
 		frontLeftMotor = new WPI_TalonSRX(FRONT_LEFT_MOTOR_ID);
 		rearLeftMotor = new WPI_TalonSRX(REAR_LEFT_MOTOR_ID);
-		leftMotors = new SpeedControllerGroup(frontLeftMotor, rearRightMotor);
+		leftMotors = new SpeedControllerGroup(frontLeftMotor, rearLeftMotor);
 
 		frontRightMotor = new WPI_TalonSRX(FRONT_RIGHT_MOTOR_ID);
 		rearRightMotor = new WPI_TalonSRX(REAR_RIGHT_MOTOR_ID);
