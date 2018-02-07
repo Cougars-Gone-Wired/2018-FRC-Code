@@ -23,6 +23,9 @@ public class Drive {
 	private DifferentialDrive robotDrive;
 	
 	private Solenoid changeDriveGearSolenoid;
+	
+	double driveForwardAxisValue;
+	double driveTurnAxisValue;
 
 	public Drive() {
 		// instantiations of all previously declared objects
@@ -30,11 +33,15 @@ public class Drive {
 		rearLeftMotor = new WPI_TalonSRX(Constants.REAR_LEFT_MOTOR_ID);
 		leftMotors = new SpeedControllerGroup(frontLeftMotor, rearLeftMotor);
 		frontLeftSensors = new SensorCollection(frontLeftMotor);
-
+		frontLeftMotor.configOpenloopRamp(1, 0);
+		rearLeftMotor.configOpenloopRamp(1, 0);
+		
 		frontRightMotor = new WPI_TalonSRX(Constants.FRONT_RIGHT_MOTOR_ID);
 		rearRightMotor = new WPI_TalonSRX(Constants.REAR_RIGHT_MOTOR_ID);
 		rightMotors = new SpeedControllerGroup(frontRightMotor, rearRightMotor);
 		frontRightSensors = new SensorCollection(frontRightMotor);
+		frontRightMotor.configOpenloopRamp(1, 0);
+		rearRightMotor.configOpenloopRamp(1, 0);
 
 		robotDrive = new DifferentialDrive(leftMotors, rightMotors);
 		
@@ -42,13 +49,13 @@ public class Drive {
 	}
 
 	public void arcadeDrive(double driveForwardAxis, double driveTurnAxis) { // method for driving in arcade configuration 
-		setDriveSpeed(driveForwardAxis, driveForwardAxis);
-		robotDrive.arcadeDrive(driveForwardAxis, driveTurnAxis);
+		setDriveSpeed(driveForwardAxis, driveTurnAxis);
+		robotDrive.arcadeDrive(driveForwardAxisValue, driveTurnAxisValue);
 	}
 
 	public void setDriveSpeed(double driveForwardAxis, double driveTurnAxis) { // method for changing the drive speed if specified on the SmartDashboard
-		driveForwardAxis = Utility.deadZone(driveForwardAxis * SmartDashboardSettings.driveSpeed);
-		driveTurnAxis = Utility.deadZone(driveTurnAxis * SmartDashboardSettings.driveSpeed);
+		driveForwardAxisValue = Utility.deadZone(driveForwardAxis * SmartDashboardSettings.driveSpeed);
+		driveTurnAxisValue = Utility.deadZone(driveTurnAxis * SmartDashboardSettings.driveSpeed);
 	}
 
 	

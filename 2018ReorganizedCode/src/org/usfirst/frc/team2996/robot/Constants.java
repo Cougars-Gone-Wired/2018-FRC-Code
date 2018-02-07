@@ -21,20 +21,20 @@ public class Constants { // class for all the variables that should not change d
 	static final int DRIVE_LOW_GEAR_BUTTON = 5;
 
 	// all the constants for the talon device ids
-	static final int ELEVATOR_MASTER_MOTOR_ID = 99;
-	static final int ELEVATOR_SLAVE_MOTOR_ID = 99;
-	static final int LEFT_INTAKE_MOTOR_ID = 99;
-	static final int RIGHT_INTAKE_MOTOR_ID = 99;
-	static final int FRONT_LEFT_MOTOR_ID = 99;
-	static final int REAR_LEFT_MOTOR_ID = 99;
-	static final int FRONT_RIGHT_MOTOR_ID = 99;
-	static final int REAR_RIGHT_MOTOR_ID = 99;
+	static final int ELEVATOR_MASTER_MOTOR_ID = 0;
+	static final int ELEVATOR_SLAVE_MOTOR_ID = 1;
+	static final int LEFT_INTAKE_MOTOR_ID = 2;
+	static final int RIGHT_INTAKE_MOTOR_ID = 3;
+	static final int FRONT_LEFT_MOTOR_ID = 4;
+	static final int REAR_LEFT_MOTOR_ID = 5;
+	static final int FRONT_RIGHT_MOTOR_ID = 6;
+	static final int REAR_RIGHT_MOTOR_ID = 7;
 
 	// all the constants for the solenoid ports
-	static final int ARM_SOLENOID_UP_PORT = 99;
-	static final int ARM_SOLENOID_DOWN_PORT = 99;
-	static final int CHANGE_DRIVE_GEAR_SOLENOID_PORT = 99;
-	static final int CHANGE_ELEVATOR_GEAR_SOLENOID_PORT = 99;
+	static final int ARM_SOLENOID_UP_PORT = 0;
+	static final int ARM_SOLENOID_DOWN_PORT = 1;
+	static final int CHANGE_DRIVE_GEAR_SOLENOID_PORT = 2;
+	static final int CHANGE_ELEVATOR_GEAR_SOLENOID_PORT = 3;
 
 	// constants for the starting gear of the sonic shifters
 	static final String DRIVE_GEAR_DEFAULT = "low";

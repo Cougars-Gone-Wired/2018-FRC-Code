@@ -20,6 +20,8 @@ public class Elevator {
 
 	private Solenoid changeElevatorGearSolenoid;
 
+	double elevatorAxisValue;
+	
 	public Elevator() {
 		// instantiations of all previously declared objects
 		elevatorMasterMotor = new WPI_TalonSRX(Constants.ELEVATOR_MASTER_MOTOR_ID);
@@ -32,14 +34,14 @@ public class Elevator {
 	}
 
 	public void elevatorFunctions(double elevatorAxis) { // method to check if the elevator needs to change states
-		elevatorAxis = Utility.deadZone(elevatorAxis);
+		elevatorAxisValue = Utility.deadZone(elevatorAxis);
 		switch (currentElevatorState) {
 		case NOT_MOVING:
-			if (elevatorAxis > 0.15) {
-				elevatorMasterMotor.set(elevatorAxis);
+			if (elevatorAxisValue > 0.15) {
+				elevatorMasterMotor.set(elevatorAxisValue);
 				currentElevatorState = ElevatorStates.GOING_UP;
-			} else if (elevatorAxis < -0.15) {
-				elevatorMasterMotor.set(elevatorAxis);
+			} else if (elevatorAxisValue < -0.15) {
+				elevatorMasterMotor.set(elevatorAxisValue);
 				currentElevatorState = ElevatorStates.GOING_DOWN;
 			}
 			break;
@@ -47,7 +49,7 @@ public class Elevator {
 			if (elevatorMasterMotorSensors.isFwdLimitSwitchClosed()) {
 				elevatorMasterMotor.set(0);
 				currentElevatorState = ElevatorStates.AT_TOP;
-			} else if (elevatorAxis == 0) {
+			} else if (elevatorAxisValue == 0) {
 				elevatorMasterMotor.set(0);
 				currentElevatorState = ElevatorStates.NOT_MOVING;
 			}
@@ -56,20 +58,20 @@ public class Elevator {
 			if (elevatorMasterMotorSensors.isRevLimitSwitchClosed()) {
 				elevatorMasterMotor.set(0);
 				currentElevatorState = ElevatorStates.AT_BOTTOM;
-			} else if (elevatorAxis == 0) {
+			} else if (elevatorAxisValue == 0) {
 				elevatorMasterMotor.set(0);
 				currentElevatorState = ElevatorStates.NOT_MOVING;
 			}
 			break;
 		case AT_TOP:
-			if (elevatorAxis < 0.15) {
-				elevatorMasterMotor.set(elevatorAxis);
+			if (elevatorAxisValue < 0.15) {
+				elevatorMasterMotor.set(elevatorAxisValue);
 				currentElevatorState = ElevatorStates.GOING_DOWN;
 			}
 			break;
 		case AT_BOTTOM:
-			if (elevatorAxis > 0.15) {
-				elevatorMasterMotor.set(elevatorAxis);
+			if (elevatorAxisValue > 0.15) {
+				elevatorMasterMotor.set(elevatorAxisValue);
 				currentElevatorState = ElevatorStates.GOING_UP;
 			}
 			break;

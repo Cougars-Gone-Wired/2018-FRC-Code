@@ -10,7 +10,6 @@ package org.usfirst.frc.team2996.robot;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,7 +22,6 @@ public class Robot extends IterativeRobot {
 
 	// declarations of objects for each class with methods that need to be called in
 	// this class
-
 	private Joysticks joysticks;
 
 	private Elevator elevator;
@@ -49,6 +47,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		// instantiations of all previously declared objects
+		joysticks = new Joysticks();
 
 		elevator = new Elevator();
 		intake = new Intake();
@@ -69,7 +68,7 @@ public class Robot extends IterativeRobot {
 		// constants = new Constants();
 
 		// static methods that need to be called in robotInit
-		SmartDashboardSettings.initialize(); // put things on the SmartDashboard
+		SmartDashboardSettings.displaySettings(); // put things on the SmartDashboard
 		Inverts.setInverts(this); // invert any motors if necessary
 	}
 
@@ -90,15 +89,13 @@ public class Robot extends IterativeRobot {
 		autoMethods.getInfo(); // get the field color configuration
 		autoMethods.startDelayTimer(); // start timer to possibly be used to delay auto
 
-		if (SmartDashboardSettings.useRecorderAuto) {
-			runner.counterInitialize(); // set counter to 0
-			try {
-				// read the gson file for the selected gson auto
-				List<State> states = StateReader.read(StateLister.gsonChooser.getSelected());
-				runner.setStates(states); // get all the states from the gson file to be used in auto
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		runner.counterInitialize(); // set counter to 0
+		try {
+			// read the gson file for the selected gson auto
+			List<State> states = StateReader.read(StateLister.gsonChooser.getSelected());
+			runner.setStates(states); // get all the states from the gson file to be used in auto
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -138,9 +135,7 @@ public class Robot extends IterativeRobot {
 		driveChangeGear.changeGear(joysticks.isDriveHighGearButton(), joysticks.isDriveLowGearButton(),
 				drive.getChangeDriveGearSolenoid()); // method for changing gears on the drive train
 
-		if (SmartDashboardSettings.shouldRecord) {
-			recorder.record(); // record the states of the motors and solenoids every 20 milliseconds
-		}
+		recorder.record(); // record the states of the motors and solenoids every 20 milliseconds
 	}
 
 	@Override
@@ -149,16 +144,19 @@ public class Robot extends IterativeRobot {
 		if (SmartDashboardSettings.shouldRecord) {
 			List<State> states = recorder.getStates(); // get the states recorded in teleop
 			try {
-				StatesWriter.writeStates(states, SmartDashboard.getString("Gson File Name", "notGood")); // write the
-																											// states to
-																											// a gson
-																											// file
+				// write the states to a gson file
+				StatesWriter.writeStates(states, SmartDashboardSettings.gsonFileName);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
 		StateLister.getStateNames(); // list all available gson files on the smartDahsboard
+	}
+
+	@Override
+	public void disabledPeriodic() {
+		SmartDashboardSettings.setConstantVars();
 	}
 
 	/**

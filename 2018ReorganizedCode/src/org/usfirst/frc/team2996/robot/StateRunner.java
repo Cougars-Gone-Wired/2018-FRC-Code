@@ -38,6 +38,7 @@ public class StateRunner {
 		this.armSolenoid = robot.getArm().getArmSolenoid();
 		this.changeDriveGearSolenoid = robot.getDrive().getChangeDriveGearSolenoid();
 		this.changeElevatorGearSolenoid = robot.getElevator().getChangeElevatorGearSolenoid();
+		this.leftIntakeMotor = robot.getIntake().getLeftIntakeMotor();
 		this.rightIntakeMotor = robot.getIntake().getRightIntakeMotor();
 		this.elevatorMasterMotor = robot.getElevator().getElevatorMasterMotor();
 		this.elevatorSlaveMotor = robot.getElevator().getElevatorSlaveMotor();

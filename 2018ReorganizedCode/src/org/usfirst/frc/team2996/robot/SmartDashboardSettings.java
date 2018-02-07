@@ -18,16 +18,13 @@ public class SmartDashboardSettings {
 	static double driveForwardTurnDropCubeorNahForwardDistance2;
 
 	static boolean shouldRecord;
+	static String gsonFileName;
 
 	static boolean useDeadReckoningAuto;
 	static boolean useRecorderAuto;
 
 	// method to put everything on the SmartDashboard and set variables to
 	// everything on the SmartDashboard
-	public static void initialize() {
-		displaySettings();
-		setConstantVars();
-	}
 
 	public static void displaySettings() { // method that puts everything needed on the SmartDashboard
 		SmartDashboard.putNumber("Drive Speed", 1.0);
@@ -42,6 +39,7 @@ public class SmartDashboardSettings {
 		SmartDashboard.putNumber("Drive Forward Turn Drop Cube or Nah Forward Distance 2", 24); // in inches
 
 		SmartDashboard.putBoolean("Should Record", false);
+		SmartDashboard.putString("Gson File Name", "");
 
 		SmartDashboard.putBoolean("Use Dread Reckoning Auto", false);
 		SmartDashboard.putBoolean("Use Recorder Auto", false);
@@ -65,6 +63,7 @@ public class SmartDashboardSettings {
 				.getNumber("Drive Forward Turn Drop Cube or Nah Forward Distance 2", 0);
 
 		shouldRecord = SmartDashboard.getBoolean("Should Record", false);
+		gsonFileName = SmartDashboard.getString("Gson File Name", "notGood");
 
 		useDeadReckoningAuto = SmartDashboard.getBoolean("Use Dread Reckoning Auto", false);
 		useRecorderAuto = SmartDashboard.getBoolean("Use Recorder Auto", false);
