@@ -24,7 +24,7 @@ public class AutoMethods {
 	// variables to calculate how far we should move per each encoder tick
 	static final int WHEEL_DIAMETER = 6; // in inches
 	static final int ENCODER_TICKS_PER_REV = 360 * 4;
-	static final double DISTNACE_PER_ENCODER_TICK = ((WHEEL_DIAMETER * Math.PI) / ENCODER_TICKS_PER_REV); // in inches
+	static final double DISTANCE_PER_ENCODER_TICK = ((WHEEL_DIAMETER * Math.PI) / ENCODER_TICKS_PER_REV); // in inches
 
 	public enum DriveForwardCrossLineStates { // states the robot can be in in this auto
 		DELAY, DRIVING_FORWARD
@@ -66,6 +66,7 @@ public class AutoMethods {
 	int frontLeftEncoder; // to hold the encoder ticks for the left side
 	int frontRightEncoder; // to hold the encoder ticks for the right side
 	int encoderAverage; // to hold the average encoder ticks between both sides
+	double encoderAverageInches; // to hold the average distance that each side has traveled 
 
 	public AutoMethods(Robot robot) {
 		// instantiation for timer
@@ -97,7 +98,7 @@ public class AutoMethods {
 			}
 			break;
 		case DRIVING_FORWARD:
-			if (encoderAverage <= SmartDashboardSettings.driveForwardCrossLineDistance) {
+			if (encoderAverageInches <= SmartDashboardSettings.driveForwardCrossLineDistance) {
 				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
@@ -116,7 +117,7 @@ public class AutoMethods {
 			}
 			break;
 		case DRIVING_FORWARD:
-			if (encoderAverage <= SmartDashboardSettings.driveForwardDropCubeorNahForwardDistance) {
+			if (encoderAverageInches <= SmartDashboardSettings.driveForwardDropCubeorNahForwardDistance) {
 				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
 			} else {
 				currentDriveForwardDropCubeOrNahState = DriveForwardDropCubeOrNahStates.DROP_CUBE_OR_NAH;
@@ -144,7 +145,7 @@ public class AutoMethods {
 			}
 			break;
 		case DRIVING_FORWARD:
-			if (encoderAverage <= SmartDashboardSettings.driveForwardTurnDropCubeorNahForwardDistance1) {
+			if (encoderAverageInches <= SmartDashboardSettings.driveForwardTurnDropCubeorNahForwardDistance1) {
 				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
 			} else {
 				currentDriveForwardTurnDropCubeOrNahState = DriveForwardTurnDropCubeOrNahStates.TURNING;
@@ -168,7 +169,7 @@ public class AutoMethods {
 			}
 			break;
 		case DRIVING_FORWARD_AGAIN:
-			if (encoderAverage <= SmartDashboardSettings.driveForwardTurnDropCubeorNahForwardDistance2) {
+			if (encoderAverageInches <= SmartDashboardSettings.driveForwardTurnDropCubeorNahForwardDistance2) {
 				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
 			} else {
 				currentDriveForwardTurnDropCubeOrNahState = DriveForwardTurnDropCubeOrNahStates.DROP_CUBE_OR_NAH;
@@ -190,6 +191,7 @@ public class AutoMethods {
 		frontLeftEncoder = frontLeftSensors.getQuadraturePosition();
 		frontRightEncoder = frontRightSensors.getQuadraturePosition();
 		encoderAverage = (frontLeftEncoder + frontRightEncoder) / 2;
+		encoderAverageInches = encoderAverage * DISTANCE_PER_ENCODER_TICK;
 	}
 
 	// method to reset the timer, encoders, and gyro before auto
