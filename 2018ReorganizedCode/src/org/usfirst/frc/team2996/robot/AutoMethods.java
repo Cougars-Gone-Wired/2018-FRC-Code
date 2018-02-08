@@ -230,7 +230,7 @@ public class AutoMethods {
 				shouldDropCube = false;
 			}
 		} else if (sides.charAt(0) == 'R') {
-			if (SmartDashboardSettings.autoStartSide.toLowerCase().charAt(0) == '1') {
+			if (SmartDashboardSettings.autoStartSide.toLowerCase().charAt(0) == 'l') {
 				shouldDropCube = false;
 			} else if (SmartDashboardSettings.autoStartSide.toLowerCase().charAt(0) == 'r') {
 				shouldDropCube = true;
