@@ -193,6 +193,13 @@ public class AutoMethods {
 		encoderAverage = (frontLeftEncoder + frontRightEncoder) / 2;
 		encoderAverageInches = encoderAverage * DISTANCE_PER_ENCODER_TICK;
 	}
+	
+	public void showEncoderValues() {
+		SmartDashboard.putNumber("Front Left Encoder", frontLeftEncoder);
+		SmartDashboard.putNumber("Front Right Encoder", frontRightEncoder);
+		SmartDashboard.putNumber("Encoder Average", encoderAverage);
+		SmartDashboard.putNumber("Encoder Average Inches", encoderAverageInches);
+	}
 
 	// method to reset the timer, encoders, and gyro before auto
 	public void autoReset() {
@@ -214,17 +221,18 @@ public class AutoMethods {
 	// method to get the game data from the FMS for which sides the colors are on
 	// for the switches and scale
 	public void getInfo() {
+		selectedAuto = autoChooser.getSelected();
 		sides = DriverStation.getInstance().getGameSpecificMessage();
 		if (sides.charAt(0) == 'L') {
-			if (SmartDashboardSettings.autoStartSide.toLowerCase() == "left") {
+			if (SmartDashboardSettings.autoStartSide.toLowerCase().charAt(0) == 'l') {
 				shouldDropCube = true;
-			} else if (SmartDashboardSettings.autoStartSide.toLowerCase() == "right") {
+			} else if (SmartDashboardSettings.autoStartSide.toLowerCase().charAt(0) == 'r') {
 				shouldDropCube = false;
 			}
 		} else if (sides.charAt(0) == 'R') {
-			if (SmartDashboardSettings.autoStartSide.toLowerCase() == "left") {
+			if (SmartDashboardSettings.autoStartSide.toLowerCase().charAt(0) == '1') {
 				shouldDropCube = false;
-			} else if (SmartDashboardSettings.autoStartSide.toLowerCase() == "right") {
+			} else if (SmartDashboardSettings.autoStartSide.toLowerCase().charAt(0) == 'r') {
 				shouldDropCube = true;
 			}
 		}
@@ -237,7 +245,7 @@ public class AutoMethods {
 
 	// method to run the auto program that was picked on the SmartDashboard
 	public void pickAuto() {
-		selectedAuto = autoChooser.getSelected();
+		showEncoderValues();
 		switch (selectedAuto) {
 		case doNothing:
 
@@ -261,6 +269,22 @@ public class AutoMethods {
 
 	public AHRS getNavX() {
 		return navX;
+	}
+
+	public int getFrontLeftEncoder() {
+		return frontLeftEncoder;
+	}
+
+	public int getFrontRightEncoder() {
+		return frontRightEncoder;
+	}
+
+	public int getEncoderAverage() {
+		return encoderAverage;
+	}
+
+	public double getEncoderAverageInches() {
+		return encoderAverageInches;
 	}
 
 }
