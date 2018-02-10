@@ -74,7 +74,7 @@ public class AutoMethods {
 
 		// assigning all other previously declared objects to objects instantiated in
 		// other classes
-		robotDrive = robot.getDrive().getRobotDrive();
+//		robotDrive = robot.getDrive().getRobotDrive();
 
 		frontLeftSensors = robot.getDrive().getFrontLeftSensors();
 		frontRightSensors = robot.getDrive().getFrontRightSensors();
@@ -92,12 +92,16 @@ public class AutoMethods {
 		switch (currentDriveForwardCrossLineState) {
 		case DELAY:
 			if (delayTimer.get() >= SmartDashboardSettings.autoDelay) {
-				currentDriveForwardDropCubeOrNahState = DriveForwardDropCubeOrNahStates.DRIVING_FORWARD;
+				SmartDashboard.putNumber("Delay Timer", delayTimer.get());
+				currentDriveForwardCrossLineState = DriveForwardCrossLineStates.DRIVING_FORWARD;
+			} else {
+				
 			}
 			break;
 		case DRIVING_FORWARD:
+			SmartDashboard.putNumber("Encoder Average Inches", encoderAverageInches);
 			if (encoderAverageInches <= SmartDashboardSettings.driveForwardCrossLineDistance) {
-				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
+				robotDrive.curvatureDrive(-SmartDashboardSettings.autoDriveSpeed, 0, false);
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 			}
@@ -187,7 +191,7 @@ public class AutoMethods {
 	// average them
 	public void encoderSet() {
 		frontLeftEncoder = frontLeftSensors.getQuadraturePosition();
-		frontRightEncoder = frontRightSensors.getQuadraturePosition();
+		frontRightEncoder = -frontRightSensors.getQuadraturePosition();
 		encoderAverage = (frontLeftEncoder + frontRightEncoder) / 2;
 		encoderAverageInches = encoderAverage * DISTANCE_PER_ENCODER_TICK;
 	}
@@ -204,7 +208,10 @@ public class AutoMethods {
 		delayTimer.reset();
 		frontLeftSensors.setQuadraturePosition(0, 10);
 		frontRightSensors.setQuadraturePosition(0, 10);
+		encoderAverage = 0;
+		encoderAverageInches = 0;
 		navX.reset();
+		currentDriveForwardCrossLineState = DriveForwardCrossLineStates.DELAY;
 	}
 
 	// methods to put options of autonomous programs on SmartDashboard
@@ -243,6 +250,7 @@ public class AutoMethods {
 
 	// method to run the auto program that was picked on the SmartDashboard
 	public void pickAuto() {
+		selectedAuto = autoChooser.getSelected();
 		showEncoderValues();
 		switch (selectedAuto) {
 		case doNothing:

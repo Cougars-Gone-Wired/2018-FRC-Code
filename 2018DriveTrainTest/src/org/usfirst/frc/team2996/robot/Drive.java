@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive {
 
@@ -46,11 +47,24 @@ public class Drive {
 		robotDrive = new DifferentialDrive(leftMotors, rightMotors);
 		
 		changeDriveGearSolenoid = new Solenoid(Constants.CHANGE_DRIVE_GEAR_SOLENOID_PORT);
+		
 	}
 
 	public void arcadeDrive(double driveForwardAxis, double driveTurnAxis) { // method for driving in arcade configuration 
 		setDriveSpeed(driveForwardAxis, driveTurnAxis);
-		robotDrive.arcadeDrive(driveForwardAxisValue, driveTurnAxisValue);
+		robotDrive.arcadeDrive(driveForwardAxisValue, -driveTurnAxisValue * .75);
+		
+//		robotDrive.arcadeDrive(SmartDashboardSettings.driveSpeed, 0);
+//		leftMotors.set(SmartDashboardSettings.driveSpeed);
+//		frontLeftMotor.set(SmartDashboardSettings.driveSpeed);
+//		rearLeftMotor.set(SmartDashboardSettings.driveSpeed);
+		
+		SmartDashboard.putNumber("Left Encoder", frontLeftSensors.getQuadraturePosition());
+		SmartDashboard.putNumber("Right Encoder", frontRightSensors.getQuadraturePosition());
+		SmartDashboard.putNumber("Front Left Motor", frontLeftMotor.get());
+		SmartDashboard.putNumber("Back Left Motor", rearLeftMotor.get());
+		SmartDashboard.putNumber("Front Right Motor", frontRightMotor.get());
+		SmartDashboard.putNumber("Back Right Motor", rearRightMotor.get());
 	}
 
 	public void setDriveSpeed(double driveForwardAxis, double driveTurnAxis) { // method for changing the drive speed if specified on the SmartDashboard

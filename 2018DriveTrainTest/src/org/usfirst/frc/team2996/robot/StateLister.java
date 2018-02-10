@@ -18,6 +18,7 @@ public class StateLister {
 		File[] files = dir.listFiles();
 
 		for (int i = 0; i < files.length; i++) {
+			System.out.println(files[i].getName());
 			gsonChooser.addObject(files[i].getName(), files[i].getAbsolutePath());
 		}
 		SmartDashboard.putData("Gson choices", gsonChooser);

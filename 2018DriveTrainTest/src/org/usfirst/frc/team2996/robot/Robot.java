@@ -9,6 +9,8 @@ package org.usfirst.frc.team2996.robot;
 
 import java.util.List;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -30,7 +32,7 @@ public class Robot extends IterativeRobot {
 
 	private StateRecorder recorder;
 	private StateRunner runner;
-
+	
 	// Constants constants;
 
 	/**
@@ -41,9 +43,9 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		// instantiations of all previously declared objects
 		joysticks = new Joysticks();
-
+		
 		drive = new Drive();
-
+		
 		// objects that need to be instantiated at the end of robotInit because they use
 		// other objects in this class
 		autoMethods = new AutoMethods(this);
@@ -72,13 +74,16 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autoMethods.getInfo(); // get the field color configuration
+		//autoMethods.getInfo(); // get the field color configuration
+		autoMethods.autoReset();
 		autoMethods.startDelayTimer(); // start timer to possibly be used to delay auto
-
+		
+		
 		runner.counterInitialize(); // set counter to 0
 		try {
 			// read the gson file for the selected gson auto
 			List<State> states = StateReader.read(StateLister.gsonChooser.getSelected());
+			System.out.println("state size =" + states.size());
 			runner.setStates(states); // get all the states from the gson file to be used in auto
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -90,15 +95,18 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		if (SmartDashboardSettings.useDeadReckoningAuto) {
-			autoMethods.pickAuto(); // run selected dead reckoning auto
-		} else if (SmartDashboardSettings.useRecorderAuto) {
+		//if (SmartDashboardSettings.useDeadReckoningAuto) {
+			//autoMethods.pickAuto(); // run selected dead reckoning auto
+		//} else if (SmartDashboardSettings.useRecorderAuto) {
 			runner.run(); // run selected gson auto
-		}
+		//}
+		
+		//autoMethods.driveForwardCrossLine();
 	}
 
 	@Override
 	public void teleopInit() {
+		
 		recorder.initialize(); // create new array list
 		runner.counterInitialize(); // set counter to 0
 	}
@@ -117,11 +125,13 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledInit() {
-
+		SmartDashboardSettings.setConstantVars();
+		
 		if (SmartDashboardSettings.shouldRecord) {
 			List<State> states = recorder.getStates(); // get the states recorded in teleop
 			try {
 				// write the states to a gson file
+				System.out.println("writing");
 				StatesWriter.writeStates(states, SmartDashboardSettings.gsonFileName);
 			} catch (Exception e) {
 				e.printStackTrace();
