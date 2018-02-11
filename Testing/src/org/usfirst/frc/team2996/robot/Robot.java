@@ -99,7 +99,7 @@ public class Robot extends IterativeRobot {
 		// usbCam1.setResolution(600, 480);
 		// camera.addCamera(usbCam1);
 		// camera.startAutomaticCapture();
-		// UsbCamera usbCam2 = camera.startAutomaticCapture("usb2", 1);
+		// UsbCamera usbCam2 = camera.startAutomaticCapture("usb2", 0);
 		// usbCam2.setResolution(120, 80);
 		// VideoMode mode2 = usbCam2.getVideoMode();
 		// SmartDashboard.putString("mode2", mode2.pixelFormat.toString());

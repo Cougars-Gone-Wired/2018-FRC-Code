@@ -69,7 +69,6 @@ public class Robot extends IterativeRobot {
 
 		// static methods that need to be called in robotInit
 		SmartDashboardSettings.displaySettings(); // put things on the SmartDashboard
-		Inverts.setInverts(this); // invert any motors if necessary
 	}
 
 	/**

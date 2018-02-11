@@ -11,7 +11,11 @@ import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoMode;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -58,6 +62,13 @@ public class Robot extends IterativeRobot {
 		// static methods that need to be called in robotInit
 		SmartDashboardSettings.displaySettings(); // put things on the SmartDashboard
 		Inverts.setInverts(this); // invert any motors if necessary
+		
+		 CameraServer camera = CameraServer.getInstance();
+		 camera.startAutomaticCapture();
+		 UsbCamera usbCam2 = camera.startAutomaticCapture("usb2", 0);
+		 usbCam2.setResolution(120, 80);
+		 VideoMode mode2 = usbCam2.getVideoMode();
+		 SmartDashboard.putString("mode2", mode2.pixelFormat.toString());
 	}
 
 	/**

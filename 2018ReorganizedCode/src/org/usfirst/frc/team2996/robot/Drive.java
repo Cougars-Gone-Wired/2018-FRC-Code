@@ -51,11 +51,7 @@ public class Drive {
 
 	public void arcadeDrive(double driveForwardAxis, double driveTurnAxis) { // method for driving in arcade configuration 
 		setDriveSpeed(driveForwardAxis, driveTurnAxis);
-		//robotDrive.arcadeDrive(driveForwardAxisValue, driveTurnAxisValue);
-		//robotDrive.arcadeDrive(SmartDashboardSettings.driveSpeed, 0);
-		leftMotors.set(SmartDashboardSettings.driveSpeed);
-		//frontLeftMotor.set(SmartDashboardSettings.driveSpeed);
-		//rearLeftMotor.set(SmartDashboardSettings.driveSpeed);
+		robotDrive.arcadeDrive(driveForwardAxisValue, driveTurnAxisValue);
 		
 		SmartDashboard.putNumber("Left Encoder", frontLeftSensors.getQuadraturePosition());
 		SmartDashboard.putNumber("Right Encoder", frontRightSensors.getQuadraturePosition());
@@ -63,7 +59,7 @@ public class Drive {
 
 	public void setDriveSpeed(double driveForwardAxis, double driveTurnAxis) { // method for changing the drive speed if specified on the SmartDashboard
 		driveForwardAxisValue = Utility.deadZone(driveForwardAxis * SmartDashboardSettings.driveSpeed);
-		driveTurnAxisValue = Utility.deadZone(driveTurnAxis * SmartDashboardSettings.driveSpeed);
+		driveTurnAxisValue = Utility.invertAxis(Utility.deadZone(driveTurnAxis * SmartDashboardSettings.driveSpeed));
 	}
 
 	
