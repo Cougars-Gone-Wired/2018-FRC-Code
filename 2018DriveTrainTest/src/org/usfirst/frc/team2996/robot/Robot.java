@@ -9,8 +9,6 @@ package org.usfirst.frc.team2996.robot;
 
 import java.util.List;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -128,7 +126,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		joysticks.setJoystickInputValues(); // checks all values being inputted into the controllers
 
-		drive.arcadeDrive(joysticks.getDriveForwardAxis(), joysticks.getDriveTurnAxis()); // run the drive train
+		drive.arcadeDrive(joysticks.getDriveForwardAxis(), joysticks.getDriveTurnAxis(), this); // run the drive train
 
 		recorder.record(); // record the states of the motors and solenoids every 20 milliseconds
 	}
@@ -178,6 +176,10 @@ public class Robot extends IterativeRobot {
 
 	public StateRunner getRunner() {
 		return runner;
+	}
+
+	public AutoMethods getAutoMethods() {
+		return autoMethods;
 	}
 
 }

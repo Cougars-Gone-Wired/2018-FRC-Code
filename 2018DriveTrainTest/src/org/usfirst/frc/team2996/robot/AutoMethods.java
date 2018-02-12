@@ -1,7 +1,6 @@
 package org.usfirst.frc.team2996.robot;
 
 import com.ctre.phoenix.motorcontrol.SensorCollection;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -69,6 +68,8 @@ public class AutoMethods {
 	int frontRightEncoder; // to hold the encoder ticks for the right side
 	int encoderAverage; // to hold the average encoder ticks between both sides
 	double encoderAverageInches; // to hold the average distance that each side has traveled 
+	
+	double angle;
 
 	public AutoMethods(Robot robot) {
 		// instantiation for timer
@@ -196,7 +197,7 @@ public class AutoMethods {
 	}
 	
 	public void gyroCorrect() {
-		double angle = navX.getAngle();
+		angle = navX.getAngle();
 		robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, angle * GYRO_CONSTANT, false);
 		
 	}

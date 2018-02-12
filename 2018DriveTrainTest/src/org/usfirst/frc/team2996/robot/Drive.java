@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive {
 
+	static final double TELEOP_GYRO_CONSTANT = 0.03;
+	
 	// declarations for all objects associated with the drive train
 	private WPI_TalonSRX frontLeftMotor;
 	private WPI_TalonSRX rearLeftMotor;
@@ -27,6 +29,8 @@ public class Drive {
 	
 	double driveForwardAxisValue;
 	double driveTurnAxisValue;
+	
+	double angle;
 
 	public Drive() {
 		// instantiations of all previously declared objects
@@ -49,9 +53,10 @@ public class Drive {
 		changeDriveGearSolenoid = new Solenoid(Constants.CHANGE_DRIVE_GEAR_SOLENOID_PORT);
 	}
 
-	public void arcadeDrive(double driveForwardAxis, double driveTurnAxis) { // method for driving in arcade configuration 
+	public void arcadeDrive(double driveForwardAxis, double driveTurnAxis, Robot robot) { // method for driving in arcade configuration 
 		setDriveSpeed(driveForwardAxis, driveTurnAxis);
-		robotDrive.arcadeDrive(driveForwardAxisValue, driveTurnAxisValue * .625);
+		//robotDrive.arcadeDrive(driveForwardAxisValue, driveTurnAxisValue * .625);
+		teleopDriveCorrect(robot);
 		
 		SmartDashboard.putNumber("Left Encoder", frontLeftSensors.getQuadraturePosition());
 		SmartDashboard.putNumber("Right Encoder", frontRightSensors.getQuadraturePosition());
@@ -66,6 +71,10 @@ public class Drive {
 		driveTurnAxisValue = Utility.invertDouble(Utility.deadZone(driveTurnAxis * SmartDashboardSettings.driveSpeed));
 	}
 
+	public void teleopDriveCorrect(Robot robot) {
+		angle = robot.getAutoMethods().getNavX().getAngle();
+		robotDrive.arcadeDrive(driveForwardAxisValue, (driveTurnAxisValue * .625) * angle * TELEOP_GYRO_CONSTANT);
+	}
 	
 	// getters for all the objects declared in this class
 	public WPI_TalonSRX getFrontLeftMotor() {
