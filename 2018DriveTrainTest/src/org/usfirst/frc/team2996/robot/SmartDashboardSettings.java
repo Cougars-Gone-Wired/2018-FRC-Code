@@ -49,7 +49,7 @@ public class SmartDashboardSettings {
 	// SmartDashboard
 	public static void setConstantVars() {
 		driveSpeed = SmartDashboard.getNumber("Drive Speed", 1.0);
-		autoDriveSpeed = SmartDashboard.getNumber("Auto Drive Speed", 1.0);
+		autoDriveSpeed = Utility.invertDouble(SmartDashboard.getNumber("Auto Drive Speed", 1.0));
 		autoTurnSpeed = SmartDashboard.getNumber("Auto Turn Speed", 0.25);
 		autoStartSide = SmartDashboard.getString("Auto Start Side", "");
 		autoDelay = SmartDashboard.getNumber("Auto Delay", 0);

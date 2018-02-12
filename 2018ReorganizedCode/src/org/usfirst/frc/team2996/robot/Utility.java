@@ -7,17 +7,20 @@ public class Utility {
 	// method for putting a threshold on stick axes that must be passed before they
 	// can output their actual value
 	public static double deadZone(double axisOutputValue) {
-		if (Math.abs(axisOutputValue) > 0.3) {
+		if (Math.abs(axisOutputValue) > 0.15) {
 			return axisOutputValue;
 		} else {
 			return 0;
 		}
 	}
 	
-	public static double invertAxis(double axisValue) {
-		return -axisValue;
+	public static double invertDouble(double doubleValue) {
+		return -doubleValue;
 	}
 
+	public static int invertInt(int intValue) {
+		return -intValue;
+	}
 	public static void invertTalon(WPI_TalonSRX talon) {
 		talon.setInverted(true);
 	}

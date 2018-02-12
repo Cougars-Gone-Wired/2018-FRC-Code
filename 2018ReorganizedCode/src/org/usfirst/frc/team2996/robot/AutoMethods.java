@@ -25,6 +25,8 @@ public class AutoMethods {
 	static final int WHEEL_DIAMETER = 6; // in inches
 	static final int ENCODER_TICKS_PER_REV = 360 * 4;
 	static final double DISTANCE_PER_ENCODER_TICK = ((WHEEL_DIAMETER * Math.PI) / ENCODER_TICKS_PER_REV); // in inches
+	
+	static final double GYRO_CONSTANT = 0.03;
 
 	public enum DriveForwardCrossLineStates { // states the robot can be in in this auto
 		DELAY, DRIVING_FORWARD
@@ -94,12 +96,12 @@ public class AutoMethods {
 		switch (currentDriveForwardCrossLineState) {
 		case DELAY:
 			if (delayTimer.get() >= SmartDashboardSettings.autoDelay) {
-				currentDriveForwardDropCubeOrNahState = DriveForwardDropCubeOrNahStates.DRIVING_FORWARD;
+				currentDriveForwardCrossLineState = DriveForwardCrossLineStates.DRIVING_FORWARD;
 			}
 			break;
 		case DRIVING_FORWARD:
 			if (encoderAverageInches <= SmartDashboardSettings.driveForwardCrossLineDistance) {
-				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
+				gyroCorrect();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 			}
@@ -118,7 +120,7 @@ public class AutoMethods {
 			break;
 		case DRIVING_FORWARD:
 			if (encoderAverageInches <= SmartDashboardSettings.driveForwardDropCubeorNahForwardDistance) {
-				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
+				gyroCorrect();
 			} else {
 				currentDriveForwardDropCubeOrNahState = DriveForwardDropCubeOrNahStates.DROP_CUBE_OR_NAH;
 			}
@@ -146,7 +148,7 @@ public class AutoMethods {
 			break;
 		case DRIVING_FORWARD:
 			if (encoderAverageInches <= SmartDashboardSettings.driveForwardTurnDropCubeorNahForwardDistance1) {
-				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
+				gyroCorrect();
 			} else {
 				currentDriveForwardTurnDropCubeOrNahState = DriveForwardTurnDropCubeOrNahStates.TURNING;
 			}
@@ -170,7 +172,7 @@ public class AutoMethods {
 			break;
 		case DRIVING_FORWARD_AGAIN:
 			if (encoderAverageInches <= SmartDashboardSettings.driveForwardTurnDropCubeorNahForwardDistance2) {
-				robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, 0, false);
+				gyroCorrect();
 			} else {
 				currentDriveForwardTurnDropCubeOrNahState = DriveForwardTurnDropCubeOrNahStates.DROP_CUBE_OR_NAH;
 			}
@@ -189,9 +191,15 @@ public class AutoMethods {
 	// average them
 	public void encoderSet() {
 		frontLeftEncoder = frontLeftSensors.getQuadraturePosition();
-		frontRightEncoder = frontRightSensors.getQuadraturePosition();
+		frontRightEncoder = Utility.invertInt(frontRightSensors.getQuadraturePosition());
 		encoderAverage = (frontLeftEncoder + frontRightEncoder) / 2;
 		encoderAverageInches = encoderAverage * DISTANCE_PER_ENCODER_TICK;
+	}
+	
+	public void gyroCorrect() {
+		double angle = navX.getAngle();
+		robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, angle * GYRO_CONSTANT, false);
+		
 	}
 	
 	public void showEncoderValues() {
@@ -245,6 +253,7 @@ public class AutoMethods {
 
 	// method to run the auto program that was picked on the SmartDashboard
 	public void pickAuto() {
+		selectedAuto = autoChooser.getSelected();
 		showEncoderValues();
 		switch (selectedAuto) {
 		case doNothing:

@@ -47,17 +47,11 @@ public class Drive {
 		robotDrive = new DifferentialDrive(leftMotors, rightMotors);
 		
 		changeDriveGearSolenoid = new Solenoid(Constants.CHANGE_DRIVE_GEAR_SOLENOID_PORT);
-		
 	}
 
 	public void arcadeDrive(double driveForwardAxis, double driveTurnAxis) { // method for driving in arcade configuration 
 		setDriveSpeed(driveForwardAxis, driveTurnAxis);
-		robotDrive.arcadeDrive(driveForwardAxisValue, -driveTurnAxisValue * .625);
-		
-//		robotDrive.arcadeDrive(SmartDashboardSettings.driveSpeed, 0);
-//		leftMotors.set(SmartDashboardSettings.driveSpeed);
-//		frontLeftMotor.set(SmartDashboardSettings.driveSpeed);
-//		rearLeftMotor.set(SmartDashboardSettings.driveSpeed);
+		robotDrive.arcadeDrive(driveForwardAxisValue, driveTurnAxisValue * .625);
 		
 		SmartDashboard.putNumber("Left Encoder", frontLeftSensors.getQuadraturePosition());
 		SmartDashboard.putNumber("Right Encoder", frontRightSensors.getQuadraturePosition());
@@ -69,7 +63,7 @@ public class Drive {
 
 	public void setDriveSpeed(double driveForwardAxis, double driveTurnAxis) { // method for changing the drive speed if specified on the SmartDashboard
 		driveForwardAxisValue = Utility.deadZone(driveForwardAxis * SmartDashboardSettings.driveSpeed);
-		driveTurnAxisValue = Utility.deadZone(driveTurnAxis * SmartDashboardSettings.driveSpeed);
+		driveTurnAxisValue = Utility.invertDouble(Utility.deadZone(driveTurnAxis * SmartDashboardSettings.driveSpeed));
 	}
 
 	

@@ -86,6 +86,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		autoMethods.getInfo(); // get the field color configuration
+		autoMethods.autoReset();
 		autoMethods.startDelayTimer(); // start timer to possibly be used to delay auto
 
 		runner.counterInitialize(); // set counter to 0
@@ -139,7 +140,8 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledInit() {
-
+		SmartDashboardSettings.setConstantVars();
+		
 		if (SmartDashboardSettings.shouldRecord) {
 			List<State> states = recorder.getStates(); // get the states recorded in teleop
 			try {
