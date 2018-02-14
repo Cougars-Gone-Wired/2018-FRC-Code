@@ -40,6 +40,10 @@ public class Robot extends IterativeRobot {
 	
 	private RobotLogger robotLogger;
 
+	public enum autoStates{
+		LEFT_SCALE, LEFT_SWITCH, LEFT_EXCHANGE, MIDDLE_LEFT, MIDDLE_RIGHT, MIDDLE_EXCHANGE, RIGHT_SCALE, RIGHT_SWITCH, RIGHT_CROSS_LINE
+	}
+	
 	// Constants constants;
 
 	/**
