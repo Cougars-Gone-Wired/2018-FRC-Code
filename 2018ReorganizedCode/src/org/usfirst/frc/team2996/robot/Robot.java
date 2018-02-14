@@ -149,8 +149,6 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledInit() {
-		SmartDashboardSettings.setConstantVars();
-		
 		if (SmartDashboardSettings.shouldRecord) {
 			List<State> states = recorder.getStates(); // get the states recorded in teleop
 			try {
