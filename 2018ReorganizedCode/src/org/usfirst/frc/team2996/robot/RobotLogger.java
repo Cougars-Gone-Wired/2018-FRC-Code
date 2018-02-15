@@ -99,16 +99,6 @@ public class RobotLogger extends Object implements Runnable {
 			} else {
 				sb.append(DELI).append("1324");
 			}
-			if (robot.getDrive().getRearLeftSensors() != null) {
-				sb.append(DELI).append(robot.getDrive().getRearLeftSensors().getQuadraturePosition());
-			} else {
-				sb.append(DELI).append("1324");
-			}
-			if (robot.getDrive().getRearRightSensors() != null) {
-				sb.append(DELI).append(robot.getDrive().getRearRightSensors().getQuadraturePosition());
-			} else {
-				sb.append(DELI).append("1324");
-			}
 		}
 		// if (robot.isAutonomous()) {
 		// if (!autonomousState) {
