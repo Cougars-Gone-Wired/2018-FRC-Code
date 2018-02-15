@@ -87,7 +87,6 @@ public class RobotLogger extends Object implements Runnable {
 
 	public void movementLog() throws Throwable {
 		StringBuilder sb = new StringBuilder();
-		robot.getDrive().getFrontLeftMotor();
 		if (robot.getDrive() != null) {
 			if (robot.getDrive().getFrontLeftSensors() != null) {
 				sb.append(DELI).append(robot.getDrive().getFrontLeftSensors().getQuadraturePosition());
