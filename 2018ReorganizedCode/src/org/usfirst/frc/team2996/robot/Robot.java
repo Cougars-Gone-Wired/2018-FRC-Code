@@ -37,6 +37,8 @@ public class Robot extends IterativeRobot {
 
 	private StateRecorder recorder;
 	private StateRunner runner;
+	
+	private RobotLogger robotLogger;
 
 	// Constants constants;
 
@@ -66,6 +68,12 @@ public class Robot extends IterativeRobot {
 		runner = new StateRunner(this);
 
 		// constants = new Constants();
+		if(robotLogger != null){
+			robotLogger.halt();
+		}
+		robotLogger = new RobotLogger(this);
+		new Thread(robotLogger).start();
+		
 
 		// static methods that need to be called in robotInit
 		SmartDashboardSettings.displaySettings(); // put things on the SmartDashboard
@@ -134,7 +142,8 @@ public class Robot extends IterativeRobot {
 				elevator.getChangeElevatorGearSolenoid()); // method for changing gears on the elevator
 		driveChangeGear.changeGear(joysticks.isDriveHighGearButton(), joysticks.isDriveLowGearButton(),
 				drive.getChangeDriveGearSolenoid()); // method for changing gears on the drive train
-
+		
+		robotLogger.run();
 		recorder.record(); // record the states of the motors and solenoids every 20 milliseconds
 	}
 
