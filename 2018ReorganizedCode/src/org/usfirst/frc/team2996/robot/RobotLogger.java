@@ -24,6 +24,9 @@ public class RobotLogger extends Object implements Runnable {
 	boolean shooterState = false;
 	boolean loggingActive;
 	boolean enabled;
+	boolean titleRun = false;
+
+	
 	
 	Logger logging;
 	
@@ -46,6 +49,7 @@ public class RobotLogger extends Object implements Runnable {
 	}
 	
 	RobotLogger(Robot robot) {
+		
 		this.robot = robot;
 		running = true;
 		System.out.println("Logging Started");
@@ -68,7 +72,7 @@ public class RobotLogger extends Object implements Runnable {
 						writeHeader();
 					}
 					// PIDlog();
-					movementLog();
+					mainLog();
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
 					// e.printStackTrace();
@@ -84,45 +88,114 @@ public class RobotLogger extends Object implements Runnable {
 	}
 
 	public void writeHeader() throws Throwable {
-		// Titles and types
-		logging.fine(", FrontLeftMotor, FrontRightMotor, RearLeftMotor, RearRightMotor");
-		logging.fine(", Double, Double, Double, Double, Double, String");
+		//Titles
+//		StringBuilder types = new StringBuilder();
+//		// Writes Values that are eventually used by Excel Logging Code
+//		types.append(DELI).append(findType());
+//		types.append(DELI).append(findType(FrontRightMotor));
+//		types.append(DELI).append(findType(FrontLeftMotor));
+//		types.append(DELI).append(findType(FrontLeftMotor));
+//		
+//		logging.fine(types.toString());
 	}
 
-	public void movementLog() throws Throwable {
+	public void mainLog() throws Throwable {
+		//Drive
+		double FrontLeftMotor = robot.getDrive().getFrontLeftSensors().getQuadraturePosition();
+		double FrontRightMotor = robot.getDrive().getFrontRightSensors().getQuadraturePosition();
+		//Elevator
+		boolean ForwardLimitSwitch = robot.getElevator().getElevatorMasterMotorSensors().isFwdLimitSwitchClosed();
+		boolean ReverseLimitSwitch = robot.getElevator().getElevatorMasterMotorSensors().isRevLimitSwitchClosed();
+		String ElevatorState = robot.getElevator().currentElevatorState.toString();
+		//Arm
+		String ArmState = robot.getArm().currentArmState.toString();
+		//Intake
+		double rightIntakeMotor = robot.getIntake().getRightIntakeMotor().get();
+		double leftIntakeMotor = robot.getIntake().getLeftIntakeMotor().get();
+		
+		if(titleRun =! true) {
+			titleRun = true;
+			StringBuilder types = new StringBuilder();
+			//Types
+			
+			//Drive
+			types.append(DELI).append(findType(FrontLeftMotor));
+			types.append(DELI).append(findType(FrontRightMotor));
+			//Elevator
+			types.append(DELI).append(findType(ForwardLimitSwitch));
+			types.append(DELI).append(findType(ReverseLimitSwitch));
+			types.append(DELI).append(findType(ElevatorState));
+			//Arm
+			types.append(DELI).append(findType(ArmState));
+			//Intake
+			types.append(DELI).append(findType(rightIntakeMotor));
+			types.append(DELI).append(findType(leftIntakeMotor));
+			
+			logging.fine(types.toString());
+		}
 		StringBuilder sb = new StringBuilder();
-
+		// Writing everything to Logger
 		if (robot.getDrive() != null) {
-			// Write Drive to Logger
-			if (robot.getDrive().getFrontLeftSensors() != null) {
-				sb.append(DELI).append(robot.getDrive().getFrontLeftSensors().getQuadraturePosition());
-			} else {
-				sb.append(DELI).append("1324");
-			}
-			if (robot.getDrive().getFrontRightSensors() != null) {
-				sb.append(DELI).append(robot.getDrive().getFrontRightSensors().getQuadraturePosition());
-			} else {
-				sb.append(DELI).append("1324");
-			}
-			// Elevator
-			if (robot.getElevator().getElevatorMasterMotorSensors() != null) {
-				sb.append(DELI).append(robot.getElevator().getElevatorMasterMotorSensors().isFwdLimitSwitchClosed());
-			} else {
-				sb.append(DELI).append("1324");
-			}
-			if (robot.getElevator().getElevatorMasterMotorSensors() != null) {
-				sb.append(DELI).append(robot.getElevator().getElevatorMasterMotorSensors().isRevLimitSwitchClosed());
-			} else {
-				sb.append(DELI).append("1324");
-			}
-			if (robot.getElevator().currentElevatorState != null) {
-				sb.append(DELI).append(robot.getElevator().currentElevatorState);
-			} else {
-				sb.append(DELI).append("1324");
-			}
+			// Drive
+			sb.append(DELI).append(FrontLeftMotor);
+			sb.append(DELI).append(FrontRightMotor);
+			//Elevator
+			sb.append(DELI).append(ForwardLimitSwitch);
+			sb.append(DELI).append(ReverseLimitSwitch);
+			sb.append(DELI).append(ElevatorState);
+			//Arm
+			sb.append(DELI).append(ArmState);
+			//Intake
+			sb.append(DELI).append(rightIntakeMotor);
+			sb.append(DELI).append(leftIntakeMotor);
+			
+//			//No null logger
+//			// Drive
+//			if (robot.getDrive().getFrontLeftSensors() != null) {
+//
+//			} else {
+//				//This is the default value if something goes wrong
+//				sb.append(DELI).append(" ");
+//			}
+//			if (robot.getDrive().getFrontRightSensors() != null) {
+//
+//			} else {
+//				sb.append(DELI).append(" ");
+//			}
+//			
+//			// Elevator
+//			if (robot.getElevator().getElevatorMasterMotorSensors() != null) {
+//
+//			} else {
+//				sb.append(DELI).append(" ");
+//			}
+//			if (robot.getElevator().getElevatorMasterMotorSensors() != null) {
+//
+//			} else {
+//				sb.append(DELI).append(" ");
+//			}
+//			if (ElevatorState != null) {
+//
+//			} else {
+//				sb.append(DELI).append(" ");
+//			}
+//			
+//			// Arm
+//			if (ArmState != null) {
+//
+//			} else {
+//				sb.append(DELI).append(" ");
+//			}
+//			
+//			//Intake
+//			if(rightIntakeMotor != null) {
+//				
+//			}
+			
 		}
 		logging.fine(sb.toString());
 	}
+	
 	// if (robot.isAutonomous()) {
 	// if (!autonomousState) {
 	// logging.fine("Auto Begin");
