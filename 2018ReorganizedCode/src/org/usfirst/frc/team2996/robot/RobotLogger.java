@@ -22,8 +22,11 @@ public class RobotLogger extends Object implements Runnable {
 	boolean autonomousState = false;
 	boolean teleopState = false;
 	boolean shooterState = false;
+	boolean loggingActive;
+	boolean enabled;
+	
 	Logger logging;
-
+	
 	public Logger createLogger() throws SecurityException, IOException {
 		Logger logger = Logger.getLogger(RobotLogger.class.getName());
 		logger.setUseParentHandlers(false);
@@ -41,10 +44,12 @@ public class RobotLogger extends Object implements Runnable {
 		logger.addHandler(fh);
 		return logger;
 	}
-
+	
 	RobotLogger(Robot robot) {
 		this.robot = robot;
 		running = true;
+		System.out.println("Logging Started");
+		SmartDashboard.putBoolean("logging", true);
 	}
 
 	public void halt() {
@@ -53,10 +58,9 @@ public class RobotLogger extends Object implements Runnable {
 	}
 
 	public void run() {
-		System.out.println("Logging Started");
 		while (running) {
-			boolean loggingActive = SmartDashboard.getBoolean("logging", false);
-			boolean enabled = robot.isEnabled();
+			loggingActive = SmartDashboard.getBoolean("logging", false);
+			enabled = robot.isEnabled();
 			if (loggingActive && enabled) {
 				try {
 					if (logging == null) {
@@ -80,14 +84,16 @@ public class RobotLogger extends Object implements Runnable {
 	}
 
 	public void writeHeader() throws Throwable {
-
+		// Titles and types
 		logging.fine(", FrontLeftMotor, FrontRightMotor, RearLeftMotor, RearRightMotor");
-		logging.fine(", Double, Double, Double, Double");
+		logging.fine(", Double, Double, Double, Double, Double, String");
 	}
 
 	public void movementLog() throws Throwable {
 		StringBuilder sb = new StringBuilder();
+
 		if (robot.getDrive() != null) {
+			// Write Drive to Logger
 			if (robot.getDrive().getFrontLeftSensors() != null) {
 				sb.append(DELI).append(robot.getDrive().getFrontLeftSensors().getQuadraturePosition());
 			} else {
@@ -98,36 +104,55 @@ public class RobotLogger extends Object implements Runnable {
 			} else {
 				sb.append(DELI).append("1324");
 			}
+			// Elevator
+			if (robot.getElevator().getElevatorMasterMotorSensors() != null) {
+				sb.append(DELI).append(robot.getElevator().getElevatorMasterMotorSensors().isFwdLimitSwitchClosed());
+			} else {
+				sb.append(DELI).append("1324");
+			}
+			if (robot.getElevator().getElevatorMasterMotorSensors() != null) {
+				sb.append(DELI).append(robot.getElevator().getElevatorMasterMotorSensors().isRevLimitSwitchClosed());
+			} else {
+				sb.append(DELI).append("1324");
+			}
+			if (robot.getElevator().currentElevatorState != null) {
+				sb.append(DELI).append(robot.getElevator().currentElevatorState);
+			} else {
+				sb.append(DELI).append("1324");
+			}
 		}
-		// if (robot.isAutonomous()) {
-		// if (!autonomousState) {
-		// logging.fine("Auto Begin");
-		// autonomousState = true;
-		// }
-		//
-		// if (autonomousState) {
-		// logging.fine("");
-		// }
-		//
-		// } else {
-		// autonomousState = false;
-		// }
-		//
-		// if (robot.isOperatorControl()) {
-		// if (!teleopState) {
-		// logging.fine("Teleop Begin");
-		// teleopState = true;
-		// }
-		//
-		// if (teleopState) {
-		// logging.fine("");
-		// }
-		//
-		// } else {
-		// teleopState = false;
-		// }
 		logging.fine(sb.toString());
 	}
+	// if (robot.isAutonomous()) {
+	// if (!autonomousState) {
+	// logging.fine("Auto Begin");
+	// autonomousState = true;
+	// }
+	//
+	// if (autonomousState) {
+	// logging.fine("");
+	// }
+	//
+	// } else {
+	// autonomousState = false;
+	// }
+	//
+	// if (robot.isOperatorControl()) {
+	// if (!teleopState) {
+	// logging.fine("Teleop Begin");
+	// teleopState = true;
+	// }
+	//
+	// if (teleopState) {
+	// logging.fine("");
+	// }
+	//
+	// } else {
+	// teleopState = false;
+	// }
+	
+
+	
 
 	public static String findType(String s) {
 		return "String";
