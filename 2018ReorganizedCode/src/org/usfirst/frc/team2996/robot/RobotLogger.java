@@ -22,12 +22,9 @@ public class RobotLogger extends Object implements Runnable {
 	boolean autonomousState = false;
 	boolean teleopState = false;
 	boolean shooterState = false;
-<<<<<<< Upstream, based on origin/master
 	boolean loggingActive;
 	boolean enabled;
 	boolean titleRun = false;
-
-	
 	
 	Logger logging;
 	
