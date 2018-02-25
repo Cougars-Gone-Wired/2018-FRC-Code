@@ -9,32 +9,49 @@ public class ChangeGear {
 	}
 
 	private GearStates gearCurrentState;
+	
+	private Solenoid changeGearSolenoid;
 
-	public ChangeGear(String defualtState) { // gear the sonic shifter starts in depends on default state passed into
+	private boolean lowGearState;
+	
+	public ChangeGear(boolean lowGearState, Solenoid changeGearSolenoid) { // gear the sonic shifter starts in depends on default state passed into
 												// the
 												// constuctor for an object of this class
-		if (defualtState.toLowerCase() == "low") {
-			this.gearCurrentState = GearStates.LOW_GEAR;
-		} else if (defualtState.toLowerCase() == "high") {
-			this.gearCurrentState = GearStates.HIGH_GEAR;
-		}
+//		if (defualtState.toLowerCase() == "low") {
+//			this.gearCurrentState = GearStates.LOW_GEAR;
+//		} else if (defualtState.toLowerCase() == "high") {
+//			this.gearCurrentState = GearStates.HIGH_GEAR;
+//		}
+	this.lowGearState = lowGearState;
+	this.changeGearSolenoid = changeGearSolenoid;
+	this.gearCurrentState = GearStates.LOW_GEAR;
 	}
 
 	// method to check if the sonic shifter(s) need to change states
-	public void changeGear(boolean highGearButton, boolean lowGearButton, Solenoid changeGearSolenoid) {
+	public void changeGear(boolean highGearButton, boolean lowGearButton) {
 		switch (gearCurrentState) {
 		case LOW_GEAR:
 			if (highGearButton && !lowGearButton) {
-				changeGearSolenoid.set(true);
+				changeGearSolenoid.set(!lowGearState);
 				gearCurrentState = GearStates.HIGH_GEAR;
 			}
 			break;
 		case HIGH_GEAR:
 			if (!highGearButton && lowGearButton) {
-				changeGearSolenoid.set(false);
+				changeGearSolenoid.set(lowGearState);
 				gearCurrentState = GearStates.LOW_GEAR;
 			}
 			break;
+		}
+	}
+	
+	
+	public void setGearState(boolean state) {
+		changeGearSolenoid.set(state);
+		if (state == lowGearState) {
+			gearCurrentState = GearStates.LOW_GEAR;
+		} else if (state == !lowGearState) {
+			gearCurrentState = GearStates.HIGH_GEAR;
 		}
 	}
 }

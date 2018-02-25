@@ -27,6 +27,8 @@ public class Drive {
 	
 	double driveForwardAxisValue;
 	double driveTurnAxisValue;
+	double leftDriveAxisValue;
+	double rightDriveAxisValue;
 
 	public Drive() {
 		// instantiations of all previously declared objects
@@ -34,15 +36,15 @@ public class Drive {
 		rearLeftMotor = new WPI_TalonSRX(Constants.REAR_LEFT_MOTOR_ID);
 		leftMotors = new SpeedControllerGroup(frontLeftMotor, rearLeftMotor);
 		frontLeftSensors = new SensorCollection(frontLeftMotor);
-		frontLeftMotor.configOpenloopRamp(.25, 0);
-		rearLeftMotor.configOpenloopRamp(.25, 0);
+//		frontLeftMotor.configOpenloopRamp(.25, 0);
+//		rearLeftMotor.configOpenloopRamp(.25, 0);
 		
 		frontRightMotor = new WPI_TalonSRX(Constants.FRONT_RIGHT_MOTOR_ID);
 		rearRightMotor = new WPI_TalonSRX(Constants.REAR_RIGHT_MOTOR_ID);
 		rightMotors = new SpeedControllerGroup(frontRightMotor, rearRightMotor);
 		frontRightSensors = new SensorCollection(frontRightMotor);
-		frontRightMotor.configOpenloopRamp(.25, 0);
-		rearRightMotor.configOpenloopRamp(.25, 0);
+//		frontRightMotor.configOpenloopRamp(.25, 0);
+//		rearRightMotor.configOpenloopRamp(.25, 0);
 
 		robotDrive = new DifferentialDrive(leftMotors, rightMotors);
 		
@@ -50,16 +52,25 @@ public class Drive {
 	}
 
 	public void arcadeDrive(double driveForwardAxis, double driveTurnAxis) { // method for driving in arcade configuration 
-		setDriveSpeed(driveForwardAxis, driveTurnAxis);
-		robotDrive.arcadeDrive(driveForwardAxisValue, driveTurnAxisValue * .625);
+		setArcadeDriveSpeed(driveForwardAxis, driveTurnAxis);
+		robotDrive.arcadeDrive(driveForwardAxisValue, driveTurnAxisValue * .8);
 		
 		SmartDashboard.putNumber("Left Encoder", frontLeftSensors.getQuadraturePosition());
 		SmartDashboard.putNumber("Right Encoder", frontRightSensors.getQuadraturePosition());
 	}
 
-	public void setDriveSpeed(double driveForwardAxis, double driveTurnAxis) { // method for changing the drive speed if specified on the SmartDashboard
+	public void tankDrive(double leftDriveAxis, double rightDriveAxis) {
+		setTankDriveSpeed(leftDriveAxis, rightDriveAxis);
+		robotDrive.tankDrive(leftDriveAxisValue, rightDriveAxisValue);
+	}
+	
+	public void setArcadeDriveSpeed(double driveForwardAxis, double driveTurnAxis) { // method for changing the drive speed if specified on the SmartDashboard
 		driveForwardAxisValue = Utility.deadZone(driveForwardAxis * SmartDashboardSettings.driveSpeed);
 		driveTurnAxisValue = Utility.invertDouble(Utility.deadZone(driveTurnAxis * SmartDashboardSettings.driveSpeed));
+	}
+	public void setTankDriveSpeed(double leftDriveAxis, double rightDriveAxis) { // method for changing the drive speed if specified on the SmartDashboard
+		leftDriveAxisValue = Utility.deadZone(leftDriveAxis * SmartDashboardSettings.driveSpeed);
+		rightDriveAxisValue = Utility.deadZone(rightDriveAxis * SmartDashboardSettings.driveSpeed);
 	}
 
 	

@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
@@ -26,7 +27,7 @@ public class AutoMethods {
 	static final int ENCODER_TICKS_PER_REV = 360 * 4;
 	static final double DISTANCE_PER_ENCODER_TICK = ((WHEEL_DIAMETER * Math.PI) / ENCODER_TICKS_PER_REV); // in inches
 	
-	static final double GYRO_CONSTANT = 0.03;
+	static final double GYRO_CONSTANT = 0;
 
 	public enum DriveForwardCrossLineStates { // states the robot can be in in this auto
 		DELAY, DRIVING_FORWARD
@@ -50,16 +51,19 @@ public class AutoMethods {
 	DriveForwardTurnDropCubeOrNahStates currentDriveForwardTurnDropCubeOrNahState = DriveForwardTurnDropCubeOrNahStates.DELAY;
 
 	// declarations of objects used in this class
-	private Timer delayTimer;
+	protected Timer delayTimer;
+	protected Timer liftTimer;
 
-	private DifferentialDrive robotDrive;
+	protected DifferentialDrive robotDrive;
 
-	private SensorCollection frontLeftSensors;
-	private SensorCollection frontRightSensors;
-	private WPI_TalonSRX leftIntakeMotor;
-	private WPI_TalonSRX rightIntakeMotor;
+	protected SensorCollection frontLeftSensors;
+	protected SensorCollection frontRightSensors;
+	protected WPI_TalonSRX elevatorMasterMotor;
+	protected WPI_TalonSRX leftIntakeMotor;
+	protected WPI_TalonSRX rightIntakeMotor;
+	protected DoubleSolenoid armSolenoid;
 
-	private AHRS navX;
+	protected AHRS navX;
 
 	// declarations of variables used in this class
 	String sides; // to hold our starting position
@@ -73,6 +77,7 @@ public class AutoMethods {
 	public AutoMethods(Robot robot) {
 		// instantiation for timer
 		delayTimer = new Timer();
+		liftTimer = new Timer();
 
 		// assigning all other previously declared objects to objects instantiated in
 		// other classes
@@ -80,8 +85,10 @@ public class AutoMethods {
 
 		frontLeftSensors = robot.getDrive().getFrontLeftSensors();
 		frontRightSensors = robot.getDrive().getFrontRightSensors();
+		elevatorMasterMotor = robot.getElevator().getElevatorMasterMotor();
 		leftIntakeMotor = robot.getIntake().getLeftIntakeMotor();
 		rightIntakeMotor = robot.getIntake().getRightIntakeMotor();
+		armSolenoid = robot.getArm().getArmSolenoid();
 
 		// instantiation for navX
 		navX = new AHRS(SPI.Port.kMXP);
@@ -212,9 +219,10 @@ public class AutoMethods {
 	// method to reset the timer, encoders, and gyro before auto
 	public void autoReset() {
 		delayTimer.reset();
+		liftTimer.reset();
 		frontLeftSensors.setQuadraturePosition(0, 10);
 		frontRightSensors.setQuadraturePosition(0, 10);
-		navX.reset();
+		navX.zeroYaw();
 	}
 
 	// methods to put options of autonomous programs on SmartDashboard

@@ -22,6 +22,8 @@ public class SmartDashboardSettings {
 
 	static boolean useDeadReckoningAuto;
 	static boolean useRecorderAuto;
+	
+	static boolean tankDrive;
 
 	// method to put everything on the SmartDashboard and set variables to
 	// everything on the SmartDashboard
@@ -43,6 +45,8 @@ public class SmartDashboardSettings {
 
 		SmartDashboard.putBoolean("Use Dread Reckoning Auto", false);
 		SmartDashboard.putBoolean("Use Recorder Auto", false);
+		
+		SmartDashboard.putBoolean("Tank Drive", false);
 	}
 
 	// method that sets previously declared variables to the values on the
@@ -67,6 +71,8 @@ public class SmartDashboardSettings {
 
 		useDeadReckoningAuto = SmartDashboard.getBoolean("Use Dread Reckoning Auto", false);
 		useRecorderAuto = SmartDashboard.getBoolean("Use Recorder Auto", false);
+		
+		tankDrive = SmartDashboard.getBoolean("Tank Drive", false);
 	}
 
 }

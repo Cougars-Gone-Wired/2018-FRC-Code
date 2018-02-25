@@ -24,11 +24,11 @@ public class Intake {
 	public void intakeFunctions(double intakeTrigger, double outtakeTrigger) {
 		switch (currentIntakeState) {
 		case NOT_MOVING:
-			if ((intakeTrigger >= 0.15) && (outtakeTrigger <= 0.15)) {
+			if ((intakeTrigger >= 0.15) && (outtakeTrigger < 0.15)) {
 				leftIntakeMotor.set(-1);
 				rightIntakeMotor.set(1);
 				currentIntakeState = IntakeStates.INTAKING;
-			} else if ((intakeTrigger <= 0.15) && (outtakeTrigger >= 0.15)) {
+			} else if ((intakeTrigger < 0.15) && (outtakeTrigger >= 0.15)) {
 				leftIntakeMotor.set(1);
 				rightIntakeMotor.set(-1);
 				currentIntakeState = IntakeStates.OUTTAKING;

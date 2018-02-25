@@ -19,6 +19,8 @@ public class Constants { // class for all the variables that should not change d
 	static final int DRIVE_TURN_AXIS = 4;
 	static final int DRIVE_HIGH_GEAR_BUTTON = 6;
 	static final int DRIVE_LOW_GEAR_BUTTON = 5;
+	static final int LEFT_DRIVE_AXIS = 1;
+	static final int RIGHT_DRIVE_AXIS = 5;
 
 	// all the constants for the talon device ids
 	static final int ELEVATOR_MASTER_MOTOR_ID = 0;

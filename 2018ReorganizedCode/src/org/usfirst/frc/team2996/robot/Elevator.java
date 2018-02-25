@@ -4,11 +4,12 @@ import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator {
 
 	public enum ElevatorStates { // all the states the elevator can be in
-		NOT_MOVING, GOING_UP, GOING_DOWN, AT_TOP, AT_BOTTOM
+		NOT_MOVING, GOING_UP, GOING_DOWN
 	}
 
 	ElevatorStates currentElevatorState = ElevatorStates.NOT_MOVING; // the state for the elevator to start in
@@ -34,13 +35,15 @@ public class Elevator {
 	}
 
 	public void elevatorFunctions(double elevatorAxis) { // method to check if the elevator needs to change states
-		elevatorAxisValue = Utility.deadZone(elevatorAxis);
+		SmartDashboard.putBoolean("fwd limit switch", elevatorMasterMotorSensors.isFwdLimitSwitchClosed());
+		SmartDashboard.putBoolean("rev limit switch", elevatorMasterMotorSensors.isRevLimitSwitchClosed());
+		elevatorAxisValue = Utility.deadZone(elevatorAxis * -1);
 		switch (currentElevatorState) {
 		case NOT_MOVING:
-			if (elevatorAxisValue > 0.15) {
+			if (elevatorAxisValue > 0 && !elevatorMasterMotorSensors.isFwdLimitSwitchClosed()) {
 				elevatorMasterMotor.set(elevatorAxisValue);
 				currentElevatorState = ElevatorStates.GOING_UP;
-			} else if (elevatorAxisValue < -0.15) {
+			} else if (elevatorAxisValue < 0 && !elevatorMasterMotorSensors.isRevLimitSwitchClosed()) {
 				elevatorMasterMotor.set(elevatorAxisValue);
 				currentElevatorState = ElevatorStates.GOING_DOWN;
 			}
@@ -48,36 +51,29 @@ public class Elevator {
 		case GOING_UP:
 			if (elevatorMasterMotorSensors.isFwdLimitSwitchClosed()) {
 				elevatorMasterMotor.set(0);
-				currentElevatorState = ElevatorStates.AT_TOP;
+				currentElevatorState = ElevatorStates.NOT_MOVING;
 			} else if (elevatorAxisValue == 0) {
 				elevatorMasterMotor.set(0);
 				currentElevatorState = ElevatorStates.NOT_MOVING;
-			}
+			} else if (elevatorAxisValue > 0) {
+				elevatorMasterMotor.set(elevatorAxisValue);
+			} 
 			break;
 		case GOING_DOWN:
 			if (elevatorMasterMotorSensors.isRevLimitSwitchClosed()) {
 				elevatorMasterMotor.set(0);
-				currentElevatorState = ElevatorStates.AT_BOTTOM;
+				currentElevatorState = ElevatorStates.NOT_MOVING;
 			} else if (elevatorAxisValue == 0) {
 				elevatorMasterMotor.set(0);
 				currentElevatorState = ElevatorStates.NOT_MOVING;
-			}
-			break;
-		case AT_TOP:
-			if (elevatorAxisValue < 0.15) {
-				elevatorMasterMotor.set(elevatorAxisValue);
-				currentElevatorState = ElevatorStates.GOING_DOWN;
-			}
-			break;
-		case AT_BOTTOM:
-			if (elevatorAxisValue > 0.15) {
-				elevatorMasterMotor.set(elevatorAxisValue);
-				currentElevatorState = ElevatorStates.GOING_UP;
+			} else if (elevatorAxisValue < 0) {
+				elevatorMasterMotor.set(elevatorAxisValue * .5);
 			}
 			break;
 		}
 	}
 
+	
 	// getters for all the objects declared in this class
 	public WPI_TalonSRX getElevatorMasterMotor() {
 		return elevatorMasterMotor;

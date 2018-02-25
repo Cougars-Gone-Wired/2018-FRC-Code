@@ -20,6 +20,8 @@ public class Joysticks {
 	private double driveTurnAxis;
 	private boolean driveHighGearButton;
 	private boolean driveLowGearButton;
+	private double leftDriveAxis;
+	private double rightDriveAxis;
 
 	public Joysticks() {
 		// instantiations of all previously declared objects
@@ -43,6 +45,8 @@ public class Joysticks {
 		driveTurnAxis = mobilityStick.getRawAxis(Constants.DRIVE_TURN_AXIS);
 		driveHighGearButton = mobilityStick.getRawButton(Constants.DRIVE_HIGH_GEAR_BUTTON);
 		driveLowGearButton = mobilityStick.getRawButton(Constants.DRIVE_LOW_GEAR_BUTTON);
+		leftDriveAxis = mobilityStick.getRawAxis(Constants.LEFT_DRIVE_AXIS);
+		rightDriveAxis = mobilityStick.getRawAxis(Constants.RIGHT_DRIVE_AXIS);
 	}
 
 	// getters for all objects and variables declared in this class
@@ -96,6 +100,14 @@ public class Joysticks {
 
 	public boolean isDriveLowGearButton() {
 		return driveLowGearButton;
+	}
+
+	public double getLeftDriveAxis() {
+		return leftDriveAxis;
+	}
+
+	public double getRightDriveAxis() {
+		return rightDriveAxis;
 	}
 
 }
