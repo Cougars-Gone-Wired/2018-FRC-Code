@@ -71,7 +71,7 @@ public class Robot extends IterativeRobot {
 		LEFT_SCALE, LEFT_SWITCH, LEFT_EXCHANGE, LEFT_CROSS_LINE,
 		MIDDLE_SWITCH_LEFT, MIDDLE_SWITCH_RIGHT, MIDDLE_EXCHANGE, MIDDLE_CROSS_LINE, 
 		RIGHT_SCALE, RIGHT_SWITCH, RIGHT_CROSS_LINE,
-		TURN
+		TURN_LEFT, TURN_RIGHT, TURN
 	}
 
 	public autoStates autoChanger;
@@ -127,7 +127,7 @@ public class Robot extends IterativeRobot {
 		priority.addDefault("Cross Line", CROSS_LINE);
 
 		SmartDashboard.putData("Robot Position", position); // sends choosers to the SmartDashboard
-		SmartDashboard.putData("Auto Priority", priority);
+//		SmartDashboard.putData("Auto Priority", priority);
 
 		autoPrograms.putAutoNumbers();
 		
@@ -157,7 +157,7 @@ public class Robot extends IterativeRobot {
 //		autoMethods.getInfo(); // get the field color configuration
 		autoPrograms.autoReset();
 		autoPrograms.turningStage2 = false;
-		autoMethods.startDelayTimer(); // start timer to possibly be used to delay auto
+		autoPrograms.startDelayTimer(); // start timer to possibly be used to delay auto
 
 		autoPrograms.resetStates();
 //		runner.counterInitialize(); // set counter to 0
@@ -169,142 +169,202 @@ public class Robot extends IterativeRobot {
 //			e.printStackTrace();
 //		}
 		currentPosition = position.getSelected(); // these get the values chosen on the SmartDashboard
-		currentPriority = priority.getSelected();
+//		currentPriority = priority.getSelected();
 		fieldConfiguration = DriverStation.getInstance().getGameSpecificMessage();
 
+//		switch (currentPosition) {
+//		case MIDDLE:
+//			switch (currentPriority) {
+//			case SCALE: //Middle position, Scale or Switch priority
+//			case SWITCH:
+//				switch (fieldConfiguration) {
+//				case LLL:
+//					autoChanger = autoStates.LEFT_SWITCH;
+//					break;
+//				case RRR:
+//					autoChanger = autoStates.RIGHT_SWITCH;
+//					break;
+//				case LRL:
+//					autoChanger = autoStates.LEFT_SWITCH;
+//					break;
+//				case RLR:
+//					autoChanger = autoStates.RIGHT_SWITCH;
+//					break;
+//				default:
+//					autoChanger = autoStates.MIDDLE_CROSS_LINE;
+//					break;
+//				}
+//				break;
+//			case EXCHANGE: //Middle position, Exchange priority
+//				autoChanger = autoStates.MIDDLE_EXCHANGE;
+//				break;
+//			case CROSS_LINE:
+//			default: //Middle position, unknown priority
+//				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+//				break;
+//			}
+//			break;
+//		case RIGHT:
+//			switch (currentPriority) {
+//			case SCALE: //Right position, Scale priority
+//				switch (fieldConfiguration) {
+//				case LLL:
+//					autoChanger = autoStates.RIGHT_CROSS_LINE;
+//					break;
+//				case RRR:
+//					autoChanger = autoStates.RIGHT_SCALE;
+//					break;
+//				case LRL:
+//					autoChanger = autoStates.RIGHT_SCALE;
+//					break;
+//				case RLR:
+//					autoChanger = autoStates.RIGHT_SWITCH;
+//					break;
+//				default:
+//					autoChanger = autoStates.RIGHT_CROSS_LINE;
+//					break;
+//				}
+//				break;
+//			case SWITCH: //Right position, Switch priority 
+//				switch (fieldConfiguration) {
+//				case LLL:
+//					autoChanger = autoStates.RIGHT_CROSS_LINE;
+//					break;
+//				case RRR:
+//					autoChanger = autoStates.RIGHT_SWITCH;
+//					break;
+//				case LRL:
+//					autoChanger = autoStates.RIGHT_SCALE;
+//					break;
+//				case RLR:
+//					autoChanger = autoStates.RIGHT_SWITCH;
+//					break;
+//				default:
+//					autoChanger = autoStates.RIGHT_CROSS_LINE;
+//					break;
+//				}
+//				break;
+//			case EXCHANGE: //Right position, Exchange or unknown priority
+//			case CROSS_LINE:
+//			default:
+//				autoChanger = autoStates.RIGHT_CROSS_LINE;
+//				break;
+//			}
+//			break;
+//		case LEFT:
+//			switch (currentPriority) {
+//			case SCALE: //Left position, Scale priority 
+//				switch (fieldConfiguration) {
+//				case LLL:
+//					autoChanger = autoStates.LEFT_SCALE;
+//					break;
+//				case RRR:
+//					autoChanger = autoStates.LEFT_EXCHANGE;
+//					break;
+//				case LRL:
+//					autoChanger = autoStates.LEFT_SWITCH;
+//					break;
+//				case RLR:
+//					autoChanger = autoStates.LEFT_SCALE;
+//					break;
+//				default:
+//					autoChanger = autoStates.LEFT_CROSS_LINE;
+//					break;
+//				}
+//				break;
+//			case SWITCH: //Left position, Switch priority 
+//				switch (fieldConfiguration) {
+//				case LLL:
+//					autoChanger = autoStates.LEFT_SWITCH;
+//					break;
+//				case RRR:
+//					autoChanger = autoStates.LEFT_EXCHANGE;
+//					break;
+//				case LRL:
+//					autoChanger = autoStates.LEFT_SWITCH;
+//					break;
+//				case RLR:
+//					autoChanger = autoStates.LEFT_SCALE;
+//					break;
+//				default:
+//					autoChanger = autoStates.LEFT_CROSS_LINE;
+//					break;
+//				}
+//				break;
+//			case EXCHANGE: //Left position, Exchange priority
+//				autoChanger = autoStates.LEFT_EXCHANGE;
+//				break;
+//			case CROSS_LINE:
+//			default: //Left position, unknown priority
+//				autoChanger = autoStates.LEFT_CROSS_LINE;
+//				break;
+//			}
+//			break;
+//		default: //Unknown position
+//			autoChanger = autoStates.MIDDLE_CROSS_LINE;
+//			break;
+//		}
+		
 		switch (currentPosition) {
 		case MIDDLE:
-			switch (currentPriority) {
-			case SCALE: //Middle position, Scale or Switch priority
-			case SWITCH:
-				switch (fieldConfiguration) {
-				case LLL:
-					autoChanger = autoStates.LEFT_SWITCH;
-					break;
-				case RRR:
-					autoChanger = autoStates.RIGHT_SWITCH;
-					break;
-				case LRL:
-					autoChanger = autoStates.LEFT_SWITCH;
-					break;
-				case RLR:
-					autoChanger = autoStates.RIGHT_SWITCH;
-					break;
-				default:
-					autoChanger = autoStates.MIDDLE_CROSS_LINE;
-					break;
-				}
+			switch (fieldConfiguration) {
+			case LLL:
+				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
-			case EXCHANGE: //Middle position, Exchange priority
-				autoChanger = autoStates.MIDDLE_EXCHANGE;
+			case RRR:
+				autoChanger = autoStates.MIDDLE_SWITCH_RIGHT;
 				break;
-			case CROSS_LINE:
-			default: //Middle position, unknown priority
+			case LRL:
+				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				break;
+			case RLR:
+				autoChanger = autoStates.MIDDLE_SWITCH_RIGHT;
+				break;
+			default:
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
 			}
-			break;
 		case RIGHT:
-			switch (currentPriority) {
-			case SCALE: //Right position, Scale priority
-				switch (fieldConfiguration) {
-				case LLL:
-					autoChanger = autoStates.RIGHT_CROSS_LINE;
-					break;
-				case RRR:
-					autoChanger = autoStates.RIGHT_SCALE;
-					break;
-				case LRL:
-					autoChanger = autoStates.RIGHT_SCALE;
-					break;
-				case RLR:
-					autoChanger = autoStates.RIGHT_SWITCH;
-					break;
-				default:
-					autoChanger = autoStates.RIGHT_CROSS_LINE;
-					break;
-				}
+			switch (fieldConfiguration) {
+			case LLL:
+				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
-			case SWITCH: //Right position, Switch priority 
-				switch (fieldConfiguration) {
-				case LLL:
-					autoChanger = autoStates.RIGHT_CROSS_LINE;
-					break;
-				case RRR:
-					autoChanger = autoStates.RIGHT_SWITCH;
-					break;
-				case LRL:
-					autoChanger = autoStates.RIGHT_SCALE;
-					break;
-				case RLR:
-					autoChanger = autoStates.RIGHT_SWITCH;
-					break;
-				default:
-					autoChanger = autoStates.RIGHT_CROSS_LINE;
-					break;
-				}
+			case RRR:
+				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
-			case EXCHANGE: //Right position, Exchange or unknown priority
-			case CROSS_LINE:
+			case LRL:
+				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				break;
+			case RLR:
+				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				break;
 			default:
-				autoChanger = autoStates.RIGHT_CROSS_LINE;
+				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
 			}
-			break;
 		case LEFT:
-			switch (currentPriority) {
-			case SCALE: //Left position, Scale priority 
-				switch (fieldConfiguration) {
-				case LLL:
-					autoChanger = autoStates.LEFT_SCALE;
-					break;
-				case RRR:
-					autoChanger = autoStates.LEFT_EXCHANGE;
-					break;
-				case LRL:
-					autoChanger = autoStates.LEFT_SWITCH;
-					break;
-				case RLR:
-					autoChanger = autoStates.LEFT_SCALE;
-					break;
-				default:
-					autoChanger = autoStates.LEFT_CROSS_LINE;
-					break;
-				}
+			switch (fieldConfiguration) {
+			case LLL:
+				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
-			case SWITCH: //Left position, Switch priority 
-				switch (fieldConfiguration) {
-				case LLL:
-					autoChanger = autoStates.LEFT_SWITCH;
-					break;
-				case RRR:
-					autoChanger = autoStates.LEFT_EXCHANGE;
-					break;
-				case LRL:
-					autoChanger = autoStates.LEFT_SWITCH;
-					break;
-				case RLR:
-					autoChanger = autoStates.LEFT_SCALE;
-					break;
-				default:
-					autoChanger = autoStates.LEFT_CROSS_LINE;
-					break;
-				}
+			case RRR:
+				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
-			case EXCHANGE: //Left position, Exchange priority
-				autoChanger = autoStates.LEFT_EXCHANGE;
+			case LRL:
+				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
-			case CROSS_LINE:
-			default: //Left position, unknown priority
-				autoChanger = autoStates.LEFT_CROSS_LINE;
+			case RLR:
+				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				break;
+			default:
+				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
 			}
-			break;
 		default: //Unknown position
 			autoChanger = autoStates.MIDDLE_CROSS_LINE;
 			break;
 		}
-		autoChanger = autoStates.MIDDLE_CROSS_LINE; // temporary testing for specific auto programs
+//		autoChanger = autoStates.MIDDLE_CROSS_LINE; // temporary testing for specific auto programs
 	}
 
 	/**
@@ -353,6 +413,12 @@ public class Robot extends IterativeRobot {
 		case RIGHT_CROSS_LINE:
 			autoPrograms.rightCrossLine();
 			break;
+		case TURN_LEFT:
+			autoPrograms.leftTurn();
+			break;
+		case TURN_RIGHT:
+			autoPrograms.rightTurn();
+			break;
 		case TURN:
 			autoPrograms.turningTest();
 			break;
@@ -363,7 +429,6 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		elevatorChangeGear.setGearState(true);
-		System.out.println(autoMethods.getNavX().getBoardYawAxis().board_axis);
 		autoMethods.getNavX().reset();
 		
 		intake.getLeftIntakeMotor().set(0);
@@ -386,14 +451,13 @@ public class Robot extends IterativeRobot {
 		intake.intakeFunctions(joysticks.getIntakeTrigger(), joysticks.getOuttakeTrigger()); // run the intake
 		arm.armFunctions(joysticks.isArmButtonOutput()); // run the arm
 
-		System.out.println(SmartDashboardSettings.tankDrive);
-		if (SmartDashboardSettings.tankDrive) {
-			drive.tankDrive(joysticks.getLeftDriveAxis(), joysticks.getRightDriveAxis());
-		} else {
+//		if (SmartDashboardSettings.tankDrive) {
+//			drive.tankDrive(joysticks.getLeftDriveAxis(), joysticks.getRightDriveAxis());
+//		} else {
 			drive.arcadeDrive(joysticks.getDriveForwardAxis(), joysticks.getDriveTurnAxis()); // run the drive train
-		}
+//		}
 		
-		SmartDashboard.putBoolean("Elavator Solenoid", elevator.getChangeElevatorGearSolenoid().get());
+//		SmartDashboard.putBoolean("Elavator Solenoid", elevator.getChangeElevatorGearSolenoid().get());
 		elevatorChangeGear.changeGear(joysticks.isElevatorHighGearButton(), joysticks.isElevatorLowGearButton()); // method for changing gears on the elevator
 		driveChangeGear.changeGear(joysticks.isDriveHighGearButton(), joysticks.isDriveLowGearButton()); // method for changing gears on the drive train
 		

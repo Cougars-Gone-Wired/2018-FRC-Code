@@ -55,8 +55,8 @@ public class Drive {
 		setArcadeDriveSpeed(driveForwardAxis, driveTurnAxis);
 		robotDrive.arcadeDrive(driveForwardAxisValue, driveTurnAxisValue * .8);
 		
-		SmartDashboard.putNumber("Left Encoder", frontLeftSensors.getQuadraturePosition());
-		SmartDashboard.putNumber("Right Encoder", frontRightSensors.getQuadraturePosition());
+//		SmartDashboard.putNumber("Left Encoder", frontLeftSensors.getQuadraturePosition());
+//		SmartDashboard.putNumber("Right Encoder", frontRightSensors.getQuadraturePosition());
 	}
 
 	public void tankDrive(double leftDriveAxis, double rightDriveAxis) {

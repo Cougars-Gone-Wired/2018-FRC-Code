@@ -53,6 +53,7 @@ public class AutoMethods {
 	// declarations of objects used in this class
 	protected Timer delayTimer;
 	protected Timer liftTimer;
+	protected Timer outtakeTimer;
 
 	protected DifferentialDrive robotDrive;
 
@@ -78,6 +79,7 @@ public class AutoMethods {
 		// instantiation for timer
 		delayTimer = new Timer();
 		liftTimer = new Timer();
+		outtakeTimer = new Timer();
 
 		// assigning all other previously declared objects to objects instantiated in
 		// other classes
@@ -94,7 +96,7 @@ public class AutoMethods {
 		navX = new AHRS(SPI.Port.kMXP);
 
 		// methods to be called in robotInit
-		putAutoOptions();
+//		putAutoOptions();
 		autoReset();
 	}
 
