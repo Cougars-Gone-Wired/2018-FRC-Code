@@ -54,7 +54,7 @@ public class AutoPrograms extends AutoMethods{
 	
 	private double turnTestAngle;
 	
-	static final double GYRO_CONSTANT = 0;
+	static final double GYRO_CONSTANT = 0.03;
 	
 	static final double TURNING_GYRO_OFFSET = 70;
 	static final double TURNING_GYRO_OFFSET2 = 10;
@@ -92,7 +92,7 @@ public class AutoPrograms extends AutoMethods{
 		SmartDashboard.putNumber("Middle Switch Left Turn Angle 2", 90);
 		SmartDashboard.putNumber("Middle Switch Left Forward Distance 3", 30);
 		
-		SmartDashboard.putNumber("Middle Switch Right Forward Distance", 85);
+		SmartDashboard.putNumber("Middle Switch Right Forward Distance", 42);
 		
 //		SmartDashboard.putNumber("Middle Exchange Forward Distance 1", 48);
 //		SmartDashboard.putNumber("Middle Exchnage Turn Angle 1", -90);
@@ -100,7 +100,7 @@ public class AutoPrograms extends AutoMethods{
 //		SmartDashboard.putNumber("Middle Exchange Turn Angle 2", 90);
 //		SmartDashboard.putNumber("Middle Exchange Forward Distance 3", 72);
 		
-		SmartDashboard.putNumber("Middle Cross Line Forward Distance", 85);
+		SmartDashboard.putNumber("Middle Cross Line Forward Distance", 40); //85 practice
 		
 		SmartDashboard.putNumber("Right Switch Forward Distance 1", 100);
 //		SmartDashboard.putNumber("Right Switch Turn Angle", -90);
@@ -117,7 +117,7 @@ public class AutoPrograms extends AutoMethods{
 	}
 	
 	public void setAutoNumbers() {
-		autoDriveSpeed = SmartDashboard.getNumber("Auto Drive Speed", 1);
+		autoDriveSpeed = Utility.invertDouble(SmartDashboard.getNumber("Auto Drive Speed", 1));
 		autoTurnSpeed = SmartDashboard.getNumber("Auto Turn Speed", .75);
 		autoDelay = SmartDashboard.getNumber("Auto Delay", 0);
 		
@@ -142,7 +142,7 @@ public class AutoPrograms extends AutoMethods{
 		middleSwitchLeftTurnAngle2 = SmartDashboard.getNumber("Middle Switch Left Turn Angle 2", 90);
 		middleSwitchLeftForwardDistance3 = SmartDashboard.getNumber("Middle Switch Left Forward Distance 3", 30);
 		
-		middleSwitchRightForwardDistance = SmartDashboard.getNumber("Middle Switch Right Forward Distance", 85);
+		middleSwitchRightForwardDistance = SmartDashboard.getNumber("Middle Switch Right Forward Distance", 42);
 		
 		middleExchangeForwardDistance1 = SmartDashboard.getNumber("Middle Exchange Forward Distance 1", 36);
 		middleExchangeTurnAngle1 = SmartDashboard.getNumber("Middle Exchange Turn Angle 1", 90);
@@ -150,8 +150,7 @@ public class AutoPrograms extends AutoMethods{
 		middleExchangeTurnAngle2 = SmartDashboard.getNumber("Middle Exchange Turn Angle 2", 90);
 		middleExchangeForwardDistance3 = SmartDashboard.getNumber("Middle Exchange Forward Distance 3", 36);
 		
-		middleCrossLineForwardDistance = SmartDashboard.getNumber("Middle Cross Line Forward Distance", 85);
-		
+		middleCrossLineForwardDistance = SmartDashboard.getNumber("Middle Cross Line Forward Distance", 40); //85 practice
 		rightSwitchForwardDistance1 = SmartDashboard.getNumber("Right Switch Forward Distance 1", 150);
 		rightSwitchTurnAngle = SmartDashboard.getNumber("Right Switch Turn Angle", -90);
 		rightSwitchForwardDistance2 = SmartDashboard.getNumber("Right Switch Forward Distance 2", 24);
@@ -168,9 +167,8 @@ public class AutoPrograms extends AutoMethods{
 	
 	public void gyroCorrect() {
 		double angle = navX.getAngle();
-		System.out.println(angle);
-		robotDrive.curvatureDrive(SmartDashboardSettings.autoDriveSpeed, angle * GYRO_CONSTANT, false);
-		
+		System.out.println("Gyro: " + angle);
+		robotDrive.curvatureDrive(autoDriveSpeed, angle * GYRO_CONSTANT, false);
 	}
 	
 	public void setEncoderValues() {
@@ -532,14 +530,14 @@ public class AutoPrograms extends AutoMethods{
 			}
 			break;
 		case DROP_CUBE:
-			if (outtakeTimer.get() < 5) {
+//			if (outtakeTimer.get() < 5) {
 				leftIntakeMotor.set(1);
 				rightIntakeMotor.set(-1);
-			} else {
-				outtakeTimer.stop();
-				leftIntakeMotor.set(0);
-				rightIntakeMotor.set(0);
-			}
+//			} else {
+//				outtakeTimer.stop();
+//				leftIntakeMotor.set(0);
+//				rightIntakeMotor.set(0);
+//			}
 			break;
 		}
 	}
@@ -627,7 +625,7 @@ public class AutoPrograms extends AutoMethods{
 			break;
 		case DRIVING_FORWARD:
 //			System.out.println(SmartDashboard.getNumber("Encoder Average Inches", encoderAverageInches));
-//			System.out.println("Encoders:" + encoderAverage);
+			System.out.println("Encoders: " + encoderAverageInches);
 //			System.out.println("Distance" + middleCrossLineForwardDistance);
 			if (encoderAverageInches <= middleCrossLineForwardDistance) {
 				gyroCorrect();
@@ -863,4 +861,14 @@ public class AutoPrograms extends AutoMethods{
 //			}
 		}
 	}
+
+	public double getMiddleCrossLineForwardDistance() {
+		return middleCrossLineForwardDistance;
+	}
+
+	public void setMiddleCrossLineForwardDistance(double middleCrossLineForwardDistance) {
+		this.middleCrossLineForwardDistance = middleCrossLineForwardDistance;
+	}
+	
+	
 }

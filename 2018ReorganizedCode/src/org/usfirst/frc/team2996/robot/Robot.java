@@ -107,12 +107,12 @@ public class Robot extends IterativeRobot {
 //		runner = new StateRunner(this);
 
 		// constants = new Constants();
-		if(robotLogger != null){
-			robotLogger.halt();
-		}
-
-		robotLogger = new RobotLogger(this);
-		new Thread(robotLogger).start();
+//		if(robotLogger != null){
+//			robotLogger.halt();
+//		}
+//
+//		robotLogger = new RobotLogger(this);
+//		new Thread(robotLogger).start();
 
 		// static methods that need to be called in robotInit
 		SmartDashboardSettings.displaySettings(); // put things on the SmartDashboard
@@ -131,10 +131,10 @@ public class Robot extends IterativeRobot {
 
 		autoPrograms.putAutoNumbers();
 		
-		CameraServer camera = CameraServer.getInstance();
+		//CameraServer camera = CameraServer.getInstance();
 //		camera.startAutomaticCapture();
-		UsbCamera usbCam1 = camera.startAutomaticCapture("usb1", 0);
-//		usbCam1.setResolution(120, 80);
+		//UsbCamera usbCam1 = camera.startAutomaticCapture("usb1", 0);
+		//usbCam1.setResolution(120, 80);
 //		VideoMode mode1 = usbCam1.getVideoMode();
 	}
 
@@ -153,6 +153,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		elevatorChangeGear.setGearState(true);
+		driveChangeGear.setGearState(true);
 		autoPrograms.setAutoNumbers();
 //		autoMethods.getInfo(); // get the field color configuration
 		autoPrograms.autoReset();
@@ -171,7 +172,12 @@ public class Robot extends IterativeRobot {
 		currentPosition = position.getSelected(); // these get the values chosen on the SmartDashboard
 //		currentPriority = priority.getSelected();
 		fieldConfiguration = DriverStation.getInstance().getGameSpecificMessage();
-
+		System.out.println(fieldConfiguration);
+		
+		SmartDashboard.putString("Current Position", currentPosition);
+		SmartDashboard.putNumber("Current Position Length", currentPosition.length());
+		SmartDashboard.putString("Field Config", fieldConfiguration);
+		SmartDashboard.putNumber("Field Config Length", fieldConfiguration.length());
 //		switch (currentPosition) {
 //		case MIDDLE:
 //			switch (currentPriority) {
@@ -307,6 +313,7 @@ public class Robot extends IterativeRobot {
 		
 		switch (currentPosition) {
 		case MIDDLE:
+			System.out.println("middle");
 			switch (fieldConfiguration) {
 			case LLL:
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
@@ -325,15 +332,18 @@ public class Robot extends IterativeRobot {
 				break;
 			}
 		case RIGHT:
+			System.out.println("right");
 			switch (fieldConfiguration) {
 			case LLL:
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+//				autoPrograms.setMiddleCrossLineForwardDistance(100);
 				break;
 			case RRR:
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
 			case LRL:
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+//				autoPrograms.setMiddleCrossLineForwardDistance(100);
 				break;
 			case RLR:
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
@@ -343,15 +353,18 @@ public class Robot extends IterativeRobot {
 				break;
 			}
 		case LEFT:
+			System.out.println("left");
 			switch (fieldConfiguration) {
 			case LLL:
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+//				autoPrograms.setMiddleCrossLineForwardDistance(100);
 				break;
 			case RRR:
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
 			case LRL:
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+//				autoPrograms.setMiddleCrossLineForwardDistance(100);
 				break;
 			case RLR:
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
@@ -361,10 +374,12 @@ public class Robot extends IterativeRobot {
 				break;
 			}
 		default: //Unknown position
+			System.out.println("default");
 			autoChanger = autoStates.MIDDLE_CROSS_LINE;
+			autoPrograms.setMiddleCrossLineForwardDistance(40);
 			break;
 		}
-//		autoChanger = autoStates.MIDDLE_CROSS_LINE; // temporary testing for specific auto programs
+		autoChanger = autoStates.MIDDLE_SWITCH_RIGHT; // temporary testing for specific auto programs
 	}
 
 	/**
@@ -459,7 +474,7 @@ public class Robot extends IterativeRobot {
 		
 //		SmartDashboard.putBoolean("Elavator Solenoid", elevator.getChangeElevatorGearSolenoid().get());
 		elevatorChangeGear.changeGear(joysticks.isElevatorHighGearButton(), joysticks.isElevatorLowGearButton()); // method for changing gears on the elevator
-		driveChangeGear.changeGear(joysticks.isDriveHighGearButton(), joysticks.isDriveLowGearButton()); // method for changing gears on the drive train
+		driveChangeGear.changeGear(joysticks.isDriveLowGearButton(), joysticks.isDriveHighGearButton()); // method for changing gears on the drive train
 		
 //		robotLogger.run();
 //		recorder.record(); // record the states of the motors and solenoids every 20 milliseconds
