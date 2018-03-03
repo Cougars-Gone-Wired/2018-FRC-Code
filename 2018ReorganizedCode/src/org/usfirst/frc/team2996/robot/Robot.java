@@ -161,6 +161,9 @@ public class Robot extends IterativeRobot {
 		autoPrograms.startDelayTimer(); // start timer to possibly be used to delay auto
 
 		autoPrograms.resetStates();
+		
+		intake.getLeftIntakeMotor().set(0);
+		intake.getRightIntakeMotor().set(0);
 //		runner.counterInitialize(); // set counter to 0
 //		try {
 //			// read the gson file for the selected gson auto
@@ -310,7 +313,7 @@ public class Robot extends IterativeRobot {
 //			autoChanger = autoStates.MIDDLE_CROSS_LINE;
 //			break;
 //		}
-		
+		System.out.println("current position " + currentPosition);
 		switch (currentPosition) {
 		case MIDDLE:
 			System.out.println("middle");
@@ -331,6 +334,7 @@ public class Robot extends IterativeRobot {
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
 			}
+			break;
 		case RIGHT:
 			System.out.println("right");
 			switch (fieldConfiguration) {
@@ -352,6 +356,7 @@ public class Robot extends IterativeRobot {
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
 			}
+			break;
 		case LEFT:
 			System.out.println("left");
 			switch (fieldConfiguration) {
@@ -373,17 +378,18 @@ public class Robot extends IterativeRobot {
 				autoChanger = autoStates.MIDDLE_CROSS_LINE;
 				break;
 			}
+			break;
 		default: //Unknown position
 			System.out.println("default");
 			autoChanger = autoStates.MIDDLE_CROSS_LINE;
 			autoPrograms.setMiddleCrossLineForwardDistance(40);
 			break;
 		}
-		autoChanger = autoStates.MIDDLE_SWITCH_RIGHT; // temporary testing for specific auto programs
+		autoChanger = autoStates.TURN_RIGHT; // temporary testing for specific auto programs
 	}
 
 	/**
-	 * This function is called periodically during autonomous.
+	 * This function is called periodically during autonomous.y
 	 */
 	@Override
 	public void autonomousPeriodic() {
@@ -444,6 +450,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		elevatorChangeGear.setGearState(true);
+		driveChangeGear.setGearState(false);
 		autoMethods.getNavX().reset();
 		
 		intake.getLeftIntakeMotor().set(0);

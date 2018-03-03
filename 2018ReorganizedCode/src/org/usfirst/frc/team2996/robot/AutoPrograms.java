@@ -56,11 +56,13 @@ public class AutoPrograms extends AutoMethods{
 	
 	static final double GYRO_CONSTANT = 0.03;
 	
-	static final double TURNING_GYRO_OFFSET = 70;
-	static final double TURNING_GYRO_OFFSET2 = 10;
-	static final double TURNING_GYRO_OFFSET3 = 2;
+	static final double TURNING_GYRO_OFFSET = 70;//good
+	static final double TURNING_GYRO_OFFSET2 = 10;//good
+	static final double TURNING_GYRO_OFFSET3 = 2;//good
 	
 	boolean turningStage2 = false;
+	
+	int pauseCounter = 0;
 	
 	public AutoPrograms(Robot robot) {
 		super(robot);
@@ -71,9 +73,9 @@ public class AutoPrograms extends AutoMethods{
 		SmartDashboard.putNumber("Auto Turn Speed", .75);
 		SmartDashboard.putNumber("Auto Delay", 0);
 		
-		SmartDashboard.putNumber("Left Switch Forward Distance 1", 100);
+		SmartDashboard.putNumber("Left Switch Forward Distance 1", 60);
 //		SmartDashboard.putNumber("Left Switch Turn Angle", 90);
-		SmartDashboard.putNumber("Left Switch Forward Distance 2", 10);
+		SmartDashboard.putNumber("Left Switch Forward Distance 2", 5);
 //		
 //		SmartDashboard.putNumber("Left Scale Forward Distance", 200);
 //		SmartDashboard.putNumber("Left Scale Lift Time", 1);
@@ -84,7 +86,7 @@ public class AutoPrograms extends AutoMethods{
 //		SmartDashboard.putNumber("Left Exchange Turn Angle 2", 90);
 //		SmartDashboard.putNumber("Left Exchange Forward Distance 3", 72);
 //		
-		SmartDashboard.putNumber("Left Cross Line Forward Distance", 100);
+		SmartDashboard.putNumber("Left Cross Line Forward Distance", 60);
 
 		SmartDashboard.putNumber("Middle Switch Left Forward Distance 1", 25);
 		SmartDashboard.putNumber("Middle Switch Left Turn Angle 1", -90);
@@ -92,7 +94,7 @@ public class AutoPrograms extends AutoMethods{
 		SmartDashboard.putNumber("Middle Switch Left Turn Angle 2", 90);
 		SmartDashboard.putNumber("Middle Switch Left Forward Distance 3", 30);
 		
-		SmartDashboard.putNumber("Middle Switch Right Forward Distance", 42);
+		SmartDashboard.putNumber("Middle Switch Right Forward Distance", 47);
 		
 //		SmartDashboard.putNumber("Middle Exchange Forward Distance 1", 48);
 //		SmartDashboard.putNumber("Middle Exchnage Turn Angle 1", -90);
@@ -100,16 +102,16 @@ public class AutoPrograms extends AutoMethods{
 //		SmartDashboard.putNumber("Middle Exchange Turn Angle 2", 90);
 //		SmartDashboard.putNumber("Middle Exchange Forward Distance 3", 72);
 		
-		SmartDashboard.putNumber("Middle Cross Line Forward Distance", 40); //85 practice
+		SmartDashboard.putNumber("Middle Cross Line Forward Distance", 42); //85 practice
 		
-		SmartDashboard.putNumber("Right Switch Forward Distance 1", 100);
+		SmartDashboard.putNumber("Right Switch Forward Distance 1", 60);
 //		SmartDashboard.putNumber("Right Switch Turn Angle", -90);
-		SmartDashboard.putNumber("Right Switch Forward Distance 2", 10);
+		SmartDashboard.putNumber("Right Switch Forward Distance 2", 5);
 //		
 //		SmartDashboard.putNumber("Right Scale Forward Distance", 200);
 //		SmartDashboard.putNumber("Right Scale Lift Time", 1);
 //		
-		SmartDashboard.putNumber("Right Cross Line Forward Distance", 100);
+		SmartDashboard.putNumber("Right Cross Line Forward Distance", 60);
 //		
 		SmartDashboard.putNumber("Turn Angle", 90);
 		
@@ -121,9 +123,9 @@ public class AutoPrograms extends AutoMethods{
 		autoTurnSpeed = SmartDashboard.getNumber("Auto Turn Speed", .75);
 		autoDelay = SmartDashboard.getNumber("Auto Delay", 0);
 		
-		leftSwitchForwardDistance1 = SmartDashboard.getNumber("Left Switch Forward Distance 1", 150);
-		leftSwitchTurnAngle = SmartDashboard.getNumber("Left Switch Turn Angle", 90);
-		leftSwitchForwardDistance2 = SmartDashboard.getNumber("Left Switch Forward Distance 2", 24);
+		leftSwitchForwardDistance1 = SmartDashboard.getNumber("Left Switch Forward Distance 1", 60);
+//		leftSwitchTurnAngle = SmartDashboard.getNumber("Left Switch Turn Angle", 90);
+		leftSwitchForwardDistance2 = SmartDashboard.getNumber("Left Switch Forward Distance 2", 5);
 		
 		leftScaleForwardDistance = SmartDashboard.getNumber("Left Scale Forward Distance", 200);
 		leftScaleLiftTime = SmartDashboard.getNumber("Left Scale Lift Time", 1);
@@ -134,7 +136,7 @@ public class AutoPrograms extends AutoMethods{
 		leftExchangeTurnAngle2 = SmartDashboard.getNumber("Left Exchange Turn Angle 2", -90);
 		leftExchangeForwardDistance3 = SmartDashboard.getNumber("Left Exchange Forward Distance 3", 36);
 		
-		leftCrossLineForwardDistance = SmartDashboard.getNumber("Left Cross Line Forward Distance", 130);
+		leftCrossLineForwardDistance = SmartDashboard.getNumber("Left Cross Line Forward Distance", 60);
 		
 		middleSwitchLeftForwardDistance1 = SmartDashboard.getNumber("Middle Switch Left Forward Distance 1", 25);
 		middleSwitchLeftTurnAngle1 = SmartDashboard.getNumber("Middle Switch Left Turn Angle 1", -90);
@@ -142,7 +144,7 @@ public class AutoPrograms extends AutoMethods{
 		middleSwitchLeftTurnAngle2 = SmartDashboard.getNumber("Middle Switch Left Turn Angle 2", 90);
 		middleSwitchLeftForwardDistance3 = SmartDashboard.getNumber("Middle Switch Left Forward Distance 3", 30);
 		
-		middleSwitchRightForwardDistance = SmartDashboard.getNumber("Middle Switch Right Forward Distance", 42);
+		middleSwitchRightForwardDistance = SmartDashboard.getNumber("Middle Switch Right Forward Distance", 47);
 		
 		middleExchangeForwardDistance1 = SmartDashboard.getNumber("Middle Exchange Forward Distance 1", 36);
 		middleExchangeTurnAngle1 = SmartDashboard.getNumber("Middle Exchange Turn Angle 1", 90);
@@ -150,15 +152,16 @@ public class AutoPrograms extends AutoMethods{
 		middleExchangeTurnAngle2 = SmartDashboard.getNumber("Middle Exchange Turn Angle 2", 90);
 		middleExchangeForwardDistance3 = SmartDashboard.getNumber("Middle Exchange Forward Distance 3", 36);
 		
-		middleCrossLineForwardDistance = SmartDashboard.getNumber("Middle Cross Line Forward Distance", 40); //85 practice
-		rightSwitchForwardDistance1 = SmartDashboard.getNumber("Right Switch Forward Distance 1", 150);
-		rightSwitchTurnAngle = SmartDashboard.getNumber("Right Switch Turn Angle", -90);
-		rightSwitchForwardDistance2 = SmartDashboard.getNumber("Right Switch Forward Distance 2", 24);
+		middleCrossLineForwardDistance = SmartDashboard.getNumber("Middle Cross Line Forward Distance", 42); //85 practice
+		
+		rightSwitchForwardDistance1 = SmartDashboard.getNumber("Right Switch Forward Distance 1", 60);
+//		rightSwitchTurnAngle = SmartDashboard.getNumber("Right Switch Turn Angle", -90);
+		rightSwitchForwardDistance2 = SmartDashboard.getNumber("Right Switch Forward Distance 2", 5);
 		
 		rightScaleForwardDistance = SmartDashboard.getNumber("Right Scale Forward Distance", 200);
 		rightScaleLiftTime = SmartDashboard.getNumber("Right Scale Lift Time", 1);
 		
-		rightCrossLineForwardDistance = SmartDashboard.getNumber("Right Cross Line Forward Distance", 130);
+		rightCrossLineForwardDistance = SmartDashboard.getNumber("Right Cross Line Forward Distance", 60);
 		
 		turnAngle = SmartDashboard.getNumber("Turn Angle", 90);
 		
@@ -193,6 +196,7 @@ public class AutoPrograms extends AutoMethods{
 		frontLeftSensors.setQuadraturePosition(0, 10);
 		frontRightSensors.setQuadraturePosition(0, 10);
 		navX.reset();
+		pauseCounter = 0;
 	}
 	
 	public void startDelayTimer() {
@@ -224,7 +228,7 @@ public class AutoPrograms extends AutoMethods{
 	
 	
 	public enum LeftSwitchStates {
-		DELAY, DRIVING_FORWARD, TURNING, DRIVING_FORWARD_AGAIN, DROP_CUBE
+		DELAY, DRIVING_FORWARD, TURN_PAUSE1, TURNING, TURN_PAUSE2, DRIVING_FORWARD_AGAIN, CUBE_PAUSE, DROP_CUBE
 	}
 	
 	LeftSwitchStates currentLeftSwitchState = LeftSwitchStates.DELAY;
@@ -232,17 +236,26 @@ public class AutoPrograms extends AutoMethods{
 	public void leftSwitch() {
 		switch (currentLeftSwitchState) {
 		case DELAY:
-			if (delayTimer.get() > autoDelay) {
+			if (delayTimer.get() >= autoDelay) {
 				currentLeftSwitchState = LeftSwitchStates.DRIVING_FORWARD;
 			}
 			break;
 		case DRIVING_FORWARD:
-			if (encoderAverageInches < leftSwitchForwardDistance1) {
+			if (encoderAverageInches <= leftSwitchForwardDistance1) {
 				gyroCorrect();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 				navX.reset();
+				currentTurningState = TurningStates.HIGH_SPEED;
 				doneTurning = false;
+				pauseCounter = 0;
+				currentLeftSwitchState = LeftSwitchStates.TURN_PAUSE1;
+			}
+			break;
+		case TURN_PAUSE1:
+			if (pauseCounter < 40){
+				pauseCounter++;
+			} else {
 				currentLeftSwitchState = LeftSwitchStates.TURNING;
 			}
 			break;
@@ -252,27 +265,43 @@ public class AutoPrograms extends AutoMethods{
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 				resetEncoder();
+				pauseCounter = 0;
+				currentLeftSwitchState = LeftSwitchStates.TURN_PAUSE2;
+			}
+			break;
+		case TURN_PAUSE2:
+			if (pauseCounter < 40){
+				pauseCounter++;
+			} else {
 				currentLeftSwitchState = LeftSwitchStates.DRIVING_FORWARD_AGAIN;
 			}
 			break;
 		case DRIVING_FORWARD_AGAIN:
-			if (encoderAverageInches < leftSwitchForwardDistance2) {
+			if (encoderAverageInches <= leftSwitchForwardDistance2) {
 				gyroCorrect();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 				outtakeTimer.start();
+				pauseCounter = 0;
+				currentLeftSwitchState = LeftSwitchStates.CUBE_PAUSE;
+			}
+			break;
+		case CUBE_PAUSE:
+			if (pauseCounter < 60){
+				pauseCounter++;
+			} else {
 				currentLeftSwitchState = LeftSwitchStates.DROP_CUBE;
 			}
 			break;
 		case DROP_CUBE:
-			if (outtakeTimer.get() < 5) {
+//			if (outtakeTimer.get() < 5) {
 				leftIntakeMotor.set(1);
 				rightIntakeMotor.set(-1);
-			} else {
-				outtakeTimer.stop();
-				leftIntakeMotor.set(0);
-				rightIntakeMotor.set(0);
-			}
+//			} else {
+//				outtakeTimer.stop();
+//				leftIntakeMotor.set(0);
+//				rightIntakeMotor.set(0);
+//			}
 			break;
 		}
 	}
@@ -508,7 +537,7 @@ public class AutoPrograms extends AutoMethods{
 	
 	
 	public enum MiddleSwitchRightStates {
-		DELAY, DRIVING_FORWARD, DROP_CUBE
+		DELAY, DRIVING_FORWARD, CUBE_PAUSE, DROP_CUBE
 	}
 	
 	MiddleSwitchRightStates currentMiddleSwitchRightState = MiddleSwitchRightStates.DELAY;
@@ -526,6 +555,14 @@ public class AutoPrograms extends AutoMethods{
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 				outtakeTimer.start();
+				pauseCounter = 0;
+				currentMiddleSwitchRightState = MiddleSwitchRightStates.CUBE_PAUSE;
+			}
+			break;
+		case CUBE_PAUSE:
+			if (pauseCounter < 60){
+				pauseCounter++;
+			} else {
 				currentMiddleSwitchRightState = MiddleSwitchRightStates.DROP_CUBE;
 			}
 			break;
@@ -638,7 +675,7 @@ public class AutoPrograms extends AutoMethods{
 	
 	
 	public enum RightSwitchStates {
-		DELAY, DRIVING_FORWARD, TURNING, DRIVING_FORWARD_AGAIN, DROP_CUBE
+		DELAY, DRIVING_FORWARD, TURN_PAUSE1, TURNING, TURN_PAUSE2, DRIVING_FORWARD_AGAIN, CUBE_PAUSE, DROP_CUBE
 	}
 	
 	RightSwitchStates currentRightSwitchState = RightSwitchStates.DELAY;
@@ -646,17 +683,26 @@ public class AutoPrograms extends AutoMethods{
 	public void rightSwitch() {
 		switch (currentRightSwitchState) {
 		case DELAY:
-			if (delayTimer.get() > autoDelay) {
+			if (delayTimer.get() >= autoDelay) {
 				currentRightSwitchState = RightSwitchStates.DRIVING_FORWARD;
 			}
 			break;
 		case DRIVING_FORWARD:
-			if (encoderAverageInches < rightSwitchForwardDistance1) {
+			if (encoderAverageInches <= rightSwitchForwardDistance1) {
 				gyroCorrect();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 				navX.reset();
+				currentTurningState = TurningStates.HIGH_SPEED;
 				doneTurning = false;
+				pauseCounter = 0;
+				currentRightSwitchState = RightSwitchStates.TURN_PAUSE1;
+			}
+			break;
+		case TURN_PAUSE1:
+			if (pauseCounter < 40){
+				pauseCounter++;
+			} else {
 				currentRightSwitchState = RightSwitchStates.TURNING;
 			}
 			break;
@@ -666,6 +712,14 @@ public class AutoPrograms extends AutoMethods{
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 				resetEncoder();
+				currentRightSwitchState = RightSwitchStates.TURN_PAUSE2;
+				
+			}
+			break;
+		case TURN_PAUSE2:
+			if (pauseCounter < 40){
+				pauseCounter++;
+			} else {
 				currentRightSwitchState = RightSwitchStates.DRIVING_FORWARD_AGAIN;
 			}
 			break;
@@ -675,18 +729,26 @@ public class AutoPrograms extends AutoMethods{
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 				outtakeTimer.start();
+				pauseCounter = 0;
+				currentRightSwitchState = RightSwitchStates.CUBE_PAUSE;
+			}
+			break;
+		case CUBE_PAUSE:
+			if (pauseCounter < 60){
+				pauseCounter++;
+			} else {
 				currentRightSwitchState = RightSwitchStates.DROP_CUBE;
 			}
 			break;
 		case DROP_CUBE:
-			if (outtakeTimer.get() < 5) {
+//			if (outtakeTimer.get() < 5) {
 				leftIntakeMotor.set(1);
 				rightIntakeMotor.set(-1);
-			} else {
-				outtakeTimer.stop();
-				leftIntakeMotor.set(0);
-				rightIntakeMotor.set(0);
-			}
+//			} else {
+//				outtakeTimer.stop();
+//				leftIntakeMotor.set(0);
+//				rightIntakeMotor.set(0);
+//			}
 			break;
 		}
 	}
