@@ -319,13 +319,13 @@ public class Robot extends IterativeRobot {
 			System.out.println("middle");
 			switch (fieldConfiguration) {
 			case LLL:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				autoChanger = autoStates.MIDDLE_SWITCH_LEFT;
 				break;
 			case RRR:
 				autoChanger = autoStates.MIDDLE_SWITCH_RIGHT;
 				break;
 			case LRL:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				autoChanger = autoStates.MIDDLE_SWITCH_LEFT;
 				break;
 			case RLR:
 				autoChanger = autoStates.MIDDLE_SWITCH_RIGHT;
@@ -339,21 +339,21 @@ public class Robot extends IterativeRobot {
 			System.out.println("right");
 			switch (fieldConfiguration) {
 			case LLL:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				autoChanger = autoStates.RIGHT_CROSS_LINE;
 //				autoPrograms.setMiddleCrossLineForwardDistance(100);
 				break;
 			case RRR:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				autoChanger = autoStates.RIGHT_CROSS_LINE;
 				break;
 			case LRL:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				autoChanger = autoStates.RIGHT_CROSS_LINE;
 //				autoPrograms.setMiddleCrossLineForwardDistance(100);
 				break;
 			case RLR:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				autoChanger = autoStates.RIGHT_CROSS_LINE;
 				break;
 			default:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				autoChanger = autoStates.RIGHT_CROSS_LINE;
 				break;
 			}
 			break;
@@ -361,31 +361,32 @@ public class Robot extends IterativeRobot {
 			System.out.println("left");
 			switch (fieldConfiguration) {
 			case LLL:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				autoChanger = autoStates.LEFT_CROSS_LINE;
 //				autoPrograms.setMiddleCrossLineForwardDistance(100);
 				break;
 			case RRR:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				autoChanger = autoStates.LEFT_CROSS_LINE;
 				break;
 			case LRL:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				autoChanger = autoStates.LEFT_CROSS_LINE;
 //				autoPrograms.setMiddleCrossLineForwardDistance(100);
 				break;
 			case RLR:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				autoChanger = autoStates.LEFT_CROSS_LINE;
 				break;
 			default:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+				autoChanger = autoStates.LEFT_CROSS_LINE;
 				break;
 			}
 			break;
 		default: //Unknown position
 			System.out.println("default");
 			autoChanger = autoStates.MIDDLE_CROSS_LINE;
-			autoPrograms.setMiddleCrossLineForwardDistance(40);
+//			autoPrograms.setMiddleCrossLineForwardDistance(40);
 			break;
 		}
-		autoChanger = autoStates.TURN_RIGHT; // temporary testing for specific auto programs
+//		autoPrograms.setMiddleCrossLineForwardDistance(90);
+//		autoChanger = autoStates.MIDDLE_SWITCH_LEFT; // temporary testing for specific auto programs
 	}
 
 	/**

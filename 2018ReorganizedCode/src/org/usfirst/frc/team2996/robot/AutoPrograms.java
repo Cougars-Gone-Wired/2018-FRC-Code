@@ -73,9 +73,9 @@ public class AutoPrograms extends AutoMethods{
 		SmartDashboard.putNumber("Auto Turn Speed", .75);
 		SmartDashboard.putNumber("Auto Delay", 0);
 		
-		SmartDashboard.putNumber("Left Switch Forward Distance 1", 60);
+		SmartDashboard.putNumber("Left Switch Forward Distance 1", 68);
 //		SmartDashboard.putNumber("Left Switch Turn Angle", 90);
-		SmartDashboard.putNumber("Left Switch Forward Distance 2", 5);
+		SmartDashboard.putNumber("Left Switch Forward Distance 2", 10);
 //		
 //		SmartDashboard.putNumber("Left Scale Forward Distance", 200);
 //		SmartDashboard.putNumber("Left Scale Lift Time", 1);
@@ -86,15 +86,15 @@ public class AutoPrograms extends AutoMethods{
 //		SmartDashboard.putNumber("Left Exchange Turn Angle 2", 90);
 //		SmartDashboard.putNumber("Left Exchange Forward Distance 3", 72);
 //		
-		SmartDashboard.putNumber("Left Cross Line Forward Distance", 60);
+		SmartDashboard.putNumber("Left Cross Line Forward Distance", 100);
 
-		SmartDashboard.putNumber("Middle Switch Left Forward Distance 1", 25);
-		SmartDashboard.putNumber("Middle Switch Left Turn Angle 1", -90);
-		SmartDashboard.putNumber("Middle Switch Left Forward Distance 2", 40);
-		SmartDashboard.putNumber("Middle Switch Left Turn Angle 2", 90);
-		SmartDashboard.putNumber("Middle Switch Left Forward Distance 3", 30);
+		SmartDashboard.putNumber("Middle Switch Left Forward Distance 1", 12);
+//		SmartDashboard.putNumber("Middle Switch Left Turn Angle 1", -90);
+		SmartDashboard.putNumber("Middle Switch Left Forward Distance 2", 52);
+//		SmartDashboard.putNumber("Middle Switch Left Turn Angle 2", 90);
+		SmartDashboard.putNumber("Middle Switch Left Forward Distance 3", 36);
 		
-		SmartDashboard.putNumber("Middle Switch Right Forward Distance", 47);
+		SmartDashboard.putNumber("Middle Switch Right Forward Distance", 48);
 		
 //		SmartDashboard.putNumber("Middle Exchange Forward Distance 1", 48);
 //		SmartDashboard.putNumber("Middle Exchnage Turn Angle 1", -90);
@@ -104,14 +104,14 @@ public class AutoPrograms extends AutoMethods{
 		
 		SmartDashboard.putNumber("Middle Cross Line Forward Distance", 42); //85 practice
 		
-		SmartDashboard.putNumber("Right Switch Forward Distance 1", 60);
+		SmartDashboard.putNumber("Right Switch Forward Distance 1", 68);
 //		SmartDashboard.putNumber("Right Switch Turn Angle", -90);
-		SmartDashboard.putNumber("Right Switch Forward Distance 2", 5);
+		SmartDashboard.putNumber("Right Switch Forward Distance 2", 10);
 //		
 //		SmartDashboard.putNumber("Right Scale Forward Distance", 200);
 //		SmartDashboard.putNumber("Right Scale Lift Time", 1);
 //		
-		SmartDashboard.putNumber("Right Cross Line Forward Distance", 60);
+		SmartDashboard.putNumber("Right Cross Line Forward Distance", 100);
 //		
 		SmartDashboard.putNumber("Turn Angle", 90);
 		
@@ -136,13 +136,13 @@ public class AutoPrograms extends AutoMethods{
 		leftExchangeTurnAngle2 = SmartDashboard.getNumber("Left Exchange Turn Angle 2", -90);
 		leftExchangeForwardDistance3 = SmartDashboard.getNumber("Left Exchange Forward Distance 3", 36);
 		
-		leftCrossLineForwardDistance = SmartDashboard.getNumber("Left Cross Line Forward Distance", 60);
+		leftCrossLineForwardDistance = SmartDashboard.getNumber("Left Cross Line Forward Distance", 100);
 		
-		middleSwitchLeftForwardDistance1 = SmartDashboard.getNumber("Middle Switch Left Forward Distance 1", 25);
-		middleSwitchLeftTurnAngle1 = SmartDashboard.getNumber("Middle Switch Left Turn Angle 1", -90);
-		middleSwitchLeftForwardDistance2 = SmartDashboard.getNumber("Middle Switch Left Forward Distance 2", 40);
-		middleSwitchLeftTurnAngle2 = SmartDashboard.getNumber("Middle Switch Left Turn Angle 2", 90);
-		middleSwitchLeftForwardDistance3 = SmartDashboard.getNumber("Middle Switch Left Forward Distance 3", 30);
+		middleSwitchLeftForwardDistance1 = SmartDashboard.getNumber("Middle Switch Left Forward Distance 1", 12);
+//		middleSwitchLeftTurnAngle1 = SmartDashboard.getNumber("Middle Switch Left Turn Angle 1", -90);
+		middleSwitchLeftForwardDistance2 = SmartDashboard.getNumber("Middle Switch Left Forward Distance 2", 52);
+//		middleSwitchLeftTurnAngle2 = SmartDashboard.getNumber("Middle Switch Left Turn Angle 2", 90);
+		middleSwitchLeftForwardDistance3 = SmartDashboard.getNumber("Middle Switch Left Forward Distance 3", 36);
 		
 		middleSwitchRightForwardDistance = SmartDashboard.getNumber("Middle Switch Right Forward Distance", 47);
 		
@@ -161,7 +161,7 @@ public class AutoPrograms extends AutoMethods{
 		rightScaleForwardDistance = SmartDashboard.getNumber("Right Scale Forward Distance", 200);
 		rightScaleLiftTime = SmartDashboard.getNumber("Right Scale Lift Time", 1);
 		
-		rightCrossLineForwardDistance = SmartDashboard.getNumber("Right Cross Line Forward Distance", 60);
+		rightCrossLineForwardDistance = SmartDashboard.getNumber("Right Cross Line Forward Distance", 100);
 		
 		turnAngle = SmartDashboard.getNumber("Turn Angle", 90);
 		
@@ -217,6 +217,7 @@ public class AutoPrograms extends AutoMethods{
 		currentLeftCrossLineState = LeftCrossLineStates.DELAY;
 		
 		currentMiddleSwitchLeftState = MiddleSwitchLeftStates.DELAY;
+		System.out.println("Set");
 		currentMiddleSwitchRightState = MiddleSwitchRightStates.DELAY;
 		currentMiddleExchangeState = MiddleExchangeStates.DELAY;
 		currentMiddleCrossLineState = MiddleCrossLineStates.DELAY;
@@ -245,7 +246,6 @@ public class AutoPrograms extends AutoMethods{
 				gyroCorrect();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
-				navX.reset();
 				currentTurningState = TurningStates.HIGH_SPEED;
 				doneTurning = false;
 				pauseCounter = 0;
@@ -256,6 +256,7 @@ public class AutoPrograms extends AutoMethods{
 			if (pauseCounter < 40){
 				pauseCounter++;
 			} else {
+				navX.reset();
 				currentLeftSwitchState = LeftSwitchStates.TURNING;
 			}
 			break;
@@ -264,6 +265,7 @@ public class AutoPrograms extends AutoMethods{
 				rightTurn();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
+				navX.reset();
 				resetEncoder();
 				pauseCounter = 0;
 				currentLeftSwitchState = LeftSwitchStates.TURN_PAUSE2;
@@ -273,11 +275,13 @@ public class AutoPrograms extends AutoMethods{
 			if (pauseCounter < 40){
 				pauseCounter++;
 			} else {
+				navX.reset();
 				currentLeftSwitchState = LeftSwitchStates.DRIVING_FORWARD_AGAIN;
 			}
 			break;
 		case DRIVING_FORWARD_AGAIN:
 			if (encoderAverageInches <= leftSwitchForwardDistance2) {
+				System.out.println("Encoders: " + encoderAverageInches);
 				gyroCorrect();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
@@ -441,7 +445,7 @@ public class AutoPrograms extends AutoMethods{
 	
 	
 	public enum MiddleSwitchLeftStates {
-		DELAY, DRIVING_FORWARD1, TURNING1, DRIVING_FORWARD2, TURNING2, DRIVING_FORWARD3, DROP_CUBE
+		DELAY, DRIVING_FORWARD1, TURN_PAUSE1, TURNING1, TURN_PAUSE2, DRIVING_FORWARD2, TURN_PAUSE3, TURNING2, TURN_PAUSE4, DRIVING_FORWARD3, CUBE_PAUSE, DROP_CUBE
 	}
 	
 	MiddleSwitchLeftStates currentMiddleSwitchLeftState = MiddleSwitchLeftStates.DELAY;
@@ -449,88 +453,112 @@ public class AutoPrograms extends AutoMethods{
 	public void middleSwitchLeft() {
 		switch (currentMiddleSwitchLeftState) {
 		case DELAY:
-			if (delayTimer.get() > autoDelay) {
+			if (delayTimer.get() >= autoDelay) {
 				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.DRIVING_FORWARD1;
 			}
 			break;
 		case DRIVING_FORWARD1:
-			if (encoderAverageInches < middleSwitchLeftForwardDistance1) {
+			if (encoderAverageInches <= middleSwitchLeftForwardDistance1) {
 				gyroCorrect();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
+				currentTurningState = TurningStates.HIGH_SPEED;
+				doneTurning = false;
+				pauseCounter = 0;
+				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.TURN_PAUSE1;
+			}
+			break;
+		case TURN_PAUSE1:
+			if (pauseCounter < 40){
+				pauseCounter++;
+			} else {
 				navX.reset();
-				turningStage2 = false;
 				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.TURNING1;
 			}
 			break;
 		case TURNING1:
-			if (!turningStage2) {
-				if (navX.getAngle() > middleSwitchLeftTurnAngle1 + TURNING_GYRO_OFFSET) {
-					robotDrive.curvatureDrive(0, autoTurnSpeed, true);
-				} else if (navX.getAngle() > middleSwitchLeftTurnAngle1 + TURNING_GYRO_OFFSET2) {
-					robotDrive.curvatureDrive(0, .4, true);
-				} else {
-					turningStage2 = true;
-					robotDrive.curvatureDrive(0, 0, false);
-				} 
-			} else {
-				if (navX.getAngle() < (middleSwitchLeftTurnAngle1) - TURNING_GYRO_OFFSET3) {
-					robotDrive.curvatureDrive(0, -.2, true);
-				} else {
-					robotDrive.curvatureDrive(0, 0, false);
-					resetEncoder();
-					currentMiddleSwitchLeftState = MiddleSwitchLeftStates.DRIVING_FORWARD2;
-				}
-			}
-			break;
-		case DRIVING_FORWARD2:
-			if (encoderAverageInches < middleSwitchLeftForwardDistance2) {
-				gyroCorrect();
+			if (!doneTurning) {
+				leftTurn();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 				navX.reset();
-				turningStage2 = false;
+				resetEncoder();
+				pauseCounter = 0;
+				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.TURN_PAUSE2;
+			}
+			break;
+		case TURN_PAUSE2:
+			if (pauseCounter < 40){
+				pauseCounter++;
+			} else {
+				navX.reset();
+				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.DRIVING_FORWARD2;
+			}
+			break;
+		case DRIVING_FORWARD2:
+			if (encoderAverageInches <= middleSwitchLeftForwardDistance2) {
+				gyroCorrect();
+			} else {
+				robotDrive.curvatureDrive(0, 0, false);
+				currentTurningState = TurningStates.HIGH_SPEED;
+				doneTurning = false;
+				pauseCounter = 0;
+				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.TURN_PAUSE3;
+			}
+			break;
+		case TURN_PAUSE3:
+			if (pauseCounter < 40){
+				pauseCounter++;
+			} else {
+				navX.reset();
 				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.TURNING2;
 			}
 			break;
 		case TURNING2:
-			if (!turningStage2) {
-				if (navX.getAngle() < middleSwitchLeftTurnAngle2 - TURNING_GYRO_OFFSET) {
-					robotDrive.curvatureDrive(0, -autoTurnSpeed, true);
-				} else if (navX.getAngle() < middleSwitchLeftTurnAngle2 - TURNING_GYRO_OFFSET2) {
-					robotDrive.curvatureDrive(0, -.4, true);
-				} else {
-					turningStage2 = true;
-					robotDrive.curvatureDrive(0, 0, false);
-				} 
+			if (!doneTurning) {
+				rightTurn();
 			} else {
-				if (navX.getAngle() > (middleSwitchLeftTurnAngle2) + TURNING_GYRO_OFFSET3) {
-					robotDrive.curvatureDrive(0, .2, true);
-				} else {
-					robotDrive.curvatureDrive(0, 0, false);
-					resetEncoder();
-					currentMiddleSwitchLeftState = MiddleSwitchLeftStates.DRIVING_FORWARD3;
-				}
+				robotDrive.curvatureDrive(0, 0, false);
+				navX.reset();
+				resetEncoder();
+				pauseCounter = 0;
+				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.TURN_PAUSE4;
+			}
+			break;
+		case TURN_PAUSE4:
+			if (pauseCounter < 40){
+				pauseCounter++;
+			} else {
+				navX.reset();
+				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.DRIVING_FORWARD3;
 			}
 			break;
 		case DRIVING_FORWARD3:
-			if (encoderAverageInches < middleSwitchLeftForwardDistance3) {
+			if (encoderAverageInches <= middleSwitchLeftForwardDistance3) {
 				gyroCorrect();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 				outtakeTimer.start();
+				pauseCounter = 0;
+				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.CUBE_PAUSE;
+			}
+			break;
+		case CUBE_PAUSE:
+			if (pauseCounter < 60){
+				pauseCounter++;
+			} else {
 				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.DROP_CUBE;
 			}
 			break;
 		case DROP_CUBE:
-			if (outtakeTimer.get() < 5) {
+//			if (outtakeTimer.get() < 5) {
 				leftIntakeMotor.set(1);
 				rightIntakeMotor.set(-1);
-			} else {
-				outtakeTimer.stop();
-				leftIntakeMotor.set(0);
-				rightIntakeMotor.set(0);
-			}
+//			} else {
+//				outtakeTimer.stop();
+//				leftIntakeMotor.set(0);
+//				rightIntakeMotor.set(0);
+//			}
 			break;
 		}
 	}
@@ -543,6 +571,7 @@ public class AutoPrograms extends AutoMethods{
 	MiddleSwitchRightStates currentMiddleSwitchRightState = MiddleSwitchRightStates.DELAY;
 	
 	public void middleSwitchRight() {
+//		System.out.println(currentMiddleSwitchRightState);
 		switch (currentMiddleSwitchRightState) {
 		case DELAY:
 			if (delayTimer.get() >= autoDelay) {
