@@ -281,7 +281,7 @@ public class AutoPrograms extends AutoMethods{
 			break;
 		case DRIVING_FORWARD_AGAIN:
 			if (encoderAverageInches <= leftSwitchForwardDistance2) {
-				System.out.println("Encoders: " + encoderAverageInches);
+//				System.out.println("Encoders: " + encoderAverageInches);
 				gyroCorrect();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
@@ -721,7 +721,6 @@ public class AutoPrograms extends AutoMethods{
 				gyroCorrect();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
-				navX.reset();
 				currentTurningState = TurningStates.HIGH_SPEED;
 				doneTurning = false;
 				pauseCounter = 0;
@@ -732,6 +731,7 @@ public class AutoPrograms extends AutoMethods{
 			if (pauseCounter < 40){
 				pauseCounter++;
 			} else {
+				navX.reset();
 				currentRightSwitchState = RightSwitchStates.TURNING;
 			}
 			break;
@@ -740,15 +740,17 @@ public class AutoPrograms extends AutoMethods{
 				leftTurn();
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
+				navX.reset();
 				resetEncoder();
+				pauseCounter = 0;
 				currentRightSwitchState = RightSwitchStates.TURN_PAUSE2;
-				
 			}
 			break;
 		case TURN_PAUSE2:
 			if (pauseCounter < 40){
 				pauseCounter++;
 			} else {
+				navX.reset();
 				currentRightSwitchState = RightSwitchStates.DRIVING_FORWARD_AGAIN;
 			}
 			break;

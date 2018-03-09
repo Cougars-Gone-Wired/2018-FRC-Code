@@ -40,6 +40,7 @@ public class Robot extends IterativeRobot {
 
 	private AutoMethods autoMethods;
 	private AutoPrograms autoPrograms;
+	private AutoProgramsRevised autoProgramsRevised;
 
 //	private StateRecorder recorder;
 //	private StateRunner runner;
@@ -67,14 +68,14 @@ public class Robot extends IterativeRobot {
 	String currentPriority;
 	String fieldConfiguration;
 
-	public enum autoStates {
+	private enum autoStates {
 		LEFT_SCALE, LEFT_SWITCH, LEFT_EXCHANGE, LEFT_CROSS_LINE,
 		MIDDLE_SWITCH_LEFT, MIDDLE_SWITCH_RIGHT, MIDDLE_EXCHANGE, MIDDLE_CROSS_LINE, 
 		RIGHT_SCALE, RIGHT_SWITCH, RIGHT_CROSS_LINE,
 		TURN_LEFT, TURN_RIGHT, TURN
 	}
 
-	public autoStates autoChanger;
+	private autoStates autoChanger;
 //	private StateRecorder recorder;
 //	private StateRunner runner;
 
@@ -102,6 +103,7 @@ public class Robot extends IterativeRobot {
 		// other objects in this class
 		autoMethods = new AutoMethods(this);
 		autoPrograms = new AutoPrograms(this);
+		autoProgramsRevised = new AutoProgramsRevised(this);
 
 //		recorder = new StateRecorder(this);
 //		runner = new StateRunner(this);
@@ -152,6 +154,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		autoProgramsRevised.pickAuto();
+		
 		elevatorChangeGear.setGearState(true);
 		driveChangeGear.setGearState(true);
 		autoPrograms.setAutoNumbers();
@@ -394,6 +398,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		autoProgramsRevised.runAuto();
+		
 //		if (SmartDashboardSettings.useDeadReckoningAuto) {
 //			autoMethods.pickAuto(); // run selected dead reckoning auto
 //		} else if (SmartDashboardSettings.useRecorderAuto) {
