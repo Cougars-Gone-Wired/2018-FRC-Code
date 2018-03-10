@@ -35,7 +35,8 @@ public class AutoProgramsRevised {
 	public enum AutoStates {
 		MIDDLE_CROSS_LINE, MIDDLE_SWITCH_RIGHT, MIDDLE_SWITCH_LEFT,
 		LEFT_CROSS_LINE, LEFT_SWITCH, LEFT_SCALE_LEFT, LEFT_SCALE_RIGHT,
-		RIGHT_CROSS_LINE, RIGHT_SWITCH, RIGHT_SCALE_RIGHT, RIGHT_SCALE_LEFT
+		RIGHT_CROSS_LINE, RIGHT_SWITCH, RIGHT_SCALE_RIGHT, RIGHT_SCALE_LEFT,
+		LEFT_TURN, RIGHT_TURN
 	}
 	
 	public AutoStates autoChanger;
@@ -81,33 +82,33 @@ public class AutoProgramsRevised {
 	private double autoTurnSpeedLow = .4;
 	private double autoTurnSpeedBack = .2;
 	
-	private double middleCrossLineForwardDistance = 84;
+	private double middleCrossLineForwardDistance = 81;
 	
-	private double middleSwitchRightForwardDistance = 87;
+	private double middleSwitchRightForwardDistance = 81;
 	
-	private double middleSwitchLeftForwardDistance1 = 24;
-	private double middleSwitchLeftForwardDistance2 = 104;
-	private double middleSwitchLeftForwardDistance3 = 72;
+	private double middleSwitchLeftForwardDistance1 = 21;
+	private double middleSwitchLeftForwardDistance2 = 85;
+	private double middleSwitchLeftForwardDistance3 = 57;
 	
-	private double leftCrossLineForwardDistance = 200;
+	private double leftCrossLineForwardDistance = 180;
 	
-	private double leftSwitchForwardDistance1 = 100;
+	private double leftSwitchForwardDistance1 = 130;
 	private double leftSwitchForwardDistance2 = 15;
 	
-	private double leftScaleLeftReadyForwardDistance = 220;
+	private double leftScaleLeftReadyForwardDistance = 230;
 	
-	private double leftScaleRightReadyForwardDistance1 = 200;
-	private double leftScaleRightReadyForwardDistance2 = 220;
+	private double leftScaleRightReadyForwardDistance1 = 195;
+	private double leftScaleRightReadyForwardDistance2 = 180;
 	
-	private double rightCrossLineForwardDistance = 200;
+	private double rightCrossLineForwardDistance = 180;
 	
-	private double rightSwitchForwardDistance1 = 100;
+	private double rightSwitchForwardDistance1 = 130;
 	private double rightSwitchForwardDistance2 = 15;
 	
-	private double rightScaleRightReadyForwardDistance = 220;
+	private double rightScaleRightReadyForwardDistance = 230;
 	
-	private double rightScaleLeftReadyForwardDistance1 = 200;
-	private double rightScaleLeftReadyForwardDistance2 = 220;
+	private double rightScaleLeftReadyForwardDistance1 = 195;
+	private double rightScaleLeftReadyForwardDistance2 = 180;
 	
 	public AutoProgramsRevised(Robot robot) {
 		position.addDefault("Middle", MIDDLE); // sends auto inputs to the chooser
@@ -143,6 +144,8 @@ public class AutoProgramsRevised {
 		currentPosition = position.getSelected();
 		currentPriority = priority.getSelected();
 		fieldConfiguration = DriverStation.getInstance().getGameSpecificMessage();
+		
+		SmartDashboard.putString("Field Config", fieldConfiguration);
 		
 		switch(currentPosition) {
 		case MIDDLE:
@@ -258,6 +261,7 @@ public class AutoProgramsRevised {
 			autoChanger = AutoStates.MIDDLE_CROSS_LINE;
 			break;
 		}
+		autoChanger = AutoStates.RIGHT_SWITCH;
 	}
 	
 	public void runAuto() {
@@ -297,6 +301,12 @@ public class AutoProgramsRevised {
 			break;
 		case RIGHT_SCALE_LEFT:
 			rightScaleLeftReady();
+			break;
+		case LEFT_TURN:
+			leftTurn();
+			break;
+		case RIGHT_TURN:
+			rightTurn();
 			break;
 		}
 	}
@@ -373,6 +383,17 @@ public class AutoProgramsRevised {
 	
 	TurningStates currentTurningState = TurningStates.HIGH_SPEED;
 	
+	public void leftTurnCheck() {
+		if (!doneTurning){
+			leftTurn();
+		} else {
+			robotDrive.curvatureDrive(0, 0, false);
+			frontLeftSensors.setQuadraturePosition(0, 10);
+			frontRightSensors.setQuadraturePosition(0, 10);
+			navX.reset();
+		}
+	}
+	
 	public void leftTurn() {
 		switch(currentTurningState) {
 		case HIGH_SPEED:
@@ -402,6 +423,17 @@ public class AutoProgramsRevised {
 		}
 	}
 	
+	public void rightTurnCheck() {
+		if (!doneTurning){
+			rightTurn();
+		} else {
+			robotDrive.curvatureDrive(0, 0, false);
+			frontLeftSensors.setQuadraturePosition(0, 10);
+			frontRightSensors.setQuadraturePosition(0, 10);
+			navX.reset();
+		}
+	}
+	
 	public void rightTurn() {
 		switch(currentTurningState) {
 		case HIGH_SPEED:
@@ -413,6 +445,7 @@ public class AutoProgramsRevised {
 			}
 			break;
 		case LOW_SPEED:
+			System.out.println("Low Speed");
 			if (navX.getAngle() < turnAngle - TURNING_GYRO_OFFSET2) {
 				robotDrive.curvatureDrive(0, -autoTurnSpeedLow, true);
 			} else {
@@ -421,6 +454,7 @@ public class AutoProgramsRevised {
 			}
 			break;
 		case BACK:
+			System.out.println("Back");
 			if (navX.getAngle() > (turnAngle) + TURNING_GYRO_OFFSET3) {
 				robotDrive.curvatureDrive(0, autoTurnSpeedBack, true);
 			} else {
@@ -530,12 +564,17 @@ public class AutoProgramsRevised {
 			break;
 		case TURN_PAUSE2:
 			if (pauseCounter < turnPause){
-				pauseCounter++;
+				if (pauseCounter < turnPause - 1){
+					navX.reset();
+				}
+				pauseCounter++;	
 			} else {
+				reset();
 				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.DRIVING_FORWARD2;
 			}
 			break;
 		case DRIVING_FORWARD2:
+//			System.out.println("Encoders: " + encoderAverageInches);
 			if (encoderAverageInches <= middleSwitchLeftForwardDistance2) {
 				gyroCorrect();
 			} else {
@@ -650,6 +689,9 @@ public class AutoProgramsRevised {
 			break;
 		case TURN_PAUSE2:
 			if (pauseCounter < turnPause){
+				if (pauseCounter < turnPause - 1){
+					navX.reset();
+				}
 				pauseCounter++;
 			} else {
 				currentLeftSwitchState = LeftSwitchStates.DRIVING_FORWARD_AGAIN;
@@ -740,6 +782,9 @@ public class AutoProgramsRevised {
 			break;
 		case TURN_PAUSE2:
 			if (pauseCounter < turnPause){
+				if (pauseCounter < turnPause - 1){
+					navX.reset();
+				}
 				pauseCounter++;
 			} else {
 				currentLeftScaleRightReadyState = LeftScaleRightReadyStates.DRIVING_FORWARD_AGAIN;
@@ -818,6 +863,9 @@ public class AutoProgramsRevised {
 			break;
 		case TURN_PAUSE2:
 			if (pauseCounter < turnPause){
+				if (pauseCounter < turnPause - 1){
+					navX.reset();
+				}
 				pauseCounter++;
 			} else {
 				currentRightSwitchState = RightSwitchStates.DRIVING_FORWARD_AGAIN;
@@ -900,7 +948,7 @@ public class AutoProgramsRevised {
 			break;
 		case TURNING:
 			if (!doneTurning) {
-				rightTurn();
+				leftTurn();
 			} else {
 				reset();
 				currentRightScaleLeftReadyState = RightScaleLeftReadyStates.TURN_PAUSE2;
@@ -908,6 +956,9 @@ public class AutoProgramsRevised {
 			break;
 		case TURN_PAUSE2:
 			if (pauseCounter < turnPause){
+				if (pauseCounter < turnPause - 1){
+					navX.reset();
+				}
 				pauseCounter++;
 			} else {
 				currentRightScaleLeftReadyState = RightScaleLeftReadyStates.DRIVING_FORWARD_AGAIN;

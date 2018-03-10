@@ -128,16 +128,18 @@ public class Robot extends IterativeRobot {
 		priority.addObject("Exchange", EXCHANGE);
 		priority.addDefault("Cross Line", CROSS_LINE);
 
-		SmartDashboard.putData("Robot Position", position); // sends choosers to the SmartDashboard
+//		SmartDashboard.putData("Robot Position", position); // sends choosers to the SmartDashboard
 //		SmartDashboard.putData("Auto Priority", priority);
 
-		autoPrograms.putAutoNumbers();
+//		autoPrograms.putAutoNumbers();
 		
 		//CameraServer camera = CameraServer.getInstance();
 //		camera.startAutomaticCapture();
 		//UsbCamera usbCam1 = camera.startAutomaticCapture("usb1", 0);
 		//usbCam1.setResolution(120, 80);
 //		VideoMode mode1 = usbCam1.getVideoMode();
+		autoProgramsRevised.reset();
+		
 	}
 
 	/**
@@ -157,14 +159,14 @@ public class Robot extends IterativeRobot {
 		autoProgramsRevised.pickAuto();
 		
 		elevatorChangeGear.setGearState(true);
-		driveChangeGear.setGearState(true);
-		autoPrograms.setAutoNumbers();
+		//driveChangeGear.setGearState(true);
+		//autoPrograms.setAutoNumbers();
 //		autoMethods.getInfo(); // get the field color configuration
-		autoPrograms.autoReset();
-		autoPrograms.turningStage2 = false;
-		autoPrograms.startDelayTimer(); // start timer to possibly be used to delay auto
+		//autoPrograms.autoReset();
+		//autoPrograms.turningStage2 = false;
+		//autoPrograms.startDelayTimer(); // start timer to possibly be used to delay auto
 
-		autoPrograms.resetStates();
+		//autoPrograms.resetStates();
 		
 		intake.getLeftIntakeMotor().set(0);
 		intake.getRightIntakeMotor().set(0);
@@ -176,15 +178,15 @@ public class Robot extends IterativeRobot {
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-		currentPosition = position.getSelected(); // these get the values chosen on the SmartDashboard
+		//currentPosition = position.getSelected(); // these get the values chosen on the SmartDashboard
 //		currentPriority = priority.getSelected();
-		fieldConfiguration = DriverStation.getInstance().getGameSpecificMessage();
-		System.out.println(fieldConfiguration);
+		//fieldConfiguration = DriverStation.getInstance().getGameSpecificMessage();
+		//System.out.println(fieldConfiguration);
 		
-		SmartDashboard.putString("Current Position", currentPosition);
-		SmartDashboard.putNumber("Current Position Length", currentPosition.length());
-		SmartDashboard.putString("Field Config", fieldConfiguration);
-		SmartDashboard.putNumber("Field Config Length", fieldConfiguration.length());
+		//SmartDashboard.putString("Current Position", currentPosition);
+		//SmartDashboard.putNumber("Current Position Length", currentPosition.length());
+		//SmartDashboard.putString("Field Config", fieldConfiguration);
+		//SmartDashboard.putNumber("Field Config Length", fieldConfiguration.length());
 //		switch (currentPosition) {
 //		case MIDDLE:
 //			switch (currentPriority) {
@@ -317,78 +319,78 @@ public class Robot extends IterativeRobot {
 //			autoChanger = autoStates.MIDDLE_CROSS_LINE;
 //			break;
 //		}
-		System.out.println("current position " + currentPosition);
-		switch (currentPosition) {
-		case MIDDLE:
-			System.out.println("middle");
-			switch (fieldConfiguration) {
-			case LLL:
-				autoChanger = autoStates.MIDDLE_SWITCH_LEFT;
-				break;
-			case RRR:
-				autoChanger = autoStates.MIDDLE_SWITCH_RIGHT;
-				break;
-			case LRL:
-				autoChanger = autoStates.MIDDLE_SWITCH_LEFT;
-				break;
-			case RLR:
-				autoChanger = autoStates.MIDDLE_SWITCH_RIGHT;
-				break;
-			default:
-				autoChanger = autoStates.MIDDLE_CROSS_LINE;
-				break;
-			}
-			break;
-		case RIGHT:
-			System.out.println("right");
-			switch (fieldConfiguration) {
-			case LLL:
-				autoChanger = autoStates.RIGHT_CROSS_LINE;
-//				autoPrograms.setMiddleCrossLineForwardDistance(100);
-				break;
-			case RRR:
-				autoChanger = autoStates.RIGHT_CROSS_LINE;
-				break;
-			case LRL:
-				autoChanger = autoStates.RIGHT_CROSS_LINE;
-//				autoPrograms.setMiddleCrossLineForwardDistance(100);
-				break;
-			case RLR:
-				autoChanger = autoStates.RIGHT_CROSS_LINE;
-				break;
-			default:
-				autoChanger = autoStates.RIGHT_CROSS_LINE;
-				break;
-			}
-			break;
-		case LEFT:
-			System.out.println("left");
-			switch (fieldConfiguration) {
-			case LLL:
-				autoChanger = autoStates.LEFT_CROSS_LINE;
-//				autoPrograms.setMiddleCrossLineForwardDistance(100);
-				break;
-			case RRR:
-				autoChanger = autoStates.LEFT_CROSS_LINE;
-				break;
-			case LRL:
-				autoChanger = autoStates.LEFT_CROSS_LINE;
-//				autoPrograms.setMiddleCrossLineForwardDistance(100);
-				break;
-			case RLR:
-				autoChanger = autoStates.LEFT_CROSS_LINE;
-				break;
-			default:
-				autoChanger = autoStates.LEFT_CROSS_LINE;
-				break;
-			}
-			break;
-		default: //Unknown position
-			System.out.println("default");
-			autoChanger = autoStates.MIDDLE_CROSS_LINE;
-//			autoPrograms.setMiddleCrossLineForwardDistance(40);
-			break;
-		}
+		//System.out.println("current position " + currentPosition);
+//		switch (currentPosition) {
+//		case MIDDLE:
+//			System.out.println("middle");
+//			switch (fieldConfiguration) {
+//			case LLL:
+//				autoChanger = autoStates.MIDDLE_SWITCH_LEFT;
+//				break;
+//			case RRR:
+//				autoChanger = autoStates.MIDDLE_SWITCH_RIGHT;
+//				break;
+//			case LRL:
+//				autoChanger = autoStates.MIDDLE_SWITCH_LEFT;
+//				break;
+//			case RLR:
+//				autoChanger = autoStates.MIDDLE_SWITCH_RIGHT;
+//				break;
+//			default:
+//				autoChanger = autoStates.MIDDLE_CROSS_LINE;
+//				break;
+//			}
+//			break;
+//		case RIGHT:
+//			System.out.println("right");
+//			switch (fieldConfiguration) {
+//			case LLL:
+//				autoChanger = autoStates.RIGHT_CROSS_LINE;
+////				autoPrograms.setMiddleCrossLineForwardDistance(100);
+//				break;
+//			case RRR:
+//				autoChanger = autoStates.RIGHT_CROSS_LINE;
+//				break;
+//			case LRL:
+//				autoChanger = autoStates.RIGHT_CROSS_LINE;
+////				autoPrograms.setMiddleCrossLineForwardDistance(100);
+//				break;
+//			case RLR:
+//				autoChanger = autoStates.RIGHT_CROSS_LINE;
+//				break;
+//			default:
+//				autoChanger = autoStates.RIGHT_CROSS_LINE;
+//				break;
+//			}
+//			break;
+//		case LEFT:
+//			System.out.println("left");
+//			switch (fieldConfiguration) {
+//			case LLL:
+//				autoChanger = autoStates.LEFT_CROSS_LINE;
+////				autoPrograms.setMiddleCrossLineForwardDistance(100);
+//				break;
+//			case RRR:
+//				autoChanger = autoStates.LEFT_CROSS_LINE;
+//				break;
+//			case LRL:
+//				autoChanger = autoStates.LEFT_CROSS_LINE;
+////				autoPrograms.setMiddleCrossLineForwardDistance(100);
+//				break;
+//			case RLR:
+//				autoChanger = autoStates.LEFT_CROSS_LINE;
+//				break;
+//			default:
+//				autoChanger = autoStates.LEFT_CROSS_LINE;
+//				break;
+//			}
+//			break;
+//		default: //Unknown position
+//			System.out.println("default");
+//			autoChanger = autoStates.MIDDLE_CROSS_LINE;
+////			autoPrograms.setMiddleCrossLineForwardDistance(40);
+//			break;
+//		}
 //		autoPrograms.setMiddleCrossLineForwardDistance(90);
 //		autoChanger = autoStates.MIDDLE_SWITCH_LEFT; // temporary testing for specific auto programs
 	}
@@ -405,59 +407,59 @@ public class Robot extends IterativeRobot {
 //		} else if (SmartDashboardSettings.useRecorderAuto) {
 //			runner.run(); // run selected gson auto
 //		}
-		autoPrograms.setEncoderValues();
-		autoPrograms.showEncoderValues();
-		switch(autoChanger) {
-		case LEFT_SCALE:
-			autoPrograms.leftScale();
-			break;
-		case LEFT_SWITCH:
-			autoPrograms.leftSwitch();
-			break;
-		case LEFT_EXCHANGE:
-			autoPrograms.leftExchange();
-			break;
-		case LEFT_CROSS_LINE:
-			autoPrograms.leftCrossLine();
-			break;
-		case MIDDLE_SWITCH_LEFT:
-			autoPrograms.middleSwitchLeft();
-			break;
-		case MIDDLE_SWITCH_RIGHT:
-			autoPrograms.middleSwitchRight();
-			break;
-		case MIDDLE_EXCHANGE:
-			autoPrograms.middleExchange();
-			break;
-		case MIDDLE_CROSS_LINE:
-			autoPrograms.middleCrossLine();
-			break;
-		case RIGHT_SCALE:
-			autoPrograms.rightScale();
-			break;
-		case RIGHT_SWITCH:
-			autoPrograms.rightSwitch();
-			break;
-		case RIGHT_CROSS_LINE:
-			autoPrograms.rightCrossLine();
-			break;
-		case TURN_LEFT:
-			autoPrograms.leftTurn();
-			break;
-		case TURN_RIGHT:
-			autoPrograms.rightTurn();
-			break;
-		case TURN:
-			autoPrograms.turningTest();
-			break;
-		}
+//		autoPrograms.setEncoderValues();
+//		autoPrograms.showEncoderValues();
+//		switch(autoChanger) {
+//		case LEFT_SCALE:
+//			autoPrograms.leftScale();
+//			break;
+//		case LEFT_SWITCH:
+//			autoPrograms.leftSwitch();
+//			break;
+//		case LEFT_EXCHANGE:
+//			autoPrograms.leftExchange();
+//			break;
+//		case LEFT_CROSS_LINE:
+//			autoPrograms.leftCrossLine();
+//			break;
+//		case MIDDLE_SWITCH_LEFT:
+//			autoPrograms.middleSwitchLeft();
+//			break;
+//		case MIDDLE_SWITCH_RIGHT:
+//			autoPrograms.middleSwitchRight();
+//			break;
+//		case MIDDLE_EXCHANGE:
+//			autoPrograms.middleExchange();
+//			break;
+//		case MIDDLE_CROSS_LINE:
+//			autoPrograms.middleCrossLine();
+//			break;
+//		case RIGHT_SCALE:
+//			autoPrograms.rightScale();
+//			break;
+//		case RIGHT_SWITCH:
+//			autoPrograms.rightSwitch();
+//			break;
+//		case RIGHT_CROSS_LINE:
+//			autoPrograms.rightCrossLine();
+//			break;
+//		case TURN_LEFT:
+//			autoPrograms.leftTurn();
+//			break;
+//		case TURN_RIGHT:
+//			autoPrograms.rightTurn();
+//			break;
+//		case TURN:
+//			autoPrograms.turningTest();
+//			break;
+//		}
 	}
 	
 
 	@Override
 	public void teleopInit() {
 		elevatorChangeGear.setGearState(true);
-		driveChangeGear.setGearState(false);
+		//driveChangeGear.setGearState(false);
 		autoMethods.getNavX().reset();
 		
 		intake.getLeftIntakeMotor().set(0);
