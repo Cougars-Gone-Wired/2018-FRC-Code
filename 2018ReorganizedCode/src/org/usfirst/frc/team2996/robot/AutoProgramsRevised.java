@@ -69,17 +69,17 @@ public class AutoProgramsRevised {
 	double encoderAverageInches;
 	
 	private double turnAngle = 90;
-	private double turnPause = 40;
-	private double cubePause = 60;
-	private double outtakePause = 100;
+	private boolean doneTurning = false;
+	
+	private int pauseCounter = 0;
+	private int turnPause = 40;
+	private int cubePause = 60;
+	private int outtakePause = 100;
 	
 	private int turnLoopCounter = 0;
 	private int turnLoopLimit = 20;
 	
 	private double autoDelay;
-	
-	private boolean doneTurning = false;
-	int pauseCounter = 0;
 	
 	private double autoDriveSpeed = Utility.invertDouble(1);
 	private double autoTurnSpeedHigh = .75;
@@ -456,7 +456,6 @@ public class AutoProgramsRevised {
 			}
 			break;
 		case LOW_SPEED:
-			System.out.println("Low Speed");
 			if (navX.getAngle() < turnAngle - TURNING_GYRO_OFFSET2) {
 				robotDrive.curvatureDrive(0, -autoTurnSpeedLow, true);
 			} else {
@@ -466,8 +465,13 @@ public class AutoProgramsRevised {
 			break;
 		case BACK:
 			System.out.println("Back");
-			if (navX.getAngle() > (turnAngle) + TURNING_GYRO_OFFSET3) {
-				robotDrive.curvatureDrive(0, autoTurnSpeedBack, true);
+			if (turnLoopCounter < turnLoopLimit){
+				if (navX.getAngle() > (turnAngle) + TURNING_GYRO_OFFSET3) {
+					robotDrive.curvatureDrive(0, autoTurnSpeedBack, true);
+				} else if (navX.getAngle() < (turnAngle) - TURNING_GYRO_OFFSET3) {
+					robotDrive.curvatureDrive(0, -autoTurnSpeedBack, true);
+				}
+				turnLoopCounter++;
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 				doneTurning = true;
@@ -634,12 +638,19 @@ public class AutoProgramsRevised {
 			if (pauseCounter < cubePause){
 				pauseCounter++;
 			} else {
+				reset();
 				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.DROP_CUBE;
 			}
 			break;
 		case DROP_CUBE:
-			leftIntakeMotor.set(1);
-			rightIntakeMotor.set(-1);
+			if (pauseCounter < outtakePause){
+				leftIntakeMotor.set(1);
+				rightIntakeMotor.set(-1);
+				pauseCounter++;
+			} else {
+				leftIntakeMotor.set(0);
+				rightIntakeMotor.set(0);
+			}
 			break;
 		}
 	}
@@ -727,12 +738,19 @@ public class AutoProgramsRevised {
 			if (pauseCounter < cubePause){
 				pauseCounter++;
 			} else {
+				reset();
 				currentLeftSwitchState = LeftSwitchStates.DROP_CUBE;
 			}
 			break;
 		case DROP_CUBE:
-			leftIntakeMotor.set(1);
-			rightIntakeMotor.set(-1);
+			if (pauseCounter < outtakePause){
+				leftIntakeMotor.set(1);
+				rightIntakeMotor.set(-1);
+				pauseCounter++;
+			} else {
+				leftIntakeMotor.set(0);
+				rightIntakeMotor.set(0);
+			}
 			break;
 		}
 	}
@@ -901,12 +919,19 @@ public class AutoProgramsRevised {
 			if (pauseCounter < cubePause){
 				pauseCounter++;
 			} else {
+				reset();
 				currentRightSwitchState = RightSwitchStates.DROP_CUBE;
 			}
 			break;
 		case DROP_CUBE:
-			leftIntakeMotor.set(1);
-			rightIntakeMotor.set(-1);
+			if (pauseCounter < outtakePause){
+				leftIntakeMotor.set(1);
+				rightIntakeMotor.set(-1);
+				pauseCounter++;
+			} else {
+				leftIntakeMotor.set(0);
+				rightIntakeMotor.set(0);
+			}
 			break;
 		}
 	}
