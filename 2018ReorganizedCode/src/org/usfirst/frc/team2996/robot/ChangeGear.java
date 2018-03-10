@@ -28,7 +28,7 @@ public class ChangeGear {
 	}
 
 	// method to check if the sonic shifter(s) need to change states
-	public void changeGear(boolean highGearButton, boolean lowGearButton) {
+	public void changeGearBumper(boolean highGearButton, boolean lowGearButton) {
 		switch (gearCurrentState) {
 		case LOW_GEAR:
 			if (highGearButton && !lowGearButton) {
@@ -45,6 +45,22 @@ public class ChangeGear {
 		}
 	}
 	
+	public void changeGearTrigger(boolean highGearButton, double lowGearTrigger) {
+		switch (gearCurrentState) {
+		case LOW_GEAR:
+			if (highGearButton && lowGearTrigger < 0.15) {
+				changeGearSolenoid.set(!lowGearState);
+				gearCurrentState = GearStates.HIGH_GEAR;
+			}
+			break;
+		case HIGH_GEAR:
+			if (!highGearButton && lowGearTrigger >= 0.15) {
+				changeGearSolenoid.set(lowGearState);
+				gearCurrentState = GearStates.LOW_GEAR;
+			}
+			break;
+		}
+	}
 	
 	public void setGearState(boolean state) {
 		changeGearSolenoid.set(state);

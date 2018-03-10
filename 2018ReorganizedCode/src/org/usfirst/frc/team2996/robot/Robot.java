@@ -96,7 +96,9 @@ public class Robot extends IterativeRobot {
 
 		drive = new Drive();
 
-		elevatorChangeGear = new ChangeGear(true, elevator.getChangeElevatorGearSolenoid());
+//		elevatorChangeGear = new ChangeGear(true, elevator.getChangeElevatorGearSolenoid());
+		elevatorChangeGear = new ChangeGear(false, elevator.getChangeElevatorGearSolenoid());
+//		driveChangeGear = new ChangeGear(true, drive.getChangeDriveGearSolenoid());
 		driveChangeGear = new ChangeGear(false, drive.getChangeDriveGearSolenoid());
 
 		// objects that need to be instantiated at the end of robotInit because they use
@@ -158,7 +160,8 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		autoProgramsRevised.pickAuto();
 		
-		elevatorChangeGear.setGearState(true);
+//		elevatorChangeGear.setGearState(true);
+		elevatorChangeGear.setGearState(false);
 		//driveChangeGear.setGearState(true);
 		driveChangeGear.setGearState(false);
 		//autoPrograms.setAutoNumbers();
@@ -491,10 +494,8 @@ public class Robot extends IterativeRobot {
 //		}
 		
 //		SmartDashboard.putBoolean("Elavator Solenoid", elevator.getChangeElevatorGearSolenoid().get());
-		//elevatorChangeGear.changeGear(joysticks.isElevatorHighGearButton(), joysticks.isElevatorLowGearButton()); // method for changing gears on the elevator
-		elevatorChangeGear.changeGear(joysticks.isElevatorLowGearButton(), joysticks.isElevatorHighGearButton());
-		//driveChangeGear.changeGear(joysticks.isDriveLowGearButton(), joysticks.isDriveHighGearButton()); // method for changing gears on the drive train
-		driveChangeGear.changeGear(joysticks.isDriveHighGearButton(), joysticks.isDriveLowGearButton());
+		elevatorChangeGear.changeGearBumper(joysticks.isElevatorHighGearButton(), joysticks.isElevatorLowGearButton()); // method for changing gears on the elevator
+		driveChangeGear.changeGearTrigger(joysticks.isDriveHighGearButton(), joysticks.getDriveLowGearTrigger());  // method for changing gears on the drive train
 		
 //		robotLogger.run();
 //		recorder.record(); // record the states of the motors and solenoids every 20 milliseconds

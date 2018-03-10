@@ -19,7 +19,8 @@ public class Joysticks {
 	private double driveForwardAxis;
 	private double driveTurnAxis;
 	private boolean driveHighGearButton;
-	private boolean driveLowGearButton;
+//	private boolean driveLowGearButton;
+	private double driveLowGearTrigger;
 	private double leftDriveAxis;
 	private double rightDriveAxis;
 
@@ -44,7 +45,8 @@ public class Joysticks {
 		driveForwardAxis = mobilityStick.getRawAxis(Constants.DRIVE_FORWARD_AXIS);
 		driveTurnAxis = mobilityStick.getRawAxis(Constants.DRIVE_TURN_AXIS);
 		driveHighGearButton = mobilityStick.getRawButton(Constants.DRIVE_HIGH_GEAR_BUTTON);
-		driveLowGearButton = mobilityStick.getRawButton(Constants.DRIVE_LOW_GEAR_BUTTON);
+//		driveLowGearButton = mobilityStick.getRawButton(Constants.DRIVE_LOW_GEAR_BUTTON);
+		driveLowGearTrigger = mobilityStick.getRawAxis(Constants.DRIVE_LOW_GEAR_TRIGGER);
 		leftDriveAxis = mobilityStick.getRawAxis(Constants.LEFT_DRIVE_AXIS);
 		rightDriveAxis = mobilityStick.getRawAxis(Constants.RIGHT_DRIVE_AXIS);
 	}
@@ -98,12 +100,16 @@ public class Joysticks {
 		return driveHighGearButton;
 	}
 
-	public boolean isDriveLowGearButton() {
-		return driveLowGearButton;
-	}
+//	public boolean isDriveLowGearButton() {
+//		return driveLowGearButton;
+//	}
 
 	public double getLeftDriveAxis() {
 		return leftDriveAxis;
+	}
+
+	public double getDriveLowGearTrigger() {
+		return driveLowGearTrigger;
 	}
 
 	public double getRightDriveAxis() {
