@@ -73,6 +73,9 @@ public class AutoProgramsRevised {
 	private double cubePause = 60;
 	private double outtakePause = 100;
 	
+	private int turnLoopCounter = 0;
+	private int turnLoopLimit = 20;
+	
 	private double autoDelay;
 	
 	private boolean doneTurning = false;
@@ -262,7 +265,7 @@ public class AutoProgramsRevised {
 			autoChanger = AutoStates.MIDDLE_CROSS_LINE;
 			break;
 		}
-		autoChanger = AutoStates.MIDDLE_SWITCH_RIGHT;
+		autoChanger = AutoStates.LEFT_TURN;
 	}
 	
 	public void runAuto() {
@@ -304,7 +307,7 @@ public class AutoProgramsRevised {
 			rightScaleLeftReady();
 			break;
 		case LEFT_TURN:
-			leftTurn();
+			leftTurnCheck();
 			break;
 		case RIGHT_TURN:
 			rightTurn();
@@ -341,6 +344,7 @@ public class AutoProgramsRevised {
 		navX.reset();
 		doneTurning = false;
 		pauseCounter = 0;
+		turnLoopCounter = 0;
 	}
 	
 	public void putDelayTimer() {
@@ -414,8 +418,14 @@ public class AutoProgramsRevised {
 			}
 			break;
 		case BACK:
-			if (navX.getAngle() < (-turnAngle) - TURNING_GYRO_OFFSET3) {
-				robotDrive.curvatureDrive(0, -autoTurnSpeedBack, true);
+			System.out.println("Back");
+			if (turnLoopCounter < turnLoopLimit){
+				if (navX.getAngle() < (-turnAngle) - TURNING_GYRO_OFFSET3) {
+					robotDrive.curvatureDrive(0, -autoTurnSpeedBack, true);
+				} else if (navX.getAngle() > (-turnAngle) + TURNING_GYRO_OFFSET3) {
+					robotDrive.curvatureDrive(0, autoTurnSpeedBack, true);
+				}
+				turnLoopCounter++;
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 				doneTurning = true;
