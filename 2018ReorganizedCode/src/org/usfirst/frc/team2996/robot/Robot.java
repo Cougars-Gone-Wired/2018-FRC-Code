@@ -160,6 +160,7 @@ public class Robot extends IterativeRobot {
 		
 		elevatorChangeGear.setGearState(true);
 		//driveChangeGear.setGearState(true);
+		driveChangeGear.setGearState(false);
 		//autoPrograms.setAutoNumbers();
 //		autoMethods.getInfo(); // get the field color configuration
 		//autoPrograms.autoReset();
@@ -460,6 +461,7 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		elevatorChangeGear.setGearState(true);
 		//driveChangeGear.setGearState(false);
+		driveChangeGear.setGearState(true);
 		autoMethods.getNavX().reset();
 		
 		intake.getLeftIntakeMotor().set(0);
@@ -489,8 +491,10 @@ public class Robot extends IterativeRobot {
 //		}
 		
 //		SmartDashboard.putBoolean("Elavator Solenoid", elevator.getChangeElevatorGearSolenoid().get());
-		elevatorChangeGear.changeGear(joysticks.isElevatorHighGearButton(), joysticks.isElevatorLowGearButton()); // method for changing gears on the elevator
-		driveChangeGear.changeGear(joysticks.isDriveLowGearButton(), joysticks.isDriveHighGearButton()); // method for changing gears on the drive train
+		//elevatorChangeGear.changeGear(joysticks.isElevatorHighGearButton(), joysticks.isElevatorLowGearButton()); // method for changing gears on the elevator
+		elevatorChangeGear.changeGear(joysticks.isElevatorLowGearButton(), joysticks.isElevatorHighGearButton());
+		//driveChangeGear.changeGear(joysticks.isDriveLowGearButton(), joysticks.isDriveHighGearButton()); // method for changing gears on the drive train
+		driveChangeGear.changeGear(joysticks.isDriveHighGearButton(), joysticks.isDriveLowGearButton());
 		
 //		robotLogger.run();
 //		recorder.record(); // record the states of the motors and solenoids every 20 milliseconds

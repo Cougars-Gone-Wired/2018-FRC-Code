@@ -261,7 +261,7 @@ public class AutoProgramsRevised {
 			autoChanger = AutoStates.MIDDLE_CROSS_LINE;
 			break;
 		}
-		autoChanger = AutoStates.RIGHT_SWITCH;
+//		autoChanger = AutoStates.RIGHT_SWITCH;
 	}
 	
 	public void runAuto() {
