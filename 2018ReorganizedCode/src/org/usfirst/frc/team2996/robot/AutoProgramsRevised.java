@@ -71,6 +71,7 @@ public class AutoProgramsRevised {
 	private double turnAngle = 90;
 	private double turnPause = 40;
 	private double cubePause = 60;
+	private double outtakePause = 100;
 	
 	private double autoDelay;
 	
@@ -261,7 +262,7 @@ public class AutoProgramsRevised {
 			autoChanger = AutoStates.MIDDLE_CROSS_LINE;
 			break;
 		}
-//		autoChanger = AutoStates.RIGHT_SWITCH;
+		autoChanger = AutoStates.MIDDLE_SWITCH_RIGHT;
 	}
 	
 	public void runAuto() {
@@ -515,12 +516,19 @@ public class AutoProgramsRevised {
 			if (pauseCounter < cubePause){
 				pauseCounter++;
 			} else {
+				reset();
 				currentMiddleSwitchRightState = MiddleSwitchRightStates.DROP_CUBE;
 			}
 			break;
 		case DROP_CUBE:
-			leftIntakeMotor.set(1);
-			rightIntakeMotor.set(-1);
+			if (pauseCounter < outtakePause){
+				leftIntakeMotor.set(1);
+				rightIntakeMotor.set(-1);
+				pauseCounter++;
+			} else {
+				leftIntakeMotor.set(0);
+				rightIntakeMotor.set(0);
+			}
 			break;
 		}
 	}
