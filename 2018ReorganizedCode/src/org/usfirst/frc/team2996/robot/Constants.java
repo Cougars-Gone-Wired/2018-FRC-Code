@@ -12,6 +12,7 @@ public class Constants { // class for all the variables that should not change d
 	static final int INTAKE_TRIGGER = 2;
 	static final int OUTTAKE_TRIGGER = 3;
 	static final int ARM_BUTTON = 1;
+	static final int CAMERA_BUTTON = 4;
 
 	// all the constants associated with the mobility controller
 	static final int MOBILITY_STICK_PORT = 1;

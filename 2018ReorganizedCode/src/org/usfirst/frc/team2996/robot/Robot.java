@@ -41,6 +41,8 @@ public class Robot extends IterativeRobot {
 	private AutoMethods autoMethods;
 	private AutoPrograms autoPrograms;
 	private AutoProgramsRevised autoProgramsRevised;
+	
+	private Camera camera;
 
 //	private StateRecorder recorder;
 //	private StateRunner runner;
@@ -106,6 +108,8 @@ public class Robot extends IterativeRobot {
 		autoMethods = new AutoMethods(this);
 		autoPrograms = new AutoPrograms(this);
 		autoProgramsRevised = new AutoProgramsRevised(this);
+		
+		camera = new Camera();
 
 //		recorder = new StateRecorder(this);
 //		runner = new StateRunner(this);
@@ -496,6 +500,8 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putBoolean("Elavator Solenoid", elevator.getChangeElevatorGearSolenoid().get());
 		elevatorChangeGear.changeGearBumper(joysticks.isElevatorHighGearButton(), joysticks.isElevatorLowGearButton()); // method for changing gears on the elevator
 		driveChangeGear.changeGearTrigger(joysticks.isDriveHighGearButton(), joysticks.getDriveLowGearTrigger());  // method for changing gears on the drive train
+		
+		camera.cameraFunctions(joysticks.isCameraButtonOutput());
 		
 //		robotLogger.run();
 //		recorder.record(); // record the states of the motors and solenoids every 20 milliseconds

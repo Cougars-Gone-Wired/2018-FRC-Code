@@ -13,7 +13,9 @@ public class Joysticks {
 	private double outtakeTrigger;
 	private Toggle armButton;
 	private boolean armButtonOutput;
-
+	private Toggle cameraButton;
+	private boolean cameraButtonOutput;
+	
 	// objects and variables for everything associated with the mobility controller
 	private Joystick mobilityStick;
 	private double driveForwardAxis;
@@ -28,6 +30,7 @@ public class Joysticks {
 		// instantiations of all previously declared objects
 		manipulatorStick = new Joystick(Constants.MANIPULATOR_STICK_PORT);
 		armButton = new Toggle(manipulatorStick, Constants.ARM_BUTTON);
+		cameraButton = new Toggle(mobilityStick, Constants.CAMERA_BUTTON);
 
 		mobilityStick = new Joystick(Constants.MOBILITY_STICK_PORT);
 	}
@@ -41,6 +44,7 @@ public class Joysticks {
 		intakeTrigger = manipulatorStick.getRawAxis(Constants.INTAKE_TRIGGER);
 		outtakeTrigger = manipulatorStick.getRawAxis(Constants.OUTTAKE_TRIGGER);
 		armButtonOutput = armButton.toggle();
+		cameraButtonOutput = cameraButton.toggle();
 
 		driveForwardAxis = mobilityStick.getRawAxis(Constants.DRIVE_FORWARD_AXIS);
 		driveTurnAxis = mobilityStick.getRawAxis(Constants.DRIVE_TURN_AXIS);
@@ -82,6 +86,14 @@ public class Joysticks {
 
 	public boolean isArmButtonOutput() {
 		return armButtonOutput;
+	}
+
+	public Toggle getCameraButton() {
+		return cameraButton;
+	}
+
+	public boolean isCameraButtonOutput() {
+		return cameraButtonOutput;
 	}
 
 	public Joystick getMobilityStick() {
