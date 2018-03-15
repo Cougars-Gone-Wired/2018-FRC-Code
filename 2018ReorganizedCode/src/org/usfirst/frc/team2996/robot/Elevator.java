@@ -14,10 +14,22 @@ public class Elevator {
 
 	ElevatorStates currentElevatorState = ElevatorStates.NOT_MOVING; // the state for the elevator to start in
 
+	public enum AutoElevatorStates {
+		UP_FAST, UP_SLOW
+	}
+	
+	AutoElevatorStates currentAutoElevatorState = AutoElevatorStates.UP_FAST;
+	
 	// declarations for all objects associated with the elevator
 	private WPI_TalonSRX elevatorMasterMotor; // the only motor we will actually be controlling
 	private WPI_TalonSRX elevatorSlaveMotor; // will do anything its master does
 	private SensorCollection elevatorMasterMotorSensors;
+	private int elevatorEncoder;
+	
+	static final int UP_FAST_DISTANCE = 20;
+	static final int UP_SLOW_DISTANCE = 10;
+	static final double UP_FAST_SPEED = .75;
+	static final double UP_SLOW_SPEED = .4;
 
 	private Solenoid changeElevatorGearSolenoid;
 
@@ -73,6 +85,34 @@ public class Elevator {
 		}
 	}
 
+	
+	public void autoElevator() {
+		elevatorEncoder = elevatorMasterMotorSensors.getQuadraturePosition();
+		switch(currentAutoElevatorState) {
+		case UP_FAST:
+			if (elevatorEncoder < UP_FAST_DISTANCE) {
+				elevatorMasterMotor.set(UP_FAST_SPEED);
+			} else {
+				elevatorMasterMotor.set(0);
+				elevatorMasterMotorSensors.setQuadraturePosition(0, 10);
+				currentAutoElevatorState = AutoElevatorStates.UP_SLOW;
+			}
+			break;
+		case UP_SLOW:
+			if (elevatorEncoder < UP_SLOW_DISTANCE) {
+				elevatorMasterMotor.set(UP_SLOW_SPEED);
+			} else {
+				elevatorMasterMotor.set(0);
+				elevatorMasterMotorSensors.setQuadraturePosition(0, 10);
+			}
+			break;
+		}
+	}
+	
+	public void autoElevatorReset() {
+		elevatorMasterMotor.set(0);
+		elevatorMasterMotorSensors.setQuadraturePosition(0, 10);
+	}
 	
 	// getters for all the objects declared in this class
 	public WPI_TalonSRX getElevatorMasterMotor() {

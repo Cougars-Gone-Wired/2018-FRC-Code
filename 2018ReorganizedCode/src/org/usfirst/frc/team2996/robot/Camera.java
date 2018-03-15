@@ -10,8 +10,13 @@ public class Camera {
 	}
 	CameraStates currentCameraState = CameraStates.OFF;
 	
-	CameraServer camera = CameraServer.getInstance();
-	UsbCamera usbCam1 = new UsbCamera("usb1", 0);
+	CameraServer camera;
+	UsbCamera usbCam1;
+	
+	public Camera() {
+		camera = CameraServer.getInstance();
+		usbCam1 = new UsbCamera("usb1", 0);
+	}
 	
 	public void cameraFunctions(boolean cameraButtonOutput) {
 		switch(currentCameraState) {

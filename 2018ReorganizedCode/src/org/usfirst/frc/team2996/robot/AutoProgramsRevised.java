@@ -36,7 +36,8 @@ public class AutoProgramsRevised {
 		MIDDLE_CROSS_LINE, MIDDLE_SWITCH_RIGHT, MIDDLE_SWITCH_LEFT,
 		LEFT_CROSS_LINE, LEFT_SWITCH, LEFT_SCALE_LEFT, LEFT_SCALE_RIGHT,
 		RIGHT_CROSS_LINE, RIGHT_SWITCH, RIGHT_SCALE_RIGHT, RIGHT_SCALE_LEFT,
-		LEFT_TURN, RIGHT_TURN
+		LEFT_TURN, RIGHT_TURN,
+		ELEVATOR
 	}
 	
 	public AutoStates autoChanger;
@@ -58,6 +59,8 @@ public class AutoProgramsRevised {
 	
 	private WPI_TalonSRX leftIntakeMotor;
 	private WPI_TalonSRX rightIntakeMotor;
+	
+	private Elevator elevator;
 	
 	private AHRS navX;
 	
@@ -132,6 +135,8 @@ public class AutoProgramsRevised {
 		
 		leftIntakeMotor = robot.getIntake().getLeftIntakeMotor();
 		rightIntakeMotor = robot.getIntake().getRightIntakeMotor();
+		
+		elevator = robot.getElevator();
 		
 		delayTimer = new Timer();
 		putDelayTimer();
@@ -312,6 +317,8 @@ public class AutoProgramsRevised {
 		case RIGHT_TURN:
 			rightTurn();
 			break;
+		case ELEVATOR:
+			elevator.autoElevator();
 		}
 	}
 	
@@ -345,6 +352,7 @@ public class AutoProgramsRevised {
 		doneTurning = false;
 		pauseCounter = 0;
 		turnLoopCounter = 0;
+		elevator.autoElevatorReset();
 	}
 	
 	public void putDelayTimer() {
