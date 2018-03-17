@@ -51,7 +51,7 @@ public class AutoProgramsRevised {
 	
 	static final double TURNING_GYRO_OFFSET = 70;//good
 	static final double TURNING_GYRO_OFFSET2 = 10;//good
-	static final double TURNING_GYRO_OFFSET3 = 2;//good
+	static final double TURNING_GYRO_OFFSET3 = 0;//good
 	
 	private DifferentialDrive robotDrive;
 
@@ -86,7 +86,7 @@ public class AutoProgramsRevised {
 	private int drivePause = 40;
 	
 	private int turnLoopCounter = 0;
-	private int turnLoopLimit = 20;
+	private int turnLoopLimit = 40;
 	
 	private double autoDelay;
 	
@@ -108,8 +108,8 @@ public class AutoProgramsRevised {
 	private double middleSwitchRight2CubeForwardDistance5 = 57;
 	
 	private double middleSwitchLeftForwardDistance1 = 21;
-	private double middleSwitchLeftForwardDistance2 = 85;
-	private double middleSwitchLeftForwardDistance3 = 57;
+	private double middleSwitchLeftForwardDistance2 = 95;
+	private double middleSwitchLeftForwardDistance3 = 55;
 	
 	private double middleSwitchLeft2CubeForwardDistance1 = 21;
 	private double middleSwitchLeft2CubeForwardDistance2 = 85;
@@ -132,7 +132,7 @@ public class AutoProgramsRevised {
 	private double leftScaleLeftForwardDistance2 = 40;
 	private double leftScaleLeftForwardDistance3 = 30;
 	
-	private double leftScaleRightReadyForwardDistance1 = 195;
+	private double leftScaleRightReadyForwardDistance1 = 185;
 	private double leftScaleRightReadyForwardDistance2 = 180;
 	
 	private double leftScaleRightForwardDistance1 = 195;
@@ -150,7 +150,7 @@ public class AutoProgramsRevised {
 	private double rightScaleRightForwardDistance2 = 40;
 	private double rightScaleRightForwardDistance3 = 30;
 	
-	private double rightScaleLeftReadyForwardDistance1 = 195;
+	private double rightScaleLeftReadyForwardDistance1 = 185;
 	private double rightScaleLeftReadyForwardDistance2 = 180;
 	
 	private double rightScaleLeftForwardDistance1 = 195;
@@ -314,7 +314,7 @@ public class AutoProgramsRevised {
 			autoChanger = AutoStates.MIDDLE_CROSS_LINE;
 			break;
 		}
-		autoChanger = AutoStates.LEFT_TURN;
+		autoChanger = AutoStates.INTAKE_CHECK;
 	}
 	
 	public void runAuto() {
@@ -365,7 +365,7 @@ public class AutoProgramsRevised {
 			leftTurnCheck();
 			break;
 		case RIGHT_TURN:
-			rightTurn();
+			rightTurnCheck();
 			break;
 		case ELEVATOR:
 			elevator.setElevatorAutoDesiredHieght(9);
@@ -524,8 +524,10 @@ public class AutoProgramsRevised {
 	}
 	
 	public void rightTurn() {
+		System.out.println(navX.getAngle());
 		switch(currentTurningState) {
 		case HIGH_SPEED:
+			System.out.println("High");
 			if (navX.getAngle() < turnAngle - TURNING_GYRO_OFFSET) {
 				robotDrive.curvatureDrive(0, -autoTurnSpeedHigh, true);
 			} else {
@@ -534,6 +536,7 @@ public class AutoProgramsRevised {
 			}
 			break;
 		case LOW_SPEED:
+			System.out.println("Low");
 			if (navX.getAngle() < turnAngle - TURNING_GYRO_OFFSET2) {
 				robotDrive.curvatureDrive(0, -autoTurnSpeedLow, true);
 			} else {
@@ -542,11 +545,13 @@ public class AutoProgramsRevised {
 			}
 			break;
 		case BACK:
-			System.out.println("Back");
+//			System.out.println("Back");
 			if (turnLoopCounter < turnLoopLimit){
 				if (navX.getAngle() > (turnAngle) + TURNING_GYRO_OFFSET3) {
+					System.out.println("Back1");
 					robotDrive.curvatureDrive(0, autoTurnSpeedBack, true);
 				} else if (navX.getAngle() < (turnAngle) - TURNING_GYRO_OFFSET3) {
+					System.out.println("Back2");
 					robotDrive.curvatureDrive(0, -autoTurnSpeedBack, true);
 				}
 				turnLoopCounter++;
@@ -569,8 +574,12 @@ public class AutoProgramsRevised {
 		intake.autoIntake();
 		switch(currentIntakeCheckState) {
 		case DROP_ARM:
-			arm.setArmState(false);
-			currentIntakeCheckState = IntakeCheckStates.INTAKE;
+			arm.setArmState(true);
+			if (pauseCounter < turnPause){
+				pauseCounter++;
+			} else {
+				currentIntakeCheckState = IntakeCheckStates.INTAKE;
+			}
 			break;
 		case INTAKE:
 			intake.setIntake(true);
@@ -626,6 +635,7 @@ public class AutoProgramsRevised {
 			}
 			break;
 		case DRIVING_FORWARD:
+			System.out.println("encoderAverageInches");
 			if (encoderAverageInches <= middleSwitchRightForwardDistance) {
 				gyroCorrect();
 			} else {
@@ -960,8 +970,12 @@ public class AutoProgramsRevised {
 			break;
 		case TURN_PAUSE4:
 			if (pauseCounter < turnPause){
+				if (pauseCounter < turnPause - 1){
+					navX.reset();
+				}
 				pauseCounter++;
 			} else {
+				reset();
 				currentMiddleSwitchLeftState = MiddleSwitchLeftStates.DRIVING_FORWARD3;
 			}
 			break;
