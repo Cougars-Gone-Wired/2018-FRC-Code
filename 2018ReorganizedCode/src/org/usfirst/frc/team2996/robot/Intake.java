@@ -7,9 +7,17 @@ public class Intake {
 	public enum IntakeStates { // all the states the intake can be in
 		NOT_MOVING, INTAKING, OUTTAKING
 	}
-
+	
 	IntakeStates currentIntakeState = IntakeStates.NOT_MOVING; // the state for the intake to start in
 
+	public enum AutoIntakeStates {
+		NOT_MOVING, INTAKING
+	}
+	
+	AutoIntakeStates currentAutoIntakeState = AutoIntakeStates.NOT_MOVING;
+	
+	private boolean intake = false;
+	
 	// declarations for all objects associated with the intake
 	private WPI_TalonSRX leftIntakeMotor;
 	private WPI_TalonSRX rightIntakeMotor;
@@ -45,6 +53,29 @@ public class Intake {
 		}
 	}
 
+	public void autoIntake() {
+		switch(currentAutoIntakeState) {
+		case NOT_MOVING:
+			leftIntakeMotor.set(0);
+			rightIntakeMotor.set(0);
+			if (intake) {
+				leftIntakeMotor.set(1);
+				rightIntakeMotor.set(-1);
+				currentAutoIntakeState = AutoIntakeStates.INTAKING;
+			}
+			break;
+		case INTAKING:
+			leftIntakeMotor.set(1);
+			rightIntakeMotor.set(-1);
+			if (!intake) {
+				leftIntakeMotor.set(0);
+				rightIntakeMotor.set(0);
+				currentAutoIntakeState = AutoIntakeStates.NOT_MOVING;
+			}
+			break;
+		}
+	}
+	
 	// getters for all the objects declared in this class
 	public WPI_TalonSRX getLeftIntakeMotor() {
 		return leftIntakeMotor;
@@ -53,4 +84,9 @@ public class Intake {
 	public WPI_TalonSRX getRightIntakeMotor() {
 		return rightIntakeMotor;
 	}
+
+	public void setIntake(boolean intake) {
+		this.intake = intake;
+	}
+	
 }

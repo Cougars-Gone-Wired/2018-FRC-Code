@@ -15,7 +15,7 @@ public class Elevator {
 	ElevatorStates currentElevatorState = ElevatorStates.NOT_MOVING; // the state for the elevator to start in
 
 	public enum AutoElevatorStates {
-		UP_FAST, UP_SLOW
+		NOT_MOVING, UP_FAST, UP_SLOW
 	}
 	
 	AutoElevatorStates currentAutoElevatorState = AutoElevatorStates.UP_FAST;
@@ -24,12 +24,20 @@ public class Elevator {
 	private WPI_TalonSRX elevatorMasterMotor; // the only motor we will actually be controlling
 	private WPI_TalonSRX elevatorSlaveMotor; // will do anything its master does
 	private SensorCollection elevatorMasterMotorSensors;
-	private int elevatorEncoder;
+	private int elevatorEncoder = 0;
 	
-	static final int UP_FAST_DISTANCE = 20;
-	static final int UP_SLOW_DISTANCE = 10;
+	private int elevatorAutoDesiredHieght = 0;
+	private int distanceDifference = 0;
+	static final int UP_SLOW_TOLERANCE = 10;
+	static final int UP_FAST_TOLERANCE = 20;
+	
 	static final double UP_FAST_SPEED = .75;
 	static final double UP_SLOW_SPEED = .4;
+	
+	boolean liftDone = false;
+	
+	private int liftLoopCounter = 0;
+	private int liftLoopLimit = 20;
 
 	private Solenoid changeElevatorGearSolenoid;
 
@@ -49,6 +57,10 @@ public class Elevator {
 	public void elevatorFunctions(double elevatorAxis) { // method to check if the elevator needs to change states
 		SmartDashboard.putBoolean("fwd limit switch", elevatorMasterMotorSensors.isFwdLimitSwitchClosed());
 		SmartDashboard.putBoolean("rev limit switch", elevatorMasterMotorSensors.isRevLimitSwitchClosed());
+		SmartDashboard.putNumber("Elevator Encoder", elevatorEncoder);
+		if (elevatorMasterMotorSensors.isRevLimitSwitchClosed()) {
+			elevatorMasterMotorSensors.setQuadraturePosition(0, 10);
+		}
 		elevatorAxisValue = Utility.deadZone(elevatorAxis * -1);
 		switch (currentElevatorState) {
 		case NOT_MOVING:
@@ -88,30 +100,56 @@ public class Elevator {
 	
 	public void autoElevator() {
 		elevatorEncoder = elevatorMasterMotorSensors.getQuadraturePosition();
+		distanceDifference = elevatorAutoDesiredHieght - elevatorEncoder;
+		SmartDashboard.putNumber("Elevator Encoder", elevatorEncoder);
+		SmartDashboard.putNumber("Elevator Desired Hieght", elevatorAutoDesiredHieght);
+		if (elevatorMasterMotorSensors.isRevLimitSwitchClosed()) {
+			currentAutoElevatorState = AutoElevatorStates.NOT_MOVING;
+		}
 		switch(currentAutoElevatorState) {
-		case UP_FAST:
-			if (elevatorEncoder < UP_FAST_DISTANCE) {
+		case NOT_MOVING:
+			elevatorMasterMotor.set(0);
+			elevatorMasterMotorSensors.setQuadraturePosition(0, 10);
+			if (distanceDifference > UP_FAST_TOLERANCE) {
 				elevatorMasterMotor.set(UP_FAST_SPEED);
-			} else {
-				elevatorMasterMotor.set(0);
-				elevatorMasterMotorSensors.setQuadraturePosition(0, 10);
+				currentAutoElevatorState = AutoElevatorStates.UP_FAST;
+			} else if (distanceDifference > UP_SLOW_TOLERANCE) {
+				elevatorMasterMotor.set(UP_SLOW_SPEED);
 				currentAutoElevatorState = AutoElevatorStates.UP_SLOW;
+			}
+			break;		
+		case UP_FAST:
+			if (distanceDifference > UP_FAST_TOLERANCE) {
+				elevatorMasterMotor.set(UP_FAST_SPEED);
+			} else if (distanceDifference > UP_SLOW_TOLERANCE) {
+				elevatorMasterMotor.set(UP_SLOW_SPEED);
+				currentAutoElevatorState = AutoElevatorStates.UP_SLOW;
+			} else if (distanceDifference < UP_SLOW_TOLERANCE) {
+				elevatorMasterMotor.set(0);
+				currentAutoElevatorState = AutoElevatorStates.NOT_MOVING;
 			}
 			break;
 		case UP_SLOW:
-			if (elevatorEncoder < UP_SLOW_DISTANCE) {
-				elevatorMasterMotor.set(UP_SLOW_SPEED);
-			} else {
+			if (liftLoopCounter < liftLoopLimit) {
+				if (distanceDifference > UP_SLOW_TOLERANCE) {
+					elevatorMasterMotor.set(UP_SLOW_SPEED);
+					currentAutoElevatorState = AutoElevatorStates.UP_SLOW;
+				}
+				liftLoopCounter++;
+			} else if (distanceDifference < UP_SLOW_TOLERANCE) {
 				elevatorMasterMotor.set(0);
-				elevatorMasterMotorSensors.setQuadraturePosition(0, 10);
+				liftDone = true;
+				currentAutoElevatorState = AutoElevatorStates.NOT_MOVING;
 			}
-			break;
+			break;	
 		}
 	}
 	
 	public void autoElevatorReset() {
 		elevatorMasterMotor.set(0);
 		elevatorMasterMotorSensors.setQuadraturePosition(0, 10);
+		liftDone = false;
+		currentAutoElevatorState = AutoElevatorStates.NOT_MOVING;
 	}
 	
 	// getters for all the objects declared in this class
@@ -129,6 +167,10 @@ public class Elevator {
 
 	public Solenoid getChangeElevatorGearSolenoid() {
 		return changeElevatorGearSolenoid;
+	}
+
+	public void setElevatorAutoDesiredHieght(int elevatorAutoDesiredHieght) {
+		this.elevatorAutoDesiredHieght = elevatorAutoDesiredHieght;
 	}
 
 }

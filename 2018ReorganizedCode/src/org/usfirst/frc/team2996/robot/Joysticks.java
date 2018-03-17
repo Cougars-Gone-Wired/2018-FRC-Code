@@ -30,7 +30,7 @@ public class Joysticks {
 		// instantiations of all previously declared objects
 		manipulatorStick = new Joystick(Constants.MANIPULATOR_STICK_PORT);
 		armButton = new Toggle(manipulatorStick, Constants.ARM_BUTTON);
-		cameraButton = new Toggle(mobilityStick, Constants.CAMERA_BUTTON);
+		cameraButton = new Toggle(manipulatorStick, Constants.CAMERA_BUTTON);
 
 		mobilityStick = new Joystick(Constants.MOBILITY_STICK_PORT);
 	}

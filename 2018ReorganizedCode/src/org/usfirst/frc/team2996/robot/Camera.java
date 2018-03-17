@@ -15,7 +15,8 @@ public class Camera {
 	
 	public Camera() {
 		camera = CameraServer.getInstance();
-		usbCam1 = new UsbCamera("usb1", 0);
+//		usbCam1 = new UsbCamera("usb1", 0);
+		usbCam1 = camera.startAutomaticCapture("usb1", 0);
 	}
 	
 	public void cameraFunctions(boolean cameraButtonOutput) {

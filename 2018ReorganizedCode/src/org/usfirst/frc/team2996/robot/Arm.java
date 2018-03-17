@@ -21,19 +21,29 @@ public class Arm {
 	public void armFunctions(boolean armButtonOutput) { // method to check if the arm needs to change states
 		switch (currentArmState) {
 		case UP:
-			if (armButtonOutput) {
+			if (!armButtonOutput) {
 				armSolenoid.set(DoubleSolenoid.Value.kReverse);
 				currentArmState = ArmStates.DOWN;
 			}
 			break;
 		case DOWN:
-			if (!armButtonOutput) {
+			if (armButtonOutput) {
 				armSolenoid.set(DoubleSolenoid.Value.kForward);
 				currentArmState = ArmStates.UP;
 			}
 		}
 	}
 
+	public void setArmState(boolean up) {
+		if (up) {
+			armSolenoid.set(DoubleSolenoid.Value.kForward);
+			currentArmState = ArmStates.UP;
+		} else if (!up) {
+			armSolenoid.set(DoubleSolenoid.Value.kReverse);
+			currentArmState = ArmStates.DOWN;
+		}
+	}
+	
 	// getter for the object declared in this class
 	public DoubleSolenoid getArmSolenoid() {
 		return armSolenoid;
