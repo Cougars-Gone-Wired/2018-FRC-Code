@@ -99,6 +99,9 @@ public class AutoProgramsRevised {
 	
 	private double middleSwitchRightForwardDistance = 81;
 	
+	private double middleSwitchRightBackForwardDistance = 81;
+	private double middleSwitchRightBackBackwardDistance = -55;
+	
 	private double middleSwitchRight2CubeForwardDistance1 = 81;
 	private double middleSwitchRight2CubeBackwardDistance1 = -57;
 	private double middleSwitchRight2CubeForwardDistance2 = 42;
@@ -110,6 +113,11 @@ public class AutoProgramsRevised {
 	private double middleSwitchLeftForwardDistance1 = 21;
 	private double middleSwitchLeftForwardDistance2 = 95;
 	private double middleSwitchLeftForwardDistance3 = 55;
+	
+	private double middleSwitchLeftBackForwardDistance1 = 21;
+	private double middleSwitchLeftBackForwardDistance2 = 95;
+	private double middleSwitchLeftBackForwardDistance3 = 55;
+	private double middleSwitchLeftBackBackwardDistance = -55;
 	
 	private double middleSwitchLeft2CubeForwardDistance1 = 21;
 	private double middleSwitchLeft2CubeForwardDistance2 = 85;
@@ -314,7 +322,7 @@ public class AutoProgramsRevised {
 			autoChanger = AutoStates.MIDDLE_CROSS_LINE;
 			break;
 		}
-		autoChanger = AutoStates.INTAKE_CHECK;
+//		autoChanger = AutoStates.INTAKE_CHECK;
 	}
 	
 	public void runAuto() {
@@ -440,8 +448,10 @@ public class AutoProgramsRevised {
 		
 		currentMiddleCrossLineState = MiddleCrossLineStates.DELAY;
 		currentMiddleSwitchRightState = MiddleSwitchRightStates.DELAY;
+		currentMiddleSwitchRightBackState = MiddleSwitchRightBackStates.DELAY;
 		currentMiddleSwitchRight2CubeState = MiddleSwitchRight2CubeStates.DELAY;
 		currentMiddleSwitchLeftState = MiddleSwitchLeftStates.DELAY;
+		currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.DELAY;
 		currentMiddleSwitchLeft2CubeState = MiddleSwitchLeft2CubeStates.DELAY;
 		
 		currentLeftCrossLineState = LeftCrossLineStates.DELAY;
@@ -664,6 +674,57 @@ public class AutoProgramsRevised {
 		}
 	}
 	
+	
+	public enum MiddleSwitchRightBackStates {
+		DELAY, DRIVING_FORWARD, CUBE_PAUSE, DROP_CUBE, DRIVING_BACKWARD
+	}
+	
+	MiddleSwitchRightBackStates currentMiddleSwitchRightBackState = MiddleSwitchRightBackStates.DELAY;
+	
+	public void middleSwitchRightBack() {
+		intake.autoIntake();
+		switch (currentMiddleSwitchRightBackState) {
+		case DELAY:
+			if (delayTimer.get() >= autoDelay) {
+				currentMiddleSwitchRightBackState = MiddleSwitchRightBackStates.DRIVING_FORWARD;
+			}
+			break;
+		case DRIVING_FORWARD:
+			if (encoderAverageInches <= middleSwitchRightBackForwardDistance) {
+				gyroCorrect();
+			} else {
+				reset();
+				currentMiddleSwitchRightBackState = MiddleSwitchRightBackStates.CUBE_PAUSE;
+			}
+			break;
+		case CUBE_PAUSE:
+			if (pauseCounter < cubePause){
+				pauseCounter++;
+			} else {
+				reset();
+				currentMiddleSwitchRightBackState = MiddleSwitchRightBackStates.DROP_CUBE;
+			}
+			break;
+		case DROP_CUBE:
+			if (pauseCounter < outtakePause){
+				leftIntakeMotor.set(1);
+				rightIntakeMotor.set(-1);
+				pauseCounter++;
+			} else {
+				leftIntakeMotor.set(0);
+				rightIntakeMotor.set(0);
+				currentMiddleSwitchRightBackState = MiddleSwitchRightBackStates.DRIVING_BACKWARD;
+			}
+			break;
+		case DRIVING_BACKWARD:
+			if (encoderAverageInches >= middleSwitchRightBackBackwardDistance) {
+				backwardGyroCorrect();
+			} else {
+				reset();
+			}
+			break;
+		}
+	}
 	
 	public enum MiddleSwitchRight2CubeStates {
 		DELAY, DRIVING_FORWARD1, CUBE_PAUSE1, DROP_CUBE1, 
@@ -1003,6 +1064,123 @@ public class AutoProgramsRevised {
 			} else {
 				leftIntakeMotor.set(0);
 				rightIntakeMotor.set(0);
+			}
+			break;
+		}
+	}
+	
+	
+	public enum MiddleSwitchLeftBackStates {
+		DELAY, DRIVING_FORWARD1, TURN_PAUSE1, TURNING1, TURN_PAUSE2, DRIVING_FORWARD2, 
+		TURN_PAUSE3, TURNING2, TURN_PAUSE4, DRIVING_FORWARD3, CUBE_PAUSE1, DROP_CUBE1, DRIVING_BACKWARD
+	}
+	
+	MiddleSwitchLeftBackStates currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.DELAY;
+	
+	public void middleSwitchLeftBack() {
+		switch (currentMiddleSwitchLeftBackState) {
+		case DELAY:
+			if (delayTimer.get() >= autoDelay) {
+				currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.DRIVING_FORWARD1;
+			}
+			break;
+		case DRIVING_FORWARD1:
+			if (encoderAverageInches <= middleSwitchLeftBackForwardDistance1) {
+				gyroCorrect();
+			} else {
+				reset();
+				currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.TURN_PAUSE1;
+			}
+			break;
+		case TURN_PAUSE1:
+			if (pauseCounter < turnPause){
+				pauseCounter++;
+			} else {
+				currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.TURNING1;
+			}
+			break;
+		case TURNING1:
+			if (!doneTurning) {
+				leftTurn();
+			} else {
+				reset();
+				currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.TURN_PAUSE2;
+			}
+			break;
+		case TURN_PAUSE2:
+			if (pauseCounter < turnPause){
+				if (pauseCounter < turnPause - 1){
+					navX.reset();
+				}
+				pauseCounter++;	
+			} else {
+				reset();
+				currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.DRIVING_FORWARD2;
+			}
+			break;
+		case DRIVING_FORWARD2:
+			if (encoderAverageInches <= middleSwitchLeftBackForwardDistance2) {
+				gyroCorrect();
+			} else {
+				reset();
+				currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.TURN_PAUSE3;
+			}
+			break;
+		case TURN_PAUSE3:
+			if (pauseCounter < turnPause){
+				pauseCounter++;
+			} else {
+				currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.TURNING2;
+			}
+			break;
+		case TURNING2:
+			if (!doneTurning) {
+				rightTurn();
+			} else {
+				reset();
+				currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.TURN_PAUSE4;
+			}
+			break;
+		case TURN_PAUSE4:
+			if (pauseCounter < turnPause){
+				pauseCounter++;
+			} else {
+				currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.DRIVING_FORWARD3;
+			}
+			break;
+		case DRIVING_FORWARD3:
+			if (encoderAverageInches <= middleSwitchLeftBackForwardDistance3) {
+				gyroCorrect();
+			} else {
+				reset();
+				currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.CUBE_PAUSE1;
+			}
+			break;
+		case CUBE_PAUSE1:
+			if (pauseCounter < cubePause){
+				pauseCounter++;
+			} else {
+				reset();
+				currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.DROP_CUBE1;
+			}
+			break;
+		case DROP_CUBE1:
+			if (pauseCounter < outtakePause){
+				leftIntakeMotor.set(1);
+				rightIntakeMotor.set(-1);
+				pauseCounter++;
+			} else {
+				leftIntakeMotor.set(0);
+				rightIntakeMotor.set(0);
+				reset();
+				currentMiddleSwitchLeftBackState = MiddleSwitchLeftBackStates.DRIVING_BACKWARD;
+			}
+			break;
+		case DRIVING_BACKWARD:
+			if (encoderAverageInches >= middleSwitchLeftBackBackwardDistance) {
+				backwardGyroCorrect();
+			} else {
+				reset();
 			}
 			break;
 		}

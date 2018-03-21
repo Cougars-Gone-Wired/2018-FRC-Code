@@ -104,12 +104,14 @@ public class Elevator {
 		SmartDashboard.putNumber("Elevator Encoder", elevatorEncoder);
 		SmartDashboard.putNumber("Elevator Desired Hieght", elevatorAutoDesiredHieght);
 		if (elevatorMasterMotorSensors.isRevLimitSwitchClosed()) {
+			elevatorMasterMotorSensors.setQuadraturePosition(0, 10);
+			currentAutoElevatorState = AutoElevatorStates.NOT_MOVING;
+		} else if (elevatorMasterMotorSensors.isFwdLimitSwitchClosed()) {
 			currentAutoElevatorState = AutoElevatorStates.NOT_MOVING;
 		}
 		switch(currentAutoElevatorState) {
 		case NOT_MOVING:
 			elevatorMasterMotor.set(0);
-			elevatorMasterMotorSensors.setQuadraturePosition(0, 10);
 			if (distanceDifference > UP_FAST_TOLERANCE) {
 				elevatorMasterMotor.set(UP_FAST_SPEED);
 				currentAutoElevatorState = AutoElevatorStates.UP_FAST;
