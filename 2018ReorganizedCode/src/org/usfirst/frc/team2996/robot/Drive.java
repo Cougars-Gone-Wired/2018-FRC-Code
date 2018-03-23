@@ -36,15 +36,15 @@ public class Drive {
 		rearLeftMotor = new WPI_TalonSRX(Constants.REAR_LEFT_MOTOR_ID);
 		leftMotors = new SpeedControllerGroup(frontLeftMotor, rearLeftMotor);
 		frontLeftSensors = new SensorCollection(frontLeftMotor);
-//		frontLeftMotor.configOpenloopRamp(.25, 0);
-//		rearLeftMotor.configOpenloopRamp(.25, 0);
+//		frontLeftMotor.configOpenloopRamp(0, 0);
+//		rearLeftMotor.configOpenloopRamp(0, 0);
 		
 		frontRightMotor = new WPI_TalonSRX(Constants.FRONT_RIGHT_MOTOR_ID);
 		rearRightMotor = new WPI_TalonSRX(Constants.REAR_RIGHT_MOTOR_ID);
 		rightMotors = new SpeedControllerGroup(frontRightMotor, rearRightMotor);
 		frontRightSensors = new SensorCollection(frontRightMotor);
-//		frontRightMotor.configOpenloopRamp(.25, 0);
-//		rearRightMotor.configOpenloopRamp(.25, 0);
+//		frontRightMotor.configOpenloopRamp(0, 0);
+//		rearRightMotor.configOpenloopRamp(0, 0);
 
 		robotDrive = new DifferentialDrive(leftMotors, rightMotors);
 		
@@ -53,8 +53,8 @@ public class Drive {
 
 	public void arcadeDrive(double driveForwardAxis, double driveTurnAxis) { // method for driving in arcade configuration 
 		setArcadeDriveSpeed(driveForwardAxis, driveTurnAxis);
-		robotDrive.arcadeDrive(driveForwardAxisValue, driveTurnAxisValue * .75);
-		
+		robotDrive.arcadeDrive(driveForwardAxisValue * 1, driveTurnAxisValue * .75);
+
 //		SmartDashboard.putNumber("Left Encoder", frontLeftSensors.getQuadraturePosition());
 //		SmartDashboard.putNumber("Right Encoder", frontRightSensors.getQuadraturePosition());
 	}

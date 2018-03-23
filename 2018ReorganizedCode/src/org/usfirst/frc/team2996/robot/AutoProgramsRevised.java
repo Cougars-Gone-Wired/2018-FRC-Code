@@ -38,7 +38,8 @@ public class AutoProgramsRevised {
 		RIGHT_CROSS_LINE, RIGHT_SWITCH, RIGHT_SCALE_RIGHT, RIGHT_SCALE_LEFT,
 		LEFT_TURN, RIGHT_TURN,
 		ELEVATOR,
-		INTAKE_CHECK
+		INTAKE_CHECK,
+		DO_NOTHING
 	}
 	
 	public AutoStates autoChanger;
@@ -95,77 +96,80 @@ public class AutoProgramsRevised {
 	private double autoTurnSpeedLow = .4;
 	private double autoTurnSpeedBack = .2;
 	
-	private double middleCrossLineForwardDistance = 81;
+	//practice to comp +14
+	static final double COMP_BOT_CONSTANT = 14; //14
 	
-	private double middleSwitchRightForwardDistance = 81;
+	private double middleCrossLineForwardDistance = 81 + COMP_BOT_CONSTANT;
 	
-	private double middleSwitchRightBackForwardDistance = 81;
-	private double middleSwitchRightBackBackwardDistance = -55;
+	private double middleSwitchRightForwardDistance = 81 + COMP_BOT_CONSTANT; //81
 	
-	private double middleSwitchRight2CubeForwardDistance1 = 81;
-	private double middleSwitchRight2CubeBackwardDistance1 = -57;
-	private double middleSwitchRight2CubeForwardDistance2 = 42;
-	private double middleSwitchRight2CubeForwardDistance3 = 20;
-	private double middleSwitchRight2CubeBackwardDistance2 = -20;
-	private double middleSwitchRight2CubeForwardDistance4 = 42;
-	private double middleSwitchRight2CubeForwardDistance5 = 57;
+	private double middleSwitchRightBackForwardDistance = 81 + COMP_BOT_CONSTANT;
+	private double middleSwitchRightBackBackwardDistance = -55 - COMP_BOT_CONSTANT;
 	
-	private double middleSwitchLeftForwardDistance1 = 21;
-	private double middleSwitchLeftForwardDistance2 = 95;
-	private double middleSwitchLeftForwardDistance3 = 55;
+	private double middleSwitchRight2CubeForwardDistance1 = 81 + COMP_BOT_CONSTANT;
+	private double middleSwitchRight2CubeBackwardDistance1 = -57 - COMP_BOT_CONSTANT;
+	private double middleSwitchRight2CubeForwardDistance2 = 42 + COMP_BOT_CONSTANT;
+	private double middleSwitchRight2CubeForwardDistance3 = 20 + COMP_BOT_CONSTANT;
+	private double middleSwitchRight2CubeBackwardDistance2 = -20 - COMP_BOT_CONSTANT;
+	private double middleSwitchRight2CubeForwardDistance4 = 42 + COMP_BOT_CONSTANT;
+	private double middleSwitchRight2CubeForwardDistance5 = 57 + COMP_BOT_CONSTANT;
 	
-	private double middleSwitchLeftBackForwardDistance1 = 21;
-	private double middleSwitchLeftBackForwardDistance2 = 95;
-	private double middleSwitchLeftBackForwardDistance3 = 55;
-	private double middleSwitchLeftBackBackwardDistance = -55;
+	private double middleSwitchLeftForwardDistance1 = 21 + COMP_BOT_CONSTANT;
+	private double middleSwitchLeftForwardDistance2 = 95 + COMP_BOT_CONSTANT;
+	private double middleSwitchLeftForwardDistance3 = 55 + COMP_BOT_CONSTANT; 
 	
-	private double middleSwitchLeft2CubeForwardDistance1 = 21;
-	private double middleSwitchLeft2CubeForwardDistance2 = 85;
-	private double middleSwitchLeft2CubeForwardDistance3 = 57;
-	private double middleSwitchLeft2CubeBackwardDistance1 = -57;
-	private double middleSwitchLeft2CubeForwardDistance4 = 42;
-	private double middleSwitchLeft2CubeForwardDistance5 = 20;
-	private double middleSwitchLeft2CubeBackwardDistance2 = -20;
-	private double middleSwitchLeft2CubeForwardDistance6 = 42;
-	private double middleSwitchLeft2CubeForwardDistance7 = 57;
+	private double middleSwitchLeftBackForwardDistance1 = 21 + COMP_BOT_CONSTANT;
+	private double middleSwitchLeftBackForwardDistance2 = 95 + COMP_BOT_CONSTANT;
+	private double middleSwitchLeftBackForwardDistance3 = 55 + COMP_BOT_CONSTANT;
+	private double middleSwitchLeftBackBackwardDistance = -55 - COMP_BOT_CONSTANT;
 	
-	private double leftCrossLineForwardDistance = 180;
+	private double middleSwitchLeft2CubeForwardDistance1 = 21 + COMP_BOT_CONSTANT;
+	private double middleSwitchLeft2CubeForwardDistance2 = 85 + COMP_BOT_CONSTANT;
+	private double middleSwitchLeft2CubeForwardDistance3 = 57 + COMP_BOT_CONSTANT;
+	private double middleSwitchLeft2CubeBackwardDistance1 = -57 - COMP_BOT_CONSTANT;
+	private double middleSwitchLeft2CubeForwardDistance4 = 42 + COMP_BOT_CONSTANT;
+	private double middleSwitchLeft2CubeForwardDistance5 = 20 + COMP_BOT_CONSTANT;
+	private double middleSwitchLeft2CubeBackwardDistance2 = -20 - COMP_BOT_CONSTANT;
+	private double middleSwitchLeft2CubeForwardDistance6 = 42 + COMP_BOT_CONSTANT;
+	private double middleSwitchLeft2CubeForwardDistance7 = 57 + COMP_BOT_CONSTANT;
 	
-	private double leftSwitchForwardDistance1 = 130;
-	private double leftSwitchForwardDistance2 = 15;
+	private double leftCrossLineForwardDistance = 180 + COMP_BOT_CONSTANT;
 	
-	private double leftScaleLeftReadyForwardDistance = 230;
+	private double leftSwitchForwardDistance1 = 130 + COMP_BOT_CONSTANT;
+	private double leftSwitchForwardDistance2 = 15 + COMP_BOT_CONSTANT;
 	
-	private double leftScaleLeftForwardDistance1 = 200;
-	private double leftScaleLeftForwardDistance2 = 40;
-	private double leftScaleLeftForwardDistance3 = 30;
+	private double leftScaleLeftReadyForwardDistance = 230 + COMP_BOT_CONSTANT;
 	
-	private double leftScaleRightReadyForwardDistance1 = 185;
-	private double leftScaleRightReadyForwardDistance2 = 180;
+	private double leftScaleLeftForwardDistance1 = 200 + COMP_BOT_CONSTANT;
+	private double leftScaleLeftForwardDistance2 = 40 + COMP_BOT_CONSTANT;
+	private double leftScaleLeftForwardDistance3 = 30 + COMP_BOT_CONSTANT;
 	
-	private double leftScaleRightForwardDistance1 = 195;
-	private double leftScaleRightForwardDistance2 = 180;
-	private double leftScaleRightForwardDistance3 = 30;
+	private double leftScaleRightReadyForwardDistance1 = 185 + COMP_BOT_CONSTANT;
+	private double leftScaleRightReadyForwardDistance2 = 180 + COMP_BOT_CONSTANT;
 	
-	private double rightCrossLineForwardDistance = 180;
+	private double leftScaleRightForwardDistance1 = 195 + COMP_BOT_CONSTANT;
+	private double leftScaleRightForwardDistance2 = 180 + COMP_BOT_CONSTANT;
+	private double leftScaleRightForwardDistance3 = 30 + COMP_BOT_CONSTANT;
 	
-	private double rightSwitchForwardDistance1 = 130;
-	private double rightSwitchForwardDistance2 = 15;
+	private double rightCrossLineForwardDistance = 180 + COMP_BOT_CONSTANT;
 	
-	private double rightScaleRightReadyForwardDistance = 230;
+	private double rightSwitchForwardDistance1 = 130 + COMP_BOT_CONSTANT;
+	private double rightSwitchForwardDistance2 = 15 + COMP_BOT_CONSTANT;
 	
-	private double rightScaleRightForwardDistance1 = 200;
-	private double rightScaleRightForwardDistance2 = 40;
-	private double rightScaleRightForwardDistance3 = 30;
+	private double rightScaleRightReadyForwardDistance = 230 + COMP_BOT_CONSTANT;
 	
-	private double rightScaleLeftReadyForwardDistance1 = 185;
-	private double rightScaleLeftReadyForwardDistance2 = 180;
+	private double rightScaleRightForwardDistance1 = 200 + COMP_BOT_CONSTANT;
+	private double rightScaleRightForwardDistance2 = 40 + COMP_BOT_CONSTANT;
+	private double rightScaleRightForwardDistance3 = 30 + COMP_BOT_CONSTANT;
 	
-	private double rightScaleLeftForwardDistance1 = 195;
-	private double rightScaleLeftForwardDistance2 = 180;
-	private double rightScaleLeftForwardDistance3 = 30;
+	private double rightScaleLeftReadyForwardDistance1 = 185 + COMP_BOT_CONSTANT;
+	private double rightScaleLeftReadyForwardDistance2 = 180 + COMP_BOT_CONSTANT;
 	
-	private double intakeCheckForwardDistance = 40;
+	private double rightScaleLeftForwardDistance1 = 195 + COMP_BOT_CONSTANT;
+	private double rightScaleLeftForwardDistance2 = 180 + COMP_BOT_CONSTANT;
+	private double rightScaleLeftForwardDistance3 = 30 + COMP_BOT_CONSTANT;
+	
+	private double intakeCheckForwardDistance = 40 + COMP_BOT_CONSTANT;
 	
 	public AutoProgramsRevised(Robot robot) {
 		position.addDefault("Middle", MIDDLE); // sends auto inputs to the chooser
@@ -322,7 +326,7 @@ public class AutoProgramsRevised {
 			autoChanger = AutoStates.MIDDLE_CROSS_LINE;
 			break;
 		}
-//		autoChanger = AutoStates.INTAKE_CHECK;
+//		autoChanger = AutoStates.MIDDLE_SWITCH_LEFT;
 	}
 	
 	public void runAuto() {
@@ -335,10 +339,12 @@ public class AutoProgramsRevised {
 			break;
 		case MIDDLE_SWITCH_RIGHT:
 			middleSwitchRight();
+//			middleSwitchRightBack();
 //			middleSwitchRight2Cube(); 
 			break;
 		case MIDDLE_SWITCH_LEFT:
 			middleSwitchLeft();
+//			middleSwitchLeftBack();
 //			middleSwitchLeft2Cube();
 			break;
 		case LEFT_CROSS_LINE:
@@ -381,6 +387,8 @@ public class AutoProgramsRevised {
 			break;
 		case INTAKE_CHECK:
 			intakeCheck();
+			break;
+		case DO_NOTHING:
 			break;
 		}
 	}
@@ -721,6 +729,7 @@ public class AutoProgramsRevised {
 				backwardGyroCorrect();
 			} else {
 				reset();
+				arm.setArmState(true);
 			}
 			break;
 		}
@@ -1181,6 +1190,7 @@ public class AutoProgramsRevised {
 				backwardGyroCorrect();
 			} else {
 				reset();
+				arm.setArmState(true);
 			}
 			break;
 		}
