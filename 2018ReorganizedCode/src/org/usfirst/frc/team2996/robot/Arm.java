@@ -34,13 +34,13 @@ public class Arm {
 		}
 	}
 
-	public void setArmState(boolean up) {
-		if (up) {
+	public void setArmState(boolean down) {
+		if (down) {
 			armSolenoid.set(DoubleSolenoid.Value.kForward);
-			currentArmState = ArmStates.UP;
-		} else if (!up) {
-			armSolenoid.set(DoubleSolenoid.Value.kReverse);
 			currentArmState = ArmStates.DOWN;
+		} else if (!down) {
+			armSolenoid.set(DoubleSolenoid.Value.kReverse);
+			currentArmState = ArmStates.UP;
 		}
 	}
 	

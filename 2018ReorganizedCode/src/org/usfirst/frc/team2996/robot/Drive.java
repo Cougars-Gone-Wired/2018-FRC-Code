@@ -53,7 +53,7 @@ public class Drive {
 
 	public void arcadeDrive(double driveForwardAxis, double driveTurnAxis) { // method for driving in arcade configuration 
 		setArcadeDriveSpeed(driveForwardAxis, driveTurnAxis);
-		robotDrive.arcadeDrive(driveForwardAxisValue * 1, driveTurnAxisValue * .75);
+		robotDrive.arcadeDrive(driveForwardAxisValue * .95, driveTurnAxisValue * .75);
 
 //		SmartDashboard.putNumber("Left Encoder", frontLeftSensors.getQuadraturePosition());
 //		SmartDashboard.putNumber("Right Encoder", frontRightSensors.getQuadraturePosition());

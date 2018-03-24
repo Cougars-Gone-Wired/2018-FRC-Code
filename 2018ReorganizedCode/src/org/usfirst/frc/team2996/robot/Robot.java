@@ -98,8 +98,8 @@ public class Robot extends IterativeRobot {
 
 		drive = new Drive();
 
-		elevatorChangeGear = new ChangeGear(true, elevator.getChangeElevatorGearSolenoid());
-//		elevatorChangeGear = new ChangeGear(false, elevator.getChangeElevatorGearSolenoid());
+//		elevatorChangeGear = new ChangeGear(true, elevator.getChangeElevatorGearSolenoid());
+		elevatorChangeGear = new ChangeGear(false, elevator.getChangeElevatorGearSolenoid());
 //		driveChangeGear = new ChangeGear(true, drive.getChangeDriveGearSolenoid());
 		driveChangeGear = new ChangeGear(false, drive.getChangeDriveGearSolenoid());
 
@@ -164,8 +164,8 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		autoProgramsRevised.pickAuto();
 		
-		elevatorChangeGear.setGearState(true);
-//		elevatorChangeGear.setGearState(false);
+//		elevatorChangeGear.setGearState(true);
+		elevatorChangeGear.setGearState(false);
 //		driveChangeGear.setGearState(true);
 		driveChangeGear.setGearState(false);
 		//autoPrograms.setAutoNumbers();
@@ -466,8 +466,8 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		elevatorChangeGear.setGearState(false);
-//		elevatorChangeGear.setGearState(true);
+//		elevatorChangeGear.setGearState(false);
+		elevatorChangeGear.setGearState(true);
 		//driveChangeGear.setGearState(false);
 		driveChangeGear.setGearState(true);
 		autoMethods.getNavX().reset();

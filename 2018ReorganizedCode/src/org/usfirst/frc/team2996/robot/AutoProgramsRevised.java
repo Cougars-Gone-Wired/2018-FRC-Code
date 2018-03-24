@@ -145,7 +145,7 @@ public class AutoProgramsRevised {
 	private double leftScaleLeftForwardDistance3 = 30 + COMP_BOT_CONSTANT;
 	
 	private double leftScaleRightReadyForwardDistance1 = 185 + COMP_BOT_CONSTANT;
-	private double leftScaleRightReadyForwardDistance2 = 180 + COMP_BOT_CONSTANT;
+	private double leftScaleRightReadyForwardDistance2 = 190 + COMP_BOT_CONSTANT;
 	
 	private double leftScaleRightForwardDistance1 = 195 + COMP_BOT_CONSTANT;
 	private double leftScaleRightForwardDistance2 = 180 + COMP_BOT_CONSTANT;
@@ -163,7 +163,7 @@ public class AutoProgramsRevised {
 	private double rightScaleRightForwardDistance3 = 30 + COMP_BOT_CONSTANT;
 	
 	private double rightScaleLeftReadyForwardDistance1 = 185 + COMP_BOT_CONSTANT;
-	private double rightScaleLeftReadyForwardDistance2 = 180 + COMP_BOT_CONSTANT;
+	private double rightScaleLeftReadyForwardDistance2 = 190 + COMP_BOT_CONSTANT;
 	
 	private double rightScaleLeftForwardDistance1 = 195 + COMP_BOT_CONSTANT;
 	private double rightScaleLeftForwardDistance2 = 180 + COMP_BOT_CONSTANT;
@@ -326,7 +326,7 @@ public class AutoProgramsRevised {
 			autoChanger = AutoStates.MIDDLE_CROSS_LINE;
 			break;
 		}
-//		autoChanger = AutoStates.MIDDLE_SWITCH_LEFT;
+//		autoChanger = AutoStates.LEFT_CROSS_LINE;
 	}
 	
 	public void runAuto() {
@@ -338,13 +338,13 @@ public class AutoProgramsRevised {
 			middleCrossLine();
 			break;
 		case MIDDLE_SWITCH_RIGHT:
-			middleSwitchRight();
-//			middleSwitchRightBack();
+//			middleSwitchRight();
+			middleSwitchRightBack();
 //			middleSwitchRight2Cube(); 
 			break;
 		case MIDDLE_SWITCH_LEFT:
-			middleSwitchLeft();
-//			middleSwitchLeftBack();
+//			middleSwitchLeft();
+			middleSwitchLeftBack();
 //			middleSwitchLeft2Cube();
 			break;
 		case LEFT_CROSS_LINE:
@@ -728,7 +728,7 @@ public class AutoProgramsRevised {
 			if (encoderAverageInches >= middleSwitchRightBackBackwardDistance) {
 				backwardGyroCorrect();
 			} else {
-				reset();
+				robotDrive.curvatureDrive(0, 0, false);
 				arm.setArmState(true);
 			}
 			break;
@@ -1189,7 +1189,7 @@ public class AutoProgramsRevised {
 			if (encoderAverageInches >= middleSwitchLeftBackBackwardDistance) {
 				backwardGyroCorrect();
 			} else {
-				reset();
+				robotDrive.curvatureDrive(0, 0, false);
 				arm.setArmState(true);
 			}
 			break;
@@ -1742,7 +1742,7 @@ public class AutoProgramsRevised {
 	}
 	
 	public enum LeftScaleRightReadyStates {
-		DELAY, DRIVING_FORWARD, TURN_PAUSE1, TURNING, TURN_PAUSE2, DRIVING_FORWARD_AGAIN
+		DELAY, DRIVING_FORWARD, TURN_PAUSE1, TURNING, TURN_PAUSE2, DRIVING_FORWARD_AGAIN, TURN_PAUSE3, TURNING2, TURN_PAUSE4
 	}
 	
 	LeftScaleRightReadyStates currentLeftScaleRightReadyState = LeftScaleRightReadyStates.DELAY;
@@ -1790,6 +1790,30 @@ public class AutoProgramsRevised {
 		case DRIVING_FORWARD_AGAIN:
 			if (encoderAverageInches <= leftScaleRightReadyForwardDistance2) {
 				gyroCorrect();
+			} else {
+				reset();
+				currentLeftScaleRightReadyState = LeftScaleRightReadyStates.TURNING2;
+			}
+			break;
+		case TURN_PAUSE3:
+			if (pauseCounter < turnPause){
+				pauseCounter++;
+			} else {
+				reset();
+				currentLeftScaleRightReadyState = LeftScaleRightReadyStates.TURNING2;
+			}
+			break;
+		case TURNING2:
+			if (!doneTurning) {
+				leftTurn();
+			} else {
+				reset();
+				currentLeftScaleRightReadyState = LeftScaleRightReadyStates.TURN_PAUSE4;
+			}
+			break;
+		case TURN_PAUSE4:
+			if (pauseCounter < turnPause){
+				pauseCounter++;
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 			}
@@ -2171,7 +2195,7 @@ public class AutoProgramsRevised {
 	
 	
 	public enum RightScaleLeftReadyStates {
-		DELAY, DRIVING_FORWARD, TURN_PAUSE1, TURNING, TURN_PAUSE2, DRIVING_FORWARD_AGAIN
+		DELAY, DRIVING_FORWARD, TURN_PAUSE1, TURNING, TURN_PAUSE2, DRIVING_FORWARD_AGAIN, TURN_PAUSE3, TURNING2, TURN_PAUSE4,
 	}
 	
 	RightScaleLeftReadyStates currentRightScaleLeftReadyState = RightScaleLeftReadyStates.DELAY;
@@ -2219,6 +2243,30 @@ public class AutoProgramsRevised {
 		case DRIVING_FORWARD_AGAIN:
 			if (encoderAverageInches <= rightScaleLeftReadyForwardDistance2) {
 				gyroCorrect();
+			} else {
+				reset();
+				currentRightScaleLeftReadyState = RightScaleLeftReadyStates.TURN_PAUSE3;
+			}
+			break;
+		case TURN_PAUSE3:
+			if (pauseCounter < turnPause){
+				pauseCounter++;
+			} else {
+				reset();
+				currentRightScaleLeftReadyState = RightScaleLeftReadyStates.TURNING2;
+			}
+			break;
+		case TURNING2:
+			if (!doneTurning) {
+				rightTurn();
+			} else {
+				reset();
+				currentRightScaleLeftReadyState = RightScaleLeftReadyStates.TURN_PAUSE4;
+			}
+			break;
+		case TURN_PAUSE4:
+			if (pauseCounter < turnPause){
+				pauseCounter++;
 			} else {
 				robotDrive.curvatureDrive(0, 0, false);
 			}
