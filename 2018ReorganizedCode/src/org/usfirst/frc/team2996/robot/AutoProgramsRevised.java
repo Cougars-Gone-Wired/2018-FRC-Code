@@ -83,7 +83,7 @@ public class AutoProgramsRevised {
 	private int cubePause = 60;
 	private int outtakePause = 100;
 	private int outtakeDropArmPause = 100;
-	private int elevatorPause = 60;
+	private int elevatorPause = 100;
 	private int drivePause = 40;
 	
 	private int turnLoopCounter = 0;
@@ -95,6 +95,8 @@ public class AutoProgramsRevised {
 	private double autoTurnSpeedHigh = .75;
 	private double autoTurnSpeedLow = .4;
 	private double autoTurnSpeedBack = .2;
+	
+	private int autoElevatorDesiredTime = 20;
 	
 	//practice to comp +14
 	static final double COMP_BOT_CONSTANT = 14; //14
@@ -140,9 +142,9 @@ public class AutoProgramsRevised {
 	
 	private double leftScaleLeftReadyForwardDistance = 230 + COMP_BOT_CONSTANT;
 	
-	private double leftScaleLeftForwardDistance1 = 200 + COMP_BOT_CONSTANT;
-	private double leftScaleLeftForwardDistance2 = 40 + COMP_BOT_CONSTANT;
-	private double leftScaleLeftForwardDistance3 = 30 + COMP_BOT_CONSTANT;
+	private double leftScaleLeftForwardDistance1 = 280 + COMP_BOT_CONSTANT;
+	private double leftScaleLeftForwardDistance2 = 17 + COMP_BOT_CONSTANT;
+	private double leftScaleLeftForwardDistance3 = 15 + COMP_BOT_CONSTANT;
 	
 	private double leftScaleRightReadyForwardDistance1 = 185 + COMP_BOT_CONSTANT;
 	private double leftScaleRightReadyForwardDistance2 = 190 + COMP_BOT_CONSTANT;
@@ -326,7 +328,7 @@ public class AutoProgramsRevised {
 			autoChanger = AutoStates.MIDDLE_CROSS_LINE;
 			break;
 		}
-//		autoChanger = AutoStates.LEFT_CROSS_LINE;
+//		autoChanger = AutoStates.ELEVATOR;
 	}
 	
 	public void runAuto() {
@@ -354,8 +356,8 @@ public class AutoProgramsRevised {
 			leftSwitch();
 			break;
 		case LEFT_SCALE_LEFT:
-			leftScaleLeftReady();
-//			leftScaleLeft();
+//			leftScaleLeftReady();
+			leftScaleLeft();
 			break;
 		case LEFT_SCALE_RIGHT:
 			leftScaleRightReady();
@@ -382,8 +384,9 @@ public class AutoProgramsRevised {
 			rightTurnCheck();
 			break;
 		case ELEVATOR:
-			elevator.setElevatorAutoDesiredHieght(9);
-			elevator.autoElevator();
+//			elevator.setElevatorAutoDesiredHieght(9);
+			elevator.setStartMoving(true);
+			elevator.realElevatorAuto();
 			break;
 		case INTAKE_CHECK:
 			intakeCheck();
@@ -1625,7 +1628,7 @@ public class AutoProgramsRevised {
 	LeftScaleLeftStates currentLeftScaleLeftState = LeftScaleLeftStates.DELAY;
 	
 	public void leftScaleLeft() {
-		elevator.autoElevator();
+		elevator.realElevatorAuto();
 		switch (currentLeftScaleLeftState) {
 		case DELAY:
 			if (delayTimer.get() >= autoDelay) {
@@ -1663,62 +1666,63 @@ public class AutoProgramsRevised {
 				pauseCounter++;	
 			} else {
 				reset();
-				currentLeftScaleLeftState = LeftScaleLeftStates.DRIVING_FORWARD2;
-			}
-			break;
-		case DRIVING_FORWARD2:
-			if (encoderAverageInches <= leftScaleLeftForwardDistance2) {
-				gyroCorrect();
-			} else {
-				reset();
-				currentLeftScaleLeftState = LeftScaleLeftStates.TURN_PAUSE3;
-			}
-			break;
-		case TURN_PAUSE3:
-			if (pauseCounter < turnPause){
-				pauseCounter++;
-			} else {
-				currentLeftScaleLeftState = LeftScaleLeftStates.TURNING2;
-			}
-			break;
-		case TURNING2:
-			if (!doneTurning) {
-				leftTurn();
-			} else {
-				reset();
-				currentLeftScaleLeftState = LeftScaleLeftStates.TURN_PAUSE4;
-			}
-			break;
-		case TURN_PAUSE4:
-			if (pauseCounter < turnPause){
-				pauseCounter++;
-			} else {
-				currentLeftScaleLeftState = LeftScaleLeftStates.DRIVING_FORWARD3;
-			}
-			break;
-		case DRIVING_FORWARD3:
-			if (encoderAverageInches <= leftScaleLeftForwardDistance3) {
-				gyroCorrect();
-			} else {
-				reset();
 				currentLeftScaleLeftState = LeftScaleLeftStates.ELEVATOR_PAUSE;
 			}
 			break;
+//		case DRIVING_FORWARD2:
+//			if (encoderAverageInches <= leftScaleLeftForwardDistance2) {
+//				gyroCorrect();
+//			} else {
+//				reset();
+//				currentLeftScaleLeftState = LeftScaleLeftStates.TURN_PAUSE3;
+//			}
+//			break;
+//		case TURN_PAUSE3:
+//			if (pauseCounter < turnPause){
+//				pauseCounter++;
+//			} else {
+//				currentLeftScaleLeftState = LeftScaleLeftStates.TURNING2;
+//			}
+//			break;
+//		case TURNING2:
+//			if (!doneTurning) {
+//				leftTurn();
+//			} else {
+//				reset();
+//				currentLeftScaleLeftState = LeftScaleLeftStates.TURN_PAUSE4;
+//			}
+//			break;
+//		case TURN_PAUSE4:
+//			if (pauseCounter < turnPause){
+//				pauseCounter++;
+//			} else {
+//				currentLeftScaleLeftState = LeftScaleLeftStates.DRIVING_FORWARD3;
+//			}
+//			break;
+//		case DRIVING_FORWARD3:
+//			if (encoderAverageInches <= leftScaleLeftForwardDistance3) {
+//				gyroCorrect();
+//			} else {
+//				reset();
+//				currentLeftScaleLeftState = LeftScaleLeftStates.ELEVATOR_PAUSE;
+//			}
+//			break;
 		case ELEVATOR_PAUSE:
 			if (pauseCounter < elevatorPause){
+				elevator.setStartMoving(true);
 				pauseCounter++;
 			} else {
-				reset();
-				currentLeftScaleLeftState = LeftScaleLeftStates.ELEVATOR_UP;
-			}
-			break;
-		case ELEVATOR_UP:
-			elevator.setElevatorAutoDesiredHieght(30);
-			if (elevator.liftDone) {
 				reset();
 				currentLeftScaleLeftState = LeftScaleLeftStates.DROP_ARM;
 			}
 			break;
+//		case ELEVATOR_UP:
+////			elevator.setElevatorAutoDesiredHieght(30);
+//			if (elevator.liftDone) {
+//				reset();
+//				currentLeftScaleLeftState = LeftScaleLeftStates.DROP_ARM;
+//			}
+//			break;
 		case DROP_ARM:
 			arm.setArmState(false);
 			if (pauseCounter < outtakeDropArmPause){
@@ -1736,6 +1740,7 @@ public class AutoProgramsRevised {
 			} else {
 				leftIntakeMotor.set(0);
 				rightIntakeMotor.set(0);
+				elevator.setStartMoving(false);
 			}
 			break;
 		}
@@ -1829,7 +1834,7 @@ public class AutoProgramsRevised {
 	LeftScaleRightStates currentLeftScaleRightState = LeftScaleRightStates.DELAY;
 	
 	public void leftScaleRight() {
-		elevator.autoElevator();
+		elevator.autoElevator(autoElevatorDesiredTime);
 		switch (currentLeftScaleRightState) {
 		case DELAY:
 			if (delayTimer.get() >= autoDelay) {
@@ -1917,7 +1922,7 @@ public class AutoProgramsRevised {
 			}
 			break;
 		case ELEVATOR_UP:
-			elevator.setElevatorAutoDesiredHieght(30);
+//			elevator.setElevatorAutoDesiredHieght(30);
 			if (elevator.liftDone) {
 				reset();
 				currentLeftScaleRightState = LeftScaleRightStates.DROP_ARM;
@@ -2077,7 +2082,7 @@ public class AutoProgramsRevised {
 	RightScaleRightStates currentRightScaleRightState = RightScaleRightStates.DELAY;
 	
 	public void rightScaleRight() {
-		elevator.autoElevator();
+		elevator.autoElevator(autoElevatorDesiredTime);
 		switch (currentRightScaleRightState) {
 		case DELAY:
 			if (delayTimer.get() >= autoDelay) {
@@ -2165,7 +2170,7 @@ public class AutoProgramsRevised {
 			}
 			break;
 		case ELEVATOR_UP:
-			elevator.setElevatorAutoDesiredHieght(30);
+//			elevator.setElevatorAutoDesiredHieght(30);
 			if (elevator.liftDone) {
 				reset();
 				currentRightScaleRightState = RightScaleRightStates.DROP_ARM;
@@ -2282,7 +2287,7 @@ public class AutoProgramsRevised {
 	RightScaleLeftStates currentRightScaleLeftState = RightScaleLeftStates.DELAY;
 	
 	public void rightScaleLeft() {
-		elevator.autoElevator();
+		elevator.autoElevator(autoElevatorDesiredTime);
 		switch (currentRightScaleLeftState) {
 		case DELAY:
 			if (delayTimer.get() >= autoDelay) {
@@ -2370,7 +2375,7 @@ public class AutoProgramsRevised {
 			}
 			break;
 		case ELEVATOR_UP:
-			elevator.setElevatorAutoDesiredHieght(30);
+//			elevator.setElevatorAutoDesiredHieght(30);
 			if (elevator.liftDone) {
 				reset();
 				currentRightScaleLeftState = RightScaleLeftStates.DROP_ARM;

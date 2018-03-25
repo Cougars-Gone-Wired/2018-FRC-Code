@@ -24,12 +24,18 @@ public class Elevator {
 	private WPI_TalonSRX elevatorMasterMotor; // the only motor we will actually be controlling
 	private WPI_TalonSRX elevatorSlaveMotor; // will do anything its master does
 	private SensorCollection elevatorMasterMotorSensors;
-	private int elevatorEncoder = 0;
+	private SensorCollection elevatorSlaveMotorSensors;
+	private double elevatorEncoder = 0;
+	private double encoderConstant = AutoProgramsRevised.DISTANCE_PER_ENCODER_TICK;
 	
-	private int elevatorAutoDesiredHieght = 0;
-	private int distanceDifference = 0;
-	static final int UP_SLOW_TOLERANCE = 10;
-	static final int UP_FAST_TOLERANCE = 20;
+	private double elevatorAutoDesiredTime = 0;
+	
+	private boolean startMoving = false;
+	
+	private double distanceDifference = 0;
+	private double autoElevatorCounter = 0;
+	static final int UP_FAST_TOLERANCE = 10;
+	static final int UP_SLOW_TOLERANCE = 20;
 	
 	static final double UP_FAST_SPEED = .75;
 	static final double UP_SLOW_SPEED = .4;
@@ -50,6 +56,7 @@ public class Elevator {
 		elevatorSlaveMotor.follow(elevatorMasterMotor); // setting the slave motor to do everything the master motor
 														// does
 		elevatorMasterMotorSensors = new SensorCollection(elevatorMasterMotor); // for limit switches
+		elevatorSlaveMotorSensors = new SensorCollection(elevatorSlaveMotor);
 
 		changeElevatorGearSolenoid = new Solenoid(Constants.CHANGE_ELEVATOR_GEAR_SOLENOID_PORT);
 	}
@@ -57,6 +64,7 @@ public class Elevator {
 	public void elevatorFunctions(double elevatorAxis) { // method to check if the elevator needs to change states
 		SmartDashboard.putBoolean("fwd limit switch", elevatorMasterMotorSensors.isFwdLimitSwitchClosed());
 		SmartDashboard.putBoolean("rev limit switch", elevatorMasterMotorSensors.isRevLimitSwitchClosed());
+		elevatorEncoder = elevatorSlaveMotorSensors.getQuadraturePosition() * encoderConstant;
 		SmartDashboard.putNumber("Elevator Encoder", elevatorEncoder);
 		if (elevatorMasterMotorSensors.isRevLimitSwitchClosed()) {
 			elevatorMasterMotorSensors.setQuadraturePosition(0, 10);
@@ -98,8 +106,9 @@ public class Elevator {
 	}
 
 	
-	public void autoElevator() {
-		elevatorEncoder = elevatorMasterMotorSensors.getQuadraturePosition();
+	public void autoElevator(double elevatorAutoDesiredHieght) {
+		elevatorEncoder = elevatorSlaveMotorSensors.getQuadraturePosition() * encoderConstant;
+//		System.out.println(elevatorEncoder);
 		distanceDifference = elevatorAutoDesiredHieght - elevatorEncoder;
 		SmartDashboard.putNumber("Elevator Encoder", elevatorEncoder);
 		SmartDashboard.putNumber("Elevator Desired Hieght", elevatorAutoDesiredHieght);
@@ -121,6 +130,7 @@ public class Elevator {
 			}
 			break;		
 		case UP_FAST:
+			System.out.println("elevator");
 			if (distanceDifference > UP_FAST_TOLERANCE) {
 				elevatorMasterMotor.set(UP_FAST_SPEED);
 			} else if (distanceDifference > UP_SLOW_TOLERANCE) {
@@ -132,6 +142,7 @@ public class Elevator {
 			}
 			break;
 		case UP_SLOW:
+			System.out.println("elevator");
 			if (liftLoopCounter < liftLoopLimit) {
 				if (distanceDifference > UP_SLOW_TOLERANCE) {
 					elevatorMasterMotor.set(UP_SLOW_SPEED);
@@ -147,10 +158,70 @@ public class Elevator {
 		}
 	}
 	
+	public void autoTimeElevator() {
+		SmartDashboard.putNumber("Elevator Desired Time", elevatorAutoDesiredTime);
+		System.out.println(autoElevatorCounter);
+		if (elevatorMasterMotorSensors.isRevLimitSwitchClosed()) {
+			autoElevatorCounter = 0;
+			currentAutoElevatorState = AutoElevatorStates.NOT_MOVING;
+		} else if (elevatorMasterMotorSensors.isFwdLimitSwitchClosed()) {
+			currentAutoElevatorState = AutoElevatorStates.NOT_MOVING;
+		}
+		switch(currentAutoElevatorState) {
+		case NOT_MOVING:
+			elevatorMasterMotor.set(0);
+			if (elevatorAutoDesiredTime > UP_FAST_TOLERANCE) {
+				elevatorMasterMotor.set(UP_FAST_SPEED);
+				currentAutoElevatorState = AutoElevatorStates.UP_FAST;
+			} else if (elevatorAutoDesiredTime > UP_SLOW_TOLERANCE) {
+				elevatorMasterMotor.set(UP_SLOW_SPEED);
+				currentAutoElevatorState = AutoElevatorStates.UP_SLOW;
+			}
+			break;		
+		case UP_FAST:
+//			System.out.println("elevator");
+			if (autoElevatorCounter > elevatorAutoDesiredTime) {
+				elevatorMasterMotor.set(0);
+				liftDone = true;
+				currentAutoElevatorState = AutoElevatorStates.NOT_MOVING;
+			} else if (autoElevatorCounter < UP_FAST_TOLERANCE) {
+				elevatorMasterMotor.set(UP_FAST_SPEED);
+			} else if (autoElevatorCounter < UP_SLOW_TOLERANCE) {
+				elevatorMasterMotor.set(UP_SLOW_SPEED);
+				currentAutoElevatorState = AutoElevatorStates.UP_SLOW;
+			}
+			autoElevatorCounter ++;
+			break;
+		case UP_SLOW:
+//			System.out.println("elevator");
+			if (autoElevatorCounter > elevatorAutoDesiredTime){
+				elevatorMasterMotor.set(0);
+				liftDone = true;
+				currentAutoElevatorState = AutoElevatorStates.NOT_MOVING;
+//			} else if (liftLoopCounter < liftLoopLimit) {
+			} else if (autoElevatorCounter < UP_SLOW_TOLERANCE) {
+					elevatorMasterMotor.set(UP_SLOW_SPEED);
+			}
+//				liftLoopCounter++;
+//			} 
+			autoElevatorCounter ++;
+			break;	
+		}
+	}
+	
+	public void realElevatorAuto(){
+		if(startMoving){
+			elevatorMasterMotor.set(UP_FAST_SPEED);
+		} else {
+			elevatorMasterMotor.set(0);
+		}
+	}
+	
 	public void autoElevatorReset() {
 		elevatorMasterMotor.set(0);
 		elevatorMasterMotorSensors.setQuadraturePosition(0, 10);
 		liftDone = false;
+//		startMoving = false;
 		currentAutoElevatorState = AutoElevatorStates.NOT_MOVING;
 	}
 	
@@ -171,8 +242,17 @@ public class Elevator {
 		return changeElevatorGearSolenoid;
 	}
 
-	public void setElevatorAutoDesiredHieght(int elevatorAutoDesiredHieght) {
-		this.elevatorAutoDesiredHieght = elevatorAutoDesiredHieght;
+	public void setElevatorAutoDesiredTime(double elevatorAutoDesiredTime) {
+		this.elevatorAutoDesiredTime = elevatorAutoDesiredTime;
 	}
 
+	public void setStartMoving(boolean startMoving) {
+		this.startMoving = startMoving;
+	}
+
+//	public void setElevatorAutoDesiredHieght(int elevatorAutoDesiredHieght) {
+//		this.elevatorAutoDesiredHieght = elevatorAutoDesiredHieght;
+//	}
+
+	
 }
